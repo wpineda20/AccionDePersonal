@@ -8,6 +8,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ExcelController;
+use App\Http\Controllers\ReasonController;
+use App\Http\Controllers\LoginSvController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,15 +26,17 @@ Route::get('/', function () {
     return view('auth/login');
 });
 
-Auth::routes(['verify' => true, 'remember_me'=>false]);
+Auth::routes(['verify' => true, 'remember_me' => false]);
 
-Route::group(['middleware'=> ['auth', 'verified', 'log', 'throttle:web']], function () {
-    Route::group(['middleware'=>['has.role:Administrador']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], function () {
+    Route::group(['middleware' => ['has.role:Administrador']], function () {
         // Apis
         Route::resource('/api/web/department', DepartmentController::class);
         Route::resource('/api/web/municipality', MunicipalityController::class);
         Route::resource('/api/web/user', UserController::class);
         Route::resource('/api/web/role', RoleController::class);
+        Route::resource('/api/web/reason', ReasonController::class);
+        Route::delete('/api/web/reason', [ReasonController::class, 'destroy']);
 
         // Views
         Route::get('/departments', function () {
@@ -46,6 +50,10 @@ Route::group(['middleware'=> ['auth', 'verified', 'log', 'throttle:web']], funct
         Route::get('/users', function () {
             return view('user.index');
         });
+
+        Route::get('/reasons', function () {
+            return view('reason.index');
+        });
     });
 
     //Reports
@@ -57,4 +65,7 @@ Route::group(['middleware'=> ['auth', 'verified', 'log', 'throttle:web']], funct
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 });
 
-Route::post('import', [ExcelController::class, 'import']);
+Auth::routes(['verify' => true, 'login' => true, 'reset' => true, 'register' => true]);
+
+Route::get('/redirectToProvider', [LoginSvController::class, 'redirectToProvider']);
+Route::get('/callback', [LoginSvController::class, 'handleProviderCallback']);

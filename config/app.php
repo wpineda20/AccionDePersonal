@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/El_Salvador',
 
     /*
     |--------------------------------------------------------------------------
@@ -181,7 +181,8 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider::class,
         Leolopez\Backup\BackupServiceProvider::class,
-        Leolopez\Encrypt\EncryptServiceProvider::class
+        Leolopez\Encrypt\EncryptServiceProvider::class,
+        Leolopez\LoginSv\LoginSvServiceProvider::class
     ],
 
     /*
