@@ -39,13 +39,34 @@
                 <!-- Home -->
                 <li class="text-center pb-1">
                     <a href="{{ url('/home') }}" class="text-center">
+                        <i class="material-icons md-18 mx-auto">home</i>
+                    </a>
+                    <a href="{{ url('/home') }}">
+                        <p class="link mx-auto">Inicio</p>
+                    </a>
+                </li>
+                <!-- Home -->
+                <!-- A.P -->
+                <li class="text-center pb-1">
+                    <a href="{{ url('/home') }}" class="text-center">
                         <i class="material-icons md-18 mx-auto">assignment_ind</i>
                     </a>
                     <a href="{{ url('/home') }}">
                         <p class="link mx-auto">A.P</p>
                     </a>
                 </li>
-                <!-- Home -->
+                <!-- A.P -->
+
+                <!-- A.P -->
+                <li class="text-center pb-1">
+                    <a href="{{ url('/home') }}" class="text-center">
+                        <i class="material-icons md-18 mx-auto">fact_check</i>
+                    </a>
+                    <a href="{{ url('/home') }}">
+                        <p class="link mx-auto">Mis A.P</p>
+                    </a>
+                </li>
+                <!-- A.P -->
 
                 <!-- Settings -->
                 <!-- Administrative routes -->
@@ -58,7 +79,9 @@
                         <p class="link" style="margin-left:5px">Administración</p>
                     </div>
                     <ul class="sub-menu">
-                        <li><a href="{{ url('/reasons') }}">Razones</a></li>
+                        <li><a href="{{ url('/justificationTypes') }}">Tipos justificación</a></li>
+                        <li><a href="{{ url('/dependencies') }}">Dependencias</a></li>
+                        <li><a href="{{ url('/status') }}">Estados</a></li>
                     </ul>
                 </li>
                 @endif
@@ -66,7 +89,7 @@
                 <!-- Settings -->
 
                 <!-- Logout -->
-                <li class="text-center pb-1">
+                {{-- <li class="text-center pb-1">
                     <a href="{{ route('register') }}" class="text-center"
                         onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                         <i class="material-icons md-18 mx-auto">logout</i>
@@ -75,7 +98,7 @@
                         onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                         <p class="link mx-auto">Cerrar sesión</p>
                     </a>
-                </li>
+                </li> --}}
                 <!-- Logout -->
                 @endauth
 
@@ -130,7 +153,7 @@
                             <!-- Institution Name -->
                             <div class=" col-sm-4 col-md-6 d-none d-md-block d-lg-block d-xl-block">
                                 <div class="col-4 col-sm-12">
-                                    <a class="navbar-brand" href="{{ url('/') }}">
+                                    <a class="navbar-brand" href="{{ url('/home') }}">
                                         <h3 class="pt-4 fw-bold color-secondary mb-0">Sistema de Acciones
                                             de Personal
                                         </h3>

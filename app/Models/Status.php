@@ -6,18 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class Reason extends Model
+class Status extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'reason';
+    protected $table = 'status';
 
     public $incrementing = true;
 
     protected $data = ['deleted_at'];
 
     protected $fillable = [
-        'id', 'reason_name', 'deleted_at', 'created_at', 'updated_at', 
+        'id', 'status_name', 'deleted_at', 'created_at', 'updated_at',
     ];
 
     public $hidden = [
@@ -30,22 +30,22 @@ class Reason extends Model
 
     public static function allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage)
     {
-        return Reason::select('reason.*', 'reason.id as id')
-        
-		->where('reason.reason_name', 'like', $search)
+        return Status::select('status.*', 'status.id as id')
 
-        ->skip($skip)
-        ->take($itemsPerPage)
-        ->orderBy("reason.$sortBy", $sort)
-        ->get();
+            ->where('status.status_name', 'like', $search)
+
+            ->skip($skip)
+            ->take($itemsPerPage)
+            ->orderBy("status.$sortBy", $sort)
+            ->get();
     }
 
     public static function counterPagination($search)
     {
-        return Reason::select('reason.*', 'reason.id as id')
-        
-		->where('reason.reason_name', 'like', $search)
+        return Status::select('status.*', 'status.id as id')
 
-        ->count();
+            ->where('status.status_name', 'like', $search)
+
+            ->count();
     }
 }

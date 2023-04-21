@@ -17,8 +17,10 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('last_name')->nullable();
+            $table->string('position_signature')->nullable();
             // $table->string('dui')->unique();
             $table->string('email')->unique();
+            $table->foreignId('dependency_id')->constrained('dependency');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

@@ -182,7 +182,7 @@ return [
         PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider::class,
         Leolopez\Backup\BackupServiceProvider::class,
         Leolopez\Encrypt\EncryptServiceProvider::class,
-        Leolopez\LoginSv\LoginSvServiceProvider::class
+        Leolopez\LoginSv\LoginSvServiceProvider::class,
     ],
 
     /*

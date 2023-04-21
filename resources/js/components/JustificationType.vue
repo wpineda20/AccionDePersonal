@@ -14,7 +14,7 @@
     <v-card class="p-3">
       <v-row>
         <v-col cols="12" sm="12" md="4" lg="4" xl="4">
-          <h2 style="margin-left: 15px">Razones</h2>
+          <h2 style="margin-left: 15px">Justificaciones</h2>
         </v-col>
         <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
           <v-btn
@@ -75,20 +75,32 @@
           <v-container>
             <!-- Form -->
             <v-row class="pt-3">
-              <!-- reason_name -->
+              <!-- justification_name -->
+              <v-col cols="12" sm="12" md="12">
+                <base-text-area
+                  label="Justificación"
+                  v-model="$v.editedItem.justification_name.$model"
+                  :validation="$v.editedItem.justification_name"
+                  validationTextType="none"
+                  :rows="6"
+                  counter
+                />
+                <div style="display: flex; justify-content: flex-end">
+                  <span class="">(Máximo 500 caracteres)</span>
+                </div>
+              </v-col>
+              <!-- justification_name -->
+              <!-- valid_days -->
               <v-col cols="12" sm="12" md="12">
                 <base-input
-                  label="Razón"
-                  v-model="$v.editedItem.reason_name.$model"
-                  :validation="$v.editedItem.reason_name"
+                  label="Días de validez (Opcional)"
+                  v-model="$v.editedItem.valid_days.$model"
+                  :validation="$v.editedItem.valid_days"
                   validationTextType="none"
-                  :validationsInput="{
-                    required: true,
-                    minLength: true,
-                  }"
+                  type="number"
                 />
               </v-col>
-              <!-- reason_name -->
+              <!-- valid_days -->
             </v-row>
             <!-- Form -->
             <v-row>
@@ -146,7 +158,7 @@
 </template>
 
 <script>
-import reasonApi from "../apis/reasonApi";
+import justificationTypeApi from "../apis/justificationTypeApi";
 
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
@@ -158,20 +170,23 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "RAZÓN", value: "reason_name" },
+        { text: "JUSTIFICACIÓN", value: "justification_name" },
+        { text: "DÍAS DE VALIDEZ", value: "valid_days" },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
       recordsFiltered: [],
       editedIndex: -1,
-      title: "Reason",
+      title: "Justificación",
       totalItems: 0,
       options: {},
       editedItem: {
-        reason_name: "",
+        justification_name: "",
+        valid_days: "",
       },
       defaultItem: {
-        reason_name: "",
+        justification_name: "",
+        valid_days: "",
       },
       selectedTab: 0,
       loading: false,
@@ -199,8 +214,11 @@ export default {
   // Validations
   validations: {
     editedItem: {
-      reason_name: {
+      justification_name: {
         required,
+        minLength: minLength(1),
+      },
+      valid_days: {
         minLength: minLength(1),
       },
     },
@@ -284,7 +302,7 @@ export default {
           this.editedItem
         );
 
-        const { data } = await reasonApi
+        const { data } = await justificationTypeApi
           .put(`/${edited.id}`, edited)
           .catch((error) => {
             this.updateAlert(
@@ -304,7 +322,7 @@ export default {
         }
       } else {
         //Creating user
-        const { data } = await reasonApi
+        const { data } = await justificationTypeApi
           .post(null, this.editedItem)
           .catch((error) => {
             this.updateAlert(true, "No fue posible crear el registro.", "fail");
@@ -345,7 +363,7 @@ export default {
     },
 
     async deleteItemConfirm() {
-      const { data } = await reasonApi
+      const { data } = await justificationTypeApi
         .delete(null, {
           params: {
             selected: this.selected,
@@ -382,7 +400,7 @@ export default {
       //debounce
       clearTimeout(this.debounce);
       this.debounce = setTimeout(async () => {
-        const { data } = await reasonApi
+        const { data } = await justificationTypeApi
           .get(null, {
             params: this.options,
           })

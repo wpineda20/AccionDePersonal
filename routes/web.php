@@ -8,7 +8,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ExcelController;
-use App\Http\Controllers\ReasonController;
+use App\Http\Controllers\JustificationTypeController;
+use App\Http\Controllers\DependencyController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\LoginSvController;
 
 /*
@@ -23,7 +25,7 @@ use App\Http\Controllers\LoginSvController;
 */
 
 Route::get('/', function () {
-    return view('auth/login');
+    return view('auth.login');
 });
 
 Auth::routes(['verify' => true, 'remember_me' => false]);
@@ -35,8 +37,12 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::resource('/api/web/municipality', MunicipalityController::class);
         Route::resource('/api/web/user', UserController::class);
         Route::resource('/api/web/role', RoleController::class);
-        Route::resource('/api/web/reason', ReasonController::class);
-        Route::delete('/api/web/reason', [ReasonController::class, 'destroy']);
+        Route::resource('/api/web/justificationType', JustificationTypeController::class);
+        Route::delete('/api/web/justificationType', [JustificationTypeController::class, 'destroy']);
+        Route::resource('/api/web/dependency', DependencyController::class);
+        Route::delete('/api/web/dependency', [DependencyController::class, 'destroy']);
+        Route::resource('/api/web/status', StatusController::class);
+        Route::delete('/api/web/status', [StatusController::class, 'destroy']);
 
         // Views
         Route::get('/departments', function () {
@@ -51,8 +57,16 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
             return view('user.index');
         });
 
-        Route::get('/reasons', function () {
-            return view('reason.index');
+        Route::get('/justificationTypes', function () {
+            return view('justification_type.index');
+        });
+
+        Route::get('/dependencies', function () {
+            return view('dependency.index');
+        });
+
+        Route::get('/status', function () {
+            return view('status.index');
         });
     });
 

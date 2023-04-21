@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('reason', function (Blueprint $table) {
+        Schema::create('inmediate_superior', function (Blueprint $table) {
             $table->id();
-            $table->string('reason_name');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('dependency_id')->constrained('dependency');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reasons');
+        Schema::dropIfExists('inmediate_superior');
     }
 };

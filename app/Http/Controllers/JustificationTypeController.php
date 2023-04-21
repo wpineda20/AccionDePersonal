@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Reason;
+use App\Models\JustificationType;
 
 use Illuminate\Http\Request;
 use Encrypt;
 
-class ReasonController extends Controller
+class JustificationTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,7 +21,7 @@ class ReasonController extends Controller
 
         // Getting all the records
         if (($request->itemsPerPage == -1)) {
-            $itemsPerPage =  Reason::count();
+            $itemsPerPage =  JustificationType::count();
             $skip = 0;
         }
 
@@ -30,10 +30,10 @@ class ReasonController extends Controller
 
         $search = (isset($request->search)) ? "%$request->search%" : '%%';
 
-        $reason = Reason::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
+        $reason = JustificationType::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
         $reason = Encrypt::encryptObject($reason, "id");
 
-        $total = Reason::counterPagination($search);
+        $total = JustificationType::counterPagination($search);
 
         return response()->json([
             "status" => 200,
@@ -52,9 +52,11 @@ class ReasonController extends Controller
      */
     public function store(Request $request)
     {
-        $reason = new Reason;
+        $reason = new JustificationType;
 
-        $reason->reason_name = $request->reason_name;
+        $reason->justification_name = $request->justification_name;
+        $reason->valid_days = $request->valid_days;
+        $reason->year = $request->year;
         $reason->deleted_at = $request->deleted_at;
 
         $reason->save();
@@ -72,7 +74,7 @@ class ReasonController extends Controller
      * @param  \App\Models\Reason  reason
      * @return \Illuminate\Http\Response
      */
-    public function show(Reason $reason)
+    public function show(JustificationType $reason)
     {
         //
     }
@@ -81,15 +83,17 @@ class ReasonController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Reason  $reason
+     * @param  \App\Models\JustificationType  $reason
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
         $data = Encrypt::decryptArray($request->all(), 'id');
 
-        $reason = Reason::where('id', $data['id'])->first();
-        $reason->reason_name = $request->reason_name;
+        $reason = JustificationType::where('id', $data['id'])->first();
+        $reason->justification_name = $request->justification_name;
+        $reason->valid_days = $request->valid_days;
+        $reason->year = $request->year;
         $reason->deleted_at = $request->deleted_at;
 
         $reason->save();
@@ -111,7 +115,7 @@ class ReasonController extends Controller
     {
         $id = Encrypt::decryptValue($request->id);
 
-        Reason::where('id', $id)->delete();
+        JustificationType::where('id', $id)->delete();
 
         return response()->json([
             "status" => 200,
