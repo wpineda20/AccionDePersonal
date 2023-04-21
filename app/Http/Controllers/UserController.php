@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
 use DB;
 use Hash;
 use Spatie\Permission\Models\Role;
 use Encrypt;
+use App\Models\User;
+use App\Models\Dependency;
 
 class UserController extends Controller
 {
@@ -22,7 +23,7 @@ class UserController extends Controller
         $limit = $request->take - $skip; // the limit
 
         $users = User::skip($skip)->take($limit)
-        ->get();
+            ->get();
 
         $users->makeVisible(["password"]);
 
@@ -36,7 +37,7 @@ class UserController extends Controller
 
         return response()->json([
             "status" => "success",
-            "message"=>"Registros obtenidos correctamente.",
+            "message" => "Registros obtenidos correctamente.",
             "users" => $users,
             "total" => $total,
         ]);
@@ -50,12 +51,12 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user = count(User::where(["email"=>$request->email])->get());
+        $user = count(User::where(["email" => $request->email])->get());
 
         if ($user > 0) {
             return response()->json([
-                "status"=>"fail",
-                "message"=>"Este email ya existe."
+                "status" => "fail",
+                "message" => "Este email ya existe."
             ]);
         }
 
@@ -75,8 +76,8 @@ class UserController extends Controller
         $user->assignRole($role);
 
         return response()->json([
-            "status"=>"success",
-            "message"=>"Registro creado correctamente."
+            "status" => "success",
+            "message" => "Registro creado correctamente."
         ]);
     }
 
@@ -122,8 +123,8 @@ class UserController extends Controller
         $user->update($data);
 
         return response()->json([
-            "status"=>"success",
-            "message"=>"Registro creado correctamente."
+            "status" => "success",
+            "message" => "Registro creado correctamente."
         ]);
     }
 
@@ -137,8 +138,8 @@ class UserController extends Controller
     {
         $user->delete();
         return response()->json([
-            "status"=>"success",
-            "message"=>"Registro creado correctamente."
+            "status" => "success",
+            "message" => "Registro creado correctamente."
         ]);
     }
 
@@ -153,9 +154,25 @@ class UserController extends Controller
         $user = User::find(auth()->user()->id);
 
         return response()->json([
-            "status"=>"success",
-            "message"=>"Registro creado correctamente.",
-            "user"=> $user
+            "status" => "success",
+            "message" => "Registro creado correctamente.",
+            "user" => $user
         ]);
+    }
+
+    /**
+     * Gets info user logged
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function infoUserLoggedIn(Request $request)
+    {
+        $user = auth()->user();
+
+        $user->dependency = Dependency::where('id', $user->dependency_id)
+            ->first();
+
+        return response()->json(['message' => 'success', 'userInfoLogged' => $user]);
     }
 }

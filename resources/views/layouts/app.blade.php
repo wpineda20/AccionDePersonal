@@ -48,10 +48,10 @@
                 <!-- Home -->
                 <!-- A.P -->
                 <li class="text-center pb-1">
-                    <a href="{{ url('/home') }}" class="text-center">
+                    <a href="{{ url('/personnelAction') }}" class="text-center">
                         <i class="material-icons md-18 mx-auto">assignment_ind</i>
                     </a>
-                    <a href="{{ url('/home') }}">
+                    <a href="{{ url('/personnelAction') }}">
                         <p class="link mx-auto">A.P</p>
                     </a>
                 </li>

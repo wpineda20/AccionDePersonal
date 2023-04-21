@@ -528,3 +528,9 @@ select:-webkit-autofill {
     fieldset {
     border-color: $blue-primary !important;
 }
+
+.body-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}

@@ -65,6 +65,6 @@ class LoginSvController extends Controller
             auth()->login($existingUser, true);
         }
 
-        return redirect()->to('/');
+        return redirect()->to('/home');
     }
 }

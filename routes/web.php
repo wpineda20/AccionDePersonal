@@ -11,6 +11,7 @@ use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\JustificationTypeController;
 use App\Http\Controllers\DependencyController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\PersonnelActionController;
 use App\Http\Controllers\LoginSvController;
 
 /*
@@ -30,6 +31,9 @@ Route::get('/', function () {
 
 Auth::routes(['verify' => true, 'remember_me' => false]);
 
+//Api User Logged In
+Route::get('/api/web/user/infoUserLoggedIn', [UserController::class, 'infoUserLoggedIn']);
+
 Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], function () {
     Route::group(['middleware' => ['has.role:Administrador']], function () {
         // Apis
@@ -43,6 +47,7 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::delete('/api/web/dependency', [DependencyController::class, 'destroy']);
         Route::resource('/api/web/status', StatusController::class);
         Route::delete('/api/web/status', [StatusController::class, 'destroy']);
+        Route::resource('/api/web/personnelAction', PersonnelActionController::class);
 
         // Views
         Route::get('/departments', function () {
@@ -68,6 +73,14 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::get('/status', function () {
             return view('status.index');
         });
+
+        Route::get('/personnelAction', function () {
+            return view('personnel_action.index');
+        });
+    });
+
+
+    Route::group(['middleware' => ['has.role:Administrador']], function () {
     });
 
     //Reports
