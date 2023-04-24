@@ -19,6 +19,8 @@ class PersonnelAction extends Model
     protected $fillable = [
         'id',
         'date_request_created',
+        'user_id',
+        'justification_type_id',
         'from_hour',
         'to_hour',
         'total_hours',
@@ -28,6 +30,7 @@ class PersonnelAction extends Model
         'total_days',
         'justification',
         'current_year',
+        'status_id',
         'deleted_at',
         'created_at',
         'updated_at',

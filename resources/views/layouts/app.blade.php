@@ -49,7 +49,7 @@
                 <!-- A.P -->
                 <li class="text-center pb-1">
                     <a href="{{ url('/personnelAction') }}" class="text-center">
-                        <i class="material-icons md-18 mx-auto">assignment_ind</i>
+                        <i class="material-icons md-18 mx-auto">fact_check</i>
                     </a>
                     <a href="{{ url('/personnelAction') }}">
                         <p class="link mx-auto">A.P</p>
@@ -60,7 +60,7 @@
                 <!-- A.P -->
                 <li class="text-center pb-1">
                     <a href="{{ url('/home') }}" class="text-center">
-                        <i class="material-icons md-18 mx-auto">fact_check</i>
+                        <i class="material-icons md-18 mx-auto">assignment_ind</i>
                     </a>
                     <a href="{{ url('/home') }}">
                         <p class="link mx-auto">Mis A.P</p>

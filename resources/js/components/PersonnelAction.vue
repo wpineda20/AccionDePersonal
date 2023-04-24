@@ -1,5 +1,7 @@
 <template>
   <div ref="top">
+    <disclaimer-register />
+
     <alert
       :text="textAlert"
       :event="alertEvent"
@@ -7,8 +9,6 @@
       @show-alert="updateAlert($event)"
       class="mb-2"
     />
-    <disclaimer-register />
-
     <v-row
       v-if="!loading"
       style="background-color: #fff; border-radius: 10px"
@@ -30,17 +30,17 @@
       </v-col>
       <!-- employee_name -->
 
-      <!-- charge -->
+      <!-- position_signature -->
       <v-col cols="12" sm="12" md="6" class="m-0 pb-3">
         <base-input
           label="Cargo"
-          v-model="$v.editedItem.charge.$model"
-          :validation="$v.editedItem.charge"
+          v-model="$v.editedItem.position_signature.$model"
+          :validation="$v.editedItem.position_signature"
           validationTextType="none"
           type="text"
         />
       </v-col>
-      <!-- charge -->
+      <!-- position_signature -->
 
       <!-- dependency -->
       <v-col cols="12" sm="12" md="12" class="m-0 pb-3">
@@ -50,6 +50,7 @@
           :validation="$v.editedItem.dependency_name"
           validationTextType="none"
           type="text"
+          :readonly="true"
         />
       </v-col>
       <!-- dependency -->
@@ -199,9 +200,13 @@
             Solicitar ACCIÓN DE PERSONAL
           </v-btn>
 
-          <!-- <v-btn color="btn-normal-close no-uppercase" rounded>
+          <v-btn
+            color="btn-normal-close no-uppercase"
+            rounded
+            @click="clearForm()"
+          >
             Cancelar
-          </v-btn> -->
+          </v-btn>
         </v-col>
       </v-row>
       <!-- Form -->
@@ -244,7 +249,7 @@ export default {
       type: Object,
       default: () => ({
         employee_name: "",
-        charge: "",
+        position_signature: "",
         dependency_name: "",
         justification_name: "",
         from_hour: "",
@@ -288,7 +293,7 @@ export default {
         this.justifications = responses[1].data.records;
 
         this.editedItem.employee_name = this.user.name;
-        this.editedItem.charge = this.user.position_signature;
+        this.editedItem.position_signature = this.user.position_signature;
         this.editedItem.dependency_name = this.user.dependency.dependency_name;
       }
 
@@ -296,6 +301,13 @@ export default {
     },
 
     async save() {
+      this.$v.$touch();
+
+      if (this.$v.editedItem.$invalid) {
+        this.updateAlert(true, "Campos obligatorios.", "fail");
+        return;
+      }
+
       let { data } = await personnelActionApi
         .post(null, this.editedItem)
         .catch((error) => {
@@ -308,18 +320,22 @@ export default {
         });
 
       if (data.success) {
-        // this.updateAlert(true, data.message, data.state, 10000);
-        // if (data.state != "error") {
-        //   this.init();
-        // //   this.editedItem = this.defautEditedItem;
-        // }
+        this.updateAlert(true, data.message, data.state, 10000);
+        if (data.state == "fail") {
+          this.updateAlert(true, data.message, data.state);
+        }
       }
     },
+
+    clearForm() {},
 
     updateAlert(show = false, text = "Alerta", event = "success") {
       this.textAlert = text;
       this.alertEvent = event;
       this.showAlert = show;
+      if (show) {
+        this.$refs.top.scrollIntoView();
+      }
     },
   },
 
@@ -330,7 +346,7 @@ export default {
         minLength: minLength(1),
         maxLength: maxLength(500),
       },
-      charge: {
+      position_signature: {
         required,
         minLength: minLength(1),
         maxLength: maxLength(500),

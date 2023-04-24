@@ -17,7 +17,7 @@ class Status extends Model
     protected $data = ['deleted_at'];
 
     protected $fillable = [
-        'id', 'status_name', 'deleted_at', 'created_at', 'updated_at',
+        'id', 'status_name', 'color', 'deleted_at', 'created_at', 'updated_at',
     ];
 
     public $hidden = [

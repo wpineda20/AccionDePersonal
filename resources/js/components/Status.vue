@@ -85,6 +85,16 @@
                 />
               </v-col>
               <!-- status_name -->
+              <!-- color -->
+              <v-col cols="12" sm="12" md="12">
+                <v-color-picker
+                  mode="hexa"
+                  dot-size="17"
+                  v-model="$v.editedItem.color.$model"
+                  :validation="$v.editedItem.color"
+                ></v-color-picker>
+              </v-col>
+              <!-- color -->
             </v-row>
             <!-- Form -->
             <v-row>
@@ -155,6 +165,7 @@ export default {
       dialogDelete: false,
       headers: [
         { text: "ESTADO", value: "status_name" },
+        { text: "COLOR", value: "color" },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
@@ -165,9 +176,11 @@ export default {
       options: {},
       editedItem: {
         status_name: "",
+        color: "",
       },
       defaultItem: {
         status_name: "",
+        color: "",
       },
       selectedTab: 0,
       loading: false,
@@ -196,6 +209,10 @@ export default {
   validations: {
     editedItem: {
       status_name: {
+        required,
+        minLength: minLength(1),
+      },
+      color: {
         required,
         minLength: minLength(1),
       },
