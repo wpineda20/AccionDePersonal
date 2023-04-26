@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('personnel_action', function (Blueprint $table) {
             $table->id();
-            $table->date('date_request_created');
+            $table->dateTime('date_request_created');
             $table->foreignId('user_id')->constrained('users')->comment('Empleado');
             $table->foreignId('justification_type_id')->constrained('justification_type');
             $table->string('from_hour')->nullable();

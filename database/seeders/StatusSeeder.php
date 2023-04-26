@@ -18,7 +18,7 @@ class StatusSeeder extends Seeder
         Status::insert([
             [
                 "id" => 1,
-                "status_name" => "Digitada",
+                "status_name" => "Solicitada",
                 "color" => "#FFEB3BFF",
                 "created_at" => now(),
             ],

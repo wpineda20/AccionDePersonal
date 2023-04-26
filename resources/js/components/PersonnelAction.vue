@@ -14,7 +14,7 @@
       style="background-color: #fff; border-radius: 10px"
       class="p-4 shadow"
     >
-      <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 2px solid black">
+      <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 1px solid lightgray">
         I- DATOS GENERALES
       </h5>
 
@@ -26,6 +26,7 @@
           :validation="$v.editedItem.employee_name"
           validationTextType="none"
           type="text"
+          :disabled="true"
         />
       </v-col>
       <!-- employee_name -->
@@ -38,6 +39,7 @@
           :validation="$v.editedItem.position_signature"
           validationTextType="none"
           type="text"
+          :disabled="true"
         />
       </v-col>
       <!-- position_signature -->
@@ -50,12 +52,12 @@
           :validation="$v.editedItem.dependency_name"
           validationTextType="none"
           type="text"
-          :readonly="true"
+          :disabled="true"
         />
       </v-col>
       <!-- dependency -->
 
-      <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 2px solid black">
+      <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 1px solid lightgray">
         II- NATURALEZA DE LA LICENCIA POR:
       </h5>
       <!-- <hr /> -->
@@ -63,7 +65,7 @@
       <!-- justificaction_name -->
       <v-col cols="12" sm="12" md="12" class="m-0 pb-4">
         <base-select-search
-          label="Justificación"
+          label="Tipo de justificación"
           v-model.trim="$v.editedItem.justification_name.$model"
           :items="justifications"
           item="justification_name"
@@ -71,13 +73,40 @@
         />
       </v-col>
       <!-- justificaction_name -->
-
-      <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 2px solid black">
+      <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 1px solid lightgray">
         III.- PERIODO POR:
       </h5>
+      <div style="display: flex; justify-content: center">
+        <v-radio-group v-model="radios" row>
+          <v-radio value="hours" @click="showHourForm()">
+            <template v-slot:label>
+              <div>
+                <strong style="margin-left: 8px; color: #313945">HORAS</strong>
+              </div>
+            </template>
+          </v-radio>
+          <v-radio value="days" @click="showDayForm()">
+            <template v-slot:label>
+              <div>
+                <strong style="margin-left: 8px; color: #313945">DÍAS</strong>
+              </div>
+            </template>
+          </v-radio>
+        </v-radio-group>
+      </div>
+      <div
+        v-if="radioAlert"
+        style="display: flex; justify-content: center; align-items: center"
+      >
+        <p class="mt-2 text-center orange-text">
+          <i class="material-icons">error_outline</i> Campo requerido.
+        </p>
+      </div>
+
+      <!-- <hr /> -->
 
       <!-- hours col -->
-      <v-col cols="12" sm="6" md="6" style="border-right: 2px solid black">
+      <v-col cols="12" sm="12" md="12" v-show="showHourInputs">
         <h6 class="text-center fw-bold">HORAS:</h6>
         <v-row style="display: flex; justify-content: center">
           <!-- from_hour -->
@@ -129,7 +158,7 @@
       <!-- hours col -->
 
       <!-- dates col -->
-      <v-col cols="12" sm="6" md="6">
+      <v-col cols="12" sm="12" md="12" v-show="showDayInputs">
         <h6 class="text-center fw-bold">DÍA(S) COMPLETO(S):</h6>
         <v-row style="display: flex; justify-content: center">
           <!-- from_date -->
@@ -169,7 +198,10 @@
       </v-col>
       <!-- dates col -->
 
-      <h5 class="fw-bold pb-2 mb-4 pt-4" style="border-bottom: 2px solid black">
+      <h5
+        class="fw-bold pb-2 mb-4 pt-4"
+        style="border-bottom: 1px solid lightgray"
+      >
         IV- JUSTIFICANTES
       </h5>
 
@@ -189,7 +221,7 @@
       </v-col>
       <!-- justification -->
 
-      <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 2px solid black">
+      <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 1px solid lightgray">
         V. TIEMPO EXTRAORDINARIO / DESCANSO
       </h5>
 
@@ -197,7 +229,7 @@
       <v-row>
         <v-col align="center" cols="12" sm="12" md="12" class="">
           <v-btn color="btn-normal no-uppercase" rounded @click="save()">
-            Solicitar ACCIÓN DE PERSONAL
+            Solicitar
           </v-btn>
 
           <v-btn
@@ -205,7 +237,7 @@
             rounded
             @click="clearForm()"
           >
-            Cancelar
+            Limpiar
           </v-btn>
         </v-col>
       </v-row>
@@ -242,25 +274,95 @@ export default {
     alertEvent: "success",
     showAlert: false,
     justifications: [],
+    radios: "",
+    radioAlert: false,
+    showDayInputs: false,
+    showHourInputs: false,
+    editedItem: {
+      employee_name: "",
+      position_signature: "",
+      dependency_name: "",
+      justification_name: "",
+      from_hour: "",
+      to_hour: "",
+      total_hours: "",
+      effective_date: "",
+      from_date: "",
+      to_date: "",
+      total_days: "",
+      justification: "",
+    },
+    defaultItem: {
+      employee_name: "",
+      position_signature: "",
+      dependency_name: "",
+      justification_name: "",
+      from_hour: "",
+      to_hour: "",
+      total_hours: "",
+      effective_date: "",
+      from_date: "",
+      to_date: "",
+      total_days: "",
+      justification: "",
+    },
   }),
 
-  props: {
+  validations: {
     editedItem: {
-      type: Object,
-      default: () => ({
-        employee_name: "",
-        position_signature: "",
-        dependency_name: "",
-        justification_name: "",
-        from_hour: "",
-        to_hour: "",
-        total_hours: "",
-        effective_date: "",
-        from_date: "",
-        to_date: "",
-        total_days: "",
-        justification: "",
-      }),
+      employee_name: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(500),
+      },
+      position_signature: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(500),
+      },
+      dependency_name: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(500),
+      },
+      justification_name: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(500),
+      },
+      from_hour: {
+        // required,
+        minLength: minLength(1),
+      },
+      to_hour: {
+        // required,
+        minLength: minLength(1),
+      },
+      total_hours: {
+        // required,
+        minLength: minLength(1),
+      },
+      from_date: {
+        // required,
+        minLength: minLength(1),
+      },
+      to_date: {
+        // required,
+        minLength: minLength(1),
+      },
+      total_days: {
+        // required,
+        minLength: minLength(1),
+      },
+      effective_date: {
+        // required,
+        minLength: minLength(1),
+      },
+      justification: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(800),
+      },
     },
   },
 
@@ -303,7 +405,8 @@ export default {
     async save() {
       this.$v.$touch();
 
-      if (this.$v.editedItem.$invalid) {
+      if (this.$v.editedItem.$invalid || this.radios == "") {
+        this.radioAlert = true;
         this.updateAlert(true, "Campos obligatorios.", "fail");
         return;
       }
@@ -321,13 +424,32 @@ export default {
 
       if (data.success) {
         this.updateAlert(true, data.message, data.state, 10000);
-        if (data.state == "fail") {
-          this.updateAlert(true, data.message, data.state);
-        }
+        this.clearForm();
+      } else {
+        this.updateAlert(true, data.message, data.state);
       }
     },
 
-    clearForm() {},
+    showHourForm() {
+      this.radioAlert = false;
+      this.showDayInputs = false;
+      this.showHourInputs = true;
+    },
+
+    showDayForm() {
+      this.radioAlert = false;
+      this.showHourInputs = false;
+      this.showDayInputs = true;
+    },
+
+    clearForm() {
+      this.editedItem = Object.assign({}, this.defaultItem);
+      this.radios = "";
+      this.showDayInputs = false;
+      this.showHourInputs = false;
+      this.$v.$reset();
+      this.initialize();
+    },
 
     updateAlert(show = false, text = "Alerta", event = "success") {
       this.textAlert = text;
@@ -338,59 +460,11 @@ export default {
       }
     },
   },
-
-  validations: {
-    editedItem: {
-      employee_name: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(500),
-      },
-      position_signature: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(500),
-      },
-      dependency_name: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(500),
-      },
-      justification_name: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(500),
-      },
-      from_hour: {
-        minLength: minLength(1),
-      },
-      to_hour: {
-        minLength: minLength(1),
-      },
-      total_hours: {
-        minLength: minLength(1),
-      },
-      from_date: {
-        minLength: minLength(1),
-      },
-      to_date: {
-        minLength: minLength(1),
-      },
-      total_days: {
-        minLength: minLength(1),
-      },
-      effective_date: {
-        minLength: minLength(1),
-      },
-      justification: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(800),
-      },
-    },
-  },
 };
 </script>
 
 <style>
+.theme--light.v-icon {
+  color: #2d52a8;
+}
 </style>

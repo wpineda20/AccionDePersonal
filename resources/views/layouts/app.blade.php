@@ -59,10 +59,10 @@
 
                 <!-- A.P -->
                 <li class="text-center pb-1">
-                    <a href="{{ url('/home') }}" class="text-center">
+                    <a href="{{ url('/userPersonnelActions') }}" class="text-center">
                         <i class="material-icons md-18 mx-auto">assignment_ind</i>
                     </a>
-                    <a href="{{ url('/home') }}">
+                    <a href="{{ url('/userPersonnelActions') }}">
                         <p class="link mx-auto">Mis A.P</p>
                     </a>
                 </li>

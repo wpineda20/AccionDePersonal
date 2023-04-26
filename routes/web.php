@@ -77,17 +77,21 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::get('/personnelAction', function () {
             return view('personnel_action.index');
         });
+
+        Route::get('/userPersonnelActions', function () {
+            return view('user_personnel_actions.index');
+        });
     });
 
 
-    Route::group(['middleware' => ['has.role:Administrador']], function () {
+    Route::group(['middleware' => ['has.role:Administrador,Usuario']], function () {
+
+        // User Personnel Actions
+        Route::get('api/personnelAction/userPersonnelActions', [PersonnelActionController::class, 'userPersonnelActions']);
     });
 
-    //Reports
-    Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
-
-    //Excel
-    Route::get('export', [ExcelController::class, 'export']);
+    // //Reports
+    // Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 });

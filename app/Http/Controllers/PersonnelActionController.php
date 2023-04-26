@@ -28,28 +28,18 @@ class PersonnelActionController extends Controller
      */
     public function store(Request $request)
     {
-
         //ValidatePersonnelAction
         $validation = $this->validatePersonnelAction($request->all());
 
 
         if ($validation['total'] > 0) {
             return response()->json([
-                'success' => true,
-                'status' => 200,
+                'success' => false,
+                'status' => 500,
                 'message' => $validation['message'],
                 'state' => 'fail',
             ]);
         }
-
-        //Save user information
-        $userInfo = User::where('id', auth()->user()->id)->first();
-
-        $userInfo->name = $request->employee_name;
-        $userInfo->position_signature = $request->position_signature;
-        $userInfo->dependency_id = Dependency::where('dependency_name', $request->dependency_name)->first()->id;
-
-        $userInfo->save();
 
         //Create personnel action
         $personnelAction = PersonnelAction::create([
@@ -93,7 +83,7 @@ class PersonnelActionController extends Controller
         $to_hour = date("Hi", strtotime($data['to_hour']));
 
         //Validate hours
-        if (isset($from_hour) > isset($to_hour)) {
+        if ($from_hour > $to_hour) {
             $validation['message'] = "La hora de inicio no puede ser mayor que la de fin.";
             $validation['total'] = 1;
 
@@ -101,7 +91,7 @@ class PersonnelActionController extends Controller
         }
 
         //Validate dates
-        if (isset($data['from_date']) > isset($data['to_date'])) {
+        if ($data['from_date'] > $data['to_date']) {
             $validation['message'] = "La fecha de inicio no puede ser mayor a la fecha fin.";
             $validation['total'] = 1;
 
@@ -144,5 +134,55 @@ class PersonnelActionController extends Controller
     public function destroy(PersonnelAction $personnelAction)
     {
         //
+    }
+
+    /**
+     * Get user personnel actions.
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+    public function userPersonnelActions(Request $request)
+    {
+        $filters = [];
+
+        if (isset($request->filter)) {
+            switch ($request->filter) {
+                case "Solicitada":
+                    $filters['s.status_name'] = "Solicitada";
+                    break;
+                case "Observada":
+                    $filters['s.status_name'] = "Observada";
+                    break;
+                case "Rechazada":
+                    $filters['s.status_name'] = "Rechazada";
+                    break;
+                case "Aprobada":
+                    $filters['s.status_name'] = "Aprobada";
+                    break;
+                case "Procesada":
+                    $filters['s.status_name'] = "Procesada";
+                    break;
+            }
+        }
+
+        $skip = $request->skip;
+        $limit = $request->take - $skip; // the limit
+
+        $registeredRecords = PersonnelAction::select('*', 's.status_name', 'jt.justification_name')
+            ->join('status as s', 'personnel_action.status_id', '=', 's.id')
+            ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
+            ->where($filters)
+            ->skip($skip)
+            ->take($limit)
+            ->get();
+
+        $total = PersonnelAction::count();
+
+        return response()->json([
+            'message' => 'success',
+            'registeredRecords' => $registeredRecords,
+            'total' => $total
+        ]);
     }
 }
