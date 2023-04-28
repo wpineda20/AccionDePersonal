@@ -6,6 +6,8 @@
       auto-grow
       row-height="30"
       :rows="rows"
+      :readonly="readonly"
+      :disabled="disabled"
       v-model.trim="data"
       :class="{
         'is-invalid': validation.$error,
@@ -57,6 +59,14 @@ export default {
       default: "",
     },
     required: {
+      type: Boolean,
+      default: false,
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },

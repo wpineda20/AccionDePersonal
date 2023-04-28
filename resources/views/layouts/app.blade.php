@@ -52,18 +52,29 @@
                         <i class="material-icons md-18 mx-auto">fact_check</i>
                     </a>
                     <a href="{{ url('/personnelAction') }}">
-                        <p class="link mx-auto">A.P</p>
+                        <p class="link mx-auto">Formulario</p>
                     </a>
                 </li>
                 <!-- A.P -->
 
-                <!-- A.P -->
+                <!-- Mis A.P -->
                 <li class="text-center pb-1">
                     <a href="{{ url('/userPersonnelActions') }}" class="text-center">
                         <i class="material-icons md-18 mx-auto">assignment_ind</i>
                     </a>
                     <a href="{{ url('/userPersonnelActions') }}">
                         <p class="link mx-auto">Mis A.P</p>
+                    </a>
+                </li>
+                <!-- Mis A.P -->
+
+                <!-- A.P -->
+                <li class="text-center pb-1">
+                    <a href="{{ url('/verifyPersonnelActions') }}" class="text-center">
+                        <i class="material-icons md-18 mx-auto">verified_user</i>
+                    </a>
+                    <a href="{{ url('/verifyPersonnelActions') }}">
+                        <p class="link mx-auto">Verificación</p>
                     </a>
                 </li>
                 <!-- A.P -->

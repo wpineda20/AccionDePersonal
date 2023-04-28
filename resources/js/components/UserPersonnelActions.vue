@@ -65,12 +65,29 @@
         </a>
       </template>
     </v-data-table>
+    <v-dialog v-model="dialogShowPersonnelAction" max-width="600px">
+      <v-card color="h-100">
+        <v-container>
+          <h3 class="black-secondary text-center mt-3 mb-3">
+            Acción de Personal
+          </h3>
+          <v-container>
+            <show-personnel-action
+              :editedItem="editedItem"
+              :justifications="justifications"
+            />
+          </v-container>
+        </v-container>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import personnelActionApi from "../apis/personnelActionApi";
 import StatusApi from "../apis/StatusApi";
+import { format } from "date-fns";
+import esEsLocale from "date-fns/locale/es";
 import axios from "axios";
 
 export default {
@@ -83,6 +100,7 @@ export default {
     textAlert: "",
     alertEvent: "success",
     showAlert: false,
+    dialogShowPersonnelAction: false,
     filter: "Solicitada",
     registeredRecords: [],
     registeredRecordSelected: "",
@@ -95,6 +113,39 @@ export default {
     skip: 0,
     take: 50,
     counter: 0,
+    justifications: [],
+    editedIndex: -1,
+
+    editedItem: {
+      employee_name: "",
+      position_signature: "",
+      dependency_name: "",
+      justification_name: "",
+      from_hour: "",
+      to_hour: "",
+      total_hours: "",
+      effective_date: "",
+      from_date: "",
+      to_date: "",
+      total_days: "",
+      justification: "",
+      justification_file: "",
+    },
+    defaultItem: {
+      employee_name: "",
+      position_signature: "",
+      dependency_name: "",
+      justification_name: "",
+      from_hour: "",
+      to_hour: "",
+      total_hours: "",
+      effective_date: "",
+      from_date: "",
+      to_date: "",
+      total_days: "",
+      justification: "",
+      justification_file: "",
+    },
   }),
 
   created() {
@@ -136,6 +187,7 @@ export default {
 
       this.registeredRecords = res.data.registeredRecords;
       this.total = res.data.total;
+      this.setDateFormat();
     },
 
     updatePagination(pagination) {
@@ -180,10 +232,26 @@ export default {
 
       this.registeredRecords = res.data.registeredRecords;
       this.total = res.data.total;
+      this.setDateFormat();
     },
 
     editItem(item) {
       console.log(item);
+      this.dialogShowPersonnelAction = true;
+      this.editedIndex = this.registeredRecords.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+    },
+
+    setDateFormat() {
+      this.registeredRecords.forEach((item) => {
+        item.date_request_created = format(
+          new Date(item.date_request_created),
+          "d/MM/y, hh:mm a",
+          {
+            locale: esEsLocale,
+          }
+        );
+      });
     },
 
     updateAlert(show = false, text = "Alerta", event = "success") {

@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\PersonnelAction;
 use App\Models\User;
 use App\Models\Dependency;
+use App\Models\Status;
 use App\Models\JustificationType;
+use App\Models\HistoryPersonnelActionStatus;
 use Illuminate\Http\Request;
+use Str;
+use Encrypt;
+
 
 class PersonnelActionController extends Controller
 {
@@ -15,9 +20,34 @@ class PersonnelActionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $itemsPerPage = $request->itemsPerPage;
+        $skip = ($request->page - 1) * $request->itemsPerPage;
+
+        // Getting all the records
+        if (($request->itemsPerPage == -1)) {
+            $itemsPerPage =  PersonnelAction::count();
+            $skip = 0;
+        }
+
+        $sortBy = (isset($request->sortBy[0])) ? $request->sortBy[0] : 'id';
+        $sort = (isset($request->sortDesc[0])) ? "asc" : 'desc';
+
+        $search = (isset($request->search)) ? "%$request->search%" : '%%';
+
+        $personnelAction = PersonnelAction::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
+        $personnelAction = Encrypt::encryptObject($personnelAction, "id");
+
+        $total = PersonnelAction::counterPagination($search);
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Registros obtenidos correctamente.",
+            "records" => $personnelAction,
+            "total" => $total,
+            "success" => true,
+        ]);
     }
 
     /**
@@ -41,6 +71,15 @@ class PersonnelActionController extends Controller
             ]);
         }
 
+        //Base64 to file convertion
+        if ($request->justification_file) {
+            $justification_file = FileController::base64ToFile($request->justification_file, date('Y-m-d') . '-' . Str::random(4) . '-documentacion', 'documents');
+
+            $justification_file = asset($justification_file);
+        } else {
+            $justification_file = $request->justification_file;
+        }
+
         //Create personnel action
         $personnelAction = PersonnelAction::create([
             'date_request_created' => now(),
@@ -56,6 +95,7 @@ class PersonnelActionController extends Controller
             'justification' => $request->justification,
             'current_year' => intval(date("Y")),
             'status_id' => 1,
+            'justification_file' => $justification_file,
         ]);
 
         $personnelAction->save();
@@ -184,5 +224,48 @@ class PersonnelActionController extends Controller
             'registeredRecords' => $registeredRecords,
             'total' => $total
         ]);
+    }
+
+    /**
+     * Get user personnel actions.
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+    public function verifyPersonnelActions(Request $request)
+    {
+        $registeredRecords = PersonnelAction::all();
+
+        dd($registeredRecords);
+
+        return response()->json([
+            'message' => 'success',
+            'registeredRecords' => $registeredRecords,
+        ]);
+    }
+
+    /**
+     * Set personnel action status.
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+
+    public function setStatus(Request $request)
+    {
+        $id = Encrypt::decryptValue($request->id);
+
+        $personnelAction = PersonnelAction::where('id', $id)->first();
+        $personnelAction->status_id =  Status::where('status_name', $request->status)->first()->id;
+        $personnelAction->save();
+
+        HistoryPersonnelActionStatus::insert([
+            'personnel_action_id' => $id,
+            'user_id' => auth()->user()->id,
+            'status_id' => $personnelAction->status_id,
+            'update_date' => now(),
+        ]);
+
+        return response()->json(["message" => "success"]);
     }
 }

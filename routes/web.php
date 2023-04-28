@@ -47,7 +47,11 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::delete('/api/web/dependency', [DependencyController::class, 'destroy']);
         Route::resource('/api/web/status', StatusController::class);
         Route::delete('/api/web/status', [StatusController::class, 'destroy']);
+
         Route::resource('/api/web/personnelAction', PersonnelActionController::class);
+        // Personnel Actions To Verify
+        Route::get('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
+        Route::post('/api/web/personnelAction/setStatus', [PersonnelActionController::class, 'setStatus']);
 
         // Views
         Route::get('/departments', function () {
@@ -80,6 +84,10 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
 
         Route::get('/userPersonnelActions', function () {
             return view('user_personnel_actions.index');
+        });
+
+        Route::get('/verifyPersonnelActions', function () {
+            return view('verify_personnel_actions.index');
         });
     });
 
