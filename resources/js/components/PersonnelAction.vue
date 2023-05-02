@@ -1,6 +1,8 @@
 <template>
   <div ref="top">
+    <!-- disclaimer -->
     <disclaimer-register />
+    <!-- disclaimer -->
 
     <alert
       :text="textAlert"
@@ -9,6 +11,8 @@
       @show-alert="updateAlert($event)"
       class="mb-2"
     />
+
+    <!-- row -->
     <v-row
       v-if="!loading"
       style="background-color: #fff; border-radius: 10px"
@@ -60,7 +64,6 @@
       <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 1px solid lightgray">
         II- NATURALEZA DE LA LICENCIA POR:
       </h5>
-      <!-- <hr /> -->
 
       <!-- justificaction_name -->
       <v-col cols="12" sm="12" md="12" class="m-0 pb-4">
@@ -76,8 +79,10 @@
       <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 1px solid lightgray">
         III.- PERIODO POR:
       </h5>
+      <!-- radio group -->
       <div style="display: flex; justify-content: center">
         <v-radio-group v-model="radios" row>
+          <!-- radio hours -->
           <v-radio value="hours" @click="showHourForm()">
             <template v-slot:label>
               <div>
@@ -85,6 +90,8 @@
               </div>
             </template>
           </v-radio>
+          <!-- radio hours -->
+          <!-- radio days -->
           <v-radio value="days" @click="showDayForm()">
             <template v-slot:label>
               <div>
@@ -92,8 +99,12 @@
               </div>
             </template>
           </v-radio>
+          <!-- radio days -->
         </v-radio-group>
       </div>
+      <!-- radio group -->
+
+      <!-- radio alert -->
       <div
         v-if="radioAlert"
         style="display: flex; justify-content: center; align-items: center"
@@ -102,8 +113,7 @@
           <i class="material-icons">error_outline</i> Campo requerido.
         </p>
       </div>
-
-      <!-- <hr /> -->
+      <!-- radio alert -->
 
       <!-- hours col -->
       <v-col cols="12" sm="12" md="12" v-show="showHourInputs">
@@ -112,7 +122,7 @@
           <!-- from_hour -->
           <v-col cols="12" sm="6" md="4" class="">
             <base-input
-              label="De las"
+              label="Desde las"
               v-model="$v.editedItem.from_hour.$model"
               :validation="$v.editedItem.from_hour"
               validationTextType="default"
@@ -123,7 +133,7 @@
           <!-- from_hour -->
           <v-col cols="12" sm="6" md="4" class="">
             <base-input
-              label="horas a las"
+              label="hasta las"
               v-model="$v.editedItem.to_hour.$model"
               :validation="$v.editedItem.to_hour"
               validationTextType="default"
@@ -225,13 +235,160 @@
         V. TIEMPO EXTRAORDINARIO / DESCANSO
       </h5>
 
-      <h5 class="fw-bold pb-2 mb-2" style="border-bottom: 1px solid lightgray">
-        ANEXAR DOCUMENTOS
+      <h6 class="fw-bold mb-0">
+        En caso de solicitud de descanso compensatorio detallar causa o motivo
+        que lo generó:
+      </h6>
+      <!-- extraordinary_work -->
+      <v-col cols="12" xs="12" sm="12" md="6">
+        <v-checkbox
+          v-model="$v.editedItem.extraordinary_work.$model"
+          :validation.sync="$v.editedItem.extraordinary_work"
+        >
+          <template v-slot:label>
+            <div style="margin-left: 6px">
+              Trabajo extraordinario en día descanso, vacación o asueto
+            </div>
+          </template>
+        </v-checkbox>
+      </v-col>
+      <!-- extraordinary_work -->
+
+      <!-- training -->
+      <v-col cols="12" xs="12" sm="12" md="6">
+        <v-checkbox
+          v-model="$v.editedItem.training.$model"
+          :validation.sync="$v.editedItem.training"
+        >
+          <template v-slot:label>
+            <div style="margin-left: 6px">
+              Capacitación en día descanso, vacación o asueto
+            </div>
+          </template>
+        </v-checkbox>
+      </v-col>
+      <!-- training -->
+
+      <h6 class="fw-bold">Detalle de la actividad realizada:</h6>
+
+      <!-- execution_site -->
+      <v-col cols="12" sm="12" md="8" class="m-0 pb-3">
+        <base-input
+          label="Lugar de ejecución"
+          v-model.trim="$v.editedItem.execution_site.$model"
+          :validation="$v.editedItem.execution_site"
+          validationTextType="none"
+          type="text"
+        />
+      </v-col>
+      <!-- execution_site -->
+
+      <!-- execution_date -->
+      <v-col cols="12" sm="12" md="4" class="m-0 pb-3">
+        <base-input
+          label="Fecha de ejecución"
+          v-model="$v.editedItem.execution_date.$model"
+          :validation="$v.editedItem.execution_date"
+          validationTextType="none"
+          type="date"
+        />
+      </v-col>
+      <!-- execution_date -->
+
+      <!-- execution_schedule -->
+      <v-col cols="12" sm="12" md="4" class="m-0 pb-3">
+        <base-input
+          label="Horario de ejecución"
+          v-model="$v.editedItem.execution_schedule.$model"
+          :validation="$v.editedItem.execution_schedule"
+          validationTextType="none"
+          type="text"
+        />
+      </v-col>
+      <!-- execution_schedule -->
+
+      <!-- execution_number_hours -->
+      <v-col cols="12" sm="12" md="4" class="m-0 pb-3">
+        <base-input
+          label="Cantidad de horas"
+          v-model="$v.editedItem.execution_number_hours.$model"
+          :validation="$v.editedItem.execution_number_hours"
+          validationTextType="none"
+          type="number"
+        />
+      </v-col>
+      <!-- execution_number_hours -->
+
+      <!-- assigned_by -->
+      <v-col cols="12" sm="12" md="4" class="m-0 pb-3">
+        <base-input
+          label="Asignado por"
+          v-model="$v.editedItem.assigned_by.$model"
+          :validation="$v.editedItem.assigned_by"
+          validationTextType="none"
+          type="text"
+        />
+      </v-col>
+      <!-- assigned_by -->
+
+      <!-- number_days_requested -->
+      <v-col cols="12" sm="12" md="3" class="m-0 pb-3">
+        <base-input
+          label="Cantidad de días solicitados"
+          v-model="$v.editedItem.number_days_requested.$model"
+          :validation="$v.editedItem.number_days_requested"
+          validationTextType="none"
+          type="number"
+        />
+      </v-col>
+      <!-- number_days_requested -->
+
+      <!-- execution_effective_date -->
+      <v-col cols="12" sm="12" md="3" class="m-0 pb-3">
+        <base-input
+          label="Fecha que se hará efectivo"
+          v-model="$v.editedItem.execution_effective_date.$model"
+          :validation="$v.editedItem.execution_effective_date"
+          validationTextType="none"
+          type="date"
+        />
+      </v-col>
+      <!-- execution_effective_date -->
+
+      <!-- execution_from -->
+      <v-col cols="12" sm="12" md="3" class="m-0 pb-3">
+        <base-input
+          label="Desde"
+          v-model="$v.editedItem.execution_from.$model"
+          :validation="$v.editedItem.execution_from"
+          validationTextType="none"
+          type="text"
+        />
+      </v-col>
+      <!-- execution_from -->
+
+      <!-- execution_to -->
+      <v-col cols="12" sm="12" md="3" class="m-0 pb-3">
+        <base-input
+          label="Hasta"
+          v-model="$v.editedItem.execution_to.$model"
+          :validation="$v.editedItem.execution_to"
+          validationTextType="none"
+          type="text"
+        />
+      </v-col>
+      <!-- execution_to -->
+
+      <h5
+        class="fw-bold pt-3 pb-2 mb-0"
+        style="border-bottom: 1px solid lightgray"
+      >
+        VI. ANEXAR DOCUMENTOS
       </h5>
 
-      <!-- DUI File -->
+      <!-- justification_file -->
       <v-col cols="12" xs="12" sm="12" md="6">
-        <h6 class="mb-0">
+        <h6 class="mb-0 fw-bold">
           Documentación original para justificación de acción de personal (PDF).
         </h6>
         <span class="text-muted">(Opcional)</span>
@@ -243,8 +400,15 @@
           @file-size-exceeded="$emit('file-size-exceeded', true)"
         />
       </v-col>
+      <!-- justification_file -->
+      <!-- <h5
+        class="fw-bold pt-3 pb-2 mb-0"
+        style="border-bottom: 1px solid lightgray"
+      >
+       VI. FIRMAS
+      </h5> -->
 
-      <!-- Form -->
+      <!-- buttons -->
       <v-row>
         <v-col align="center" cols="12" sm="12" md="12" class="">
           <v-btn color="btn-normal no-uppercase" rounded @click="save()">
@@ -260,8 +424,10 @@
           </v-btn>
         </v-col>
       </v-row>
-      <!-- Form -->
+      <!-- buttons -->
     </v-row>
+    <!-- row -->
+
     <!-- loader -->
     <v-row
       v-show="loading"
@@ -280,6 +446,7 @@ import {
   email,
   minLength,
   maxLength,
+  requiredIf,
 } from "vuelidate/lib/validators";
 
 import userApi from "../apis/userApi";
@@ -311,6 +478,17 @@ export default {
       total_days: "",
       justification: "",
       justification_file: "",
+      extraordinary_work: false,
+      training: false,
+      execution_site: "",
+      execution_date: "",
+      execution_schedule: "",
+      execution_number_hours: "",
+      assigned_by: "",
+      number_days_requested: "",
+      execution_effective_date: "",
+      execution_from: "",
+      execution_to: "",
     },
     defaultItem: {
       employee_name: "",
@@ -326,6 +504,17 @@ export default {
       total_days: "",
       justification: "",
       justification_file: "",
+      extraordinary_work: false,
+      training: false,
+      execution_site: "",
+      execution_date: "",
+      execution_schedule: "",
+      execution_number_hours: "",
+      assigned_by: "",
+      number_days_requested: "",
+      execution_effective_date: "",
+      execution_from: "",
+      execution_to: "",
     },
   }),
 
@@ -352,31 +541,45 @@ export default {
         maxLength: maxLength(500),
       },
       from_hour: {
-        // required,
+        required: requiredIf(function () {
+          return this.showHourInputs;
+        }),
         minLength: minLength(1),
       },
       to_hour: {
-        // required,
+        required: requiredIf(function () {
+          return this.showHourInputs;
+        }),
         minLength: minLength(1),
       },
       total_hours: {
-        // required,
-        minLength: minLength(1),
-      },
-      from_date: {
-        // required,
-        minLength: minLength(1),
-      },
-      to_date: {
-        // required,
-        minLength: minLength(1),
-      },
-      total_days: {
-        // required,
+        required: requiredIf(function () {
+          return this.showHourInputs;
+        }),
         minLength: minLength(1),
       },
       effective_date: {
-        // required,
+        required: requiredIf(function () {
+          return this.showHourInputs;
+        }),
+        minLength: minLength(1),
+      },
+      from_date: {
+        required: requiredIf(function () {
+          return this.showDayInputs;
+        }),
+        minLength: minLength(1),
+      },
+      to_date: {
+        required: requiredIf(function () {
+          return this.showDayInputs;
+        }),
+        minLength: minLength(1),
+      },
+      total_days: {
+        required: requiredIf(function () {
+          return this.showDayInputs;
+        }),
         minLength: minLength(1),
       },
       justification: {
@@ -385,6 +588,22 @@ export default {
         maxLength: maxLength(800),
       },
       justification_file: {},
+      extraordinary_work: false,
+      training: false,
+      execution_site: {
+        required: requiredIf(function () {
+          console.log("Image validator called");
+          return this.extraordinary_work;
+        }),
+      },
+      execution_date: "",
+      execution_schedule: "",
+      execution_number_hours: "",
+      assigned_by: "",
+      number_days_requested: "",
+      execution_effective_date: "",
+      execution_from: "",
+      execution_to: "",
     },
   },
 
