@@ -12,6 +12,7 @@ use App\Http\Controllers\JustificationTypeController;
 use App\Http\Controllers\DependencyController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\PersonnelActionController;
+use App\Http\Controllers\RemarkController;
 use App\Http\Controllers\LoginSvController;
 
 /*
@@ -47,10 +48,13 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::delete('/api/web/dependency', [DependencyController::class, 'destroy']);
         Route::resource('/api/web/status', StatusController::class);
         Route::delete('/api/web/status', [StatusController::class, 'destroy']);
+        Route::resource('/api/web/remark', RemarkController::class);
+        Route::delete('/api/web/remark', [RemarkController::class, 'destroy']);
 
         Route::resource('/api/web/personnelAction', PersonnelActionController::class);
         // Personnel Actions To Verify
-        Route::get('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
+        Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
+        // Set status
         Route::post('/api/web/personnelAction/setStatus', [PersonnelActionController::class, 'setStatus']);
 
         // Views

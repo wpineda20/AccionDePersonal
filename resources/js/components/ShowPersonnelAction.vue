@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <!-- employee_name -->
-      <v-col cols="12" sm="12" md="6" class="m-0 pb-3">
+      <v-col cols="12" sm="12" md="12" class="m-0 pb-3">
         <base-input
           label="Nombre del empleado"
           v-model="$v.editedItem.employee_name.$model"
@@ -15,7 +15,7 @@
       <!-- employee_name -->
 
       <!-- position_signature -->
-      <v-col cols="12" sm="12" md="6" class="m-0 pb-3">
+      <v-col cols="12" sm="12" md="12" class="m-0 pb-3">
         <base-input
           label="Cargo"
           v-model="$v.editedItem.position_signature.$model"

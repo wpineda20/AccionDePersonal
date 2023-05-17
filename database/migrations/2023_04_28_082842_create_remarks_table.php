@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('remarks', function (Blueprint $table) {
             $table->id();
             $table->string('observation');
-            $table->foreignId('personnel_action_id');
-            $table->tinyInteger('status')->comment('0 = No Corregida 1, = Corregida');
+            $table->foreignId('personnel_action_id')->constrained('personnel_action');
+            $table->tinyInteger('status')->comment('0 = No Corregida, 1 = Corregida')->nullable()->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

@@ -105,14 +105,14 @@
       <!-- radio group -->
 
       <!-- radio alert -->
-      <div
+      <!-- <div
         v-if="radioAlert"
         style="display: flex; justify-content: center; align-items: center"
       >
         <p class="mt-2 text-center orange-text">
           <i class="material-icons">error_outline</i> Campo requerido.
         </p>
-      </div>
+      </div> -->
       <!-- radio alert -->
 
       <!-- hours col -->
@@ -326,7 +326,7 @@
           v-model="$v.editedItem.assigned_by.$model"
           :validation="$v.editedItem.assigned_by"
           validationTextType="none"
-          type="text"
+          type="number"
         />
       </v-col>
       <!-- assigned_by -->
@@ -483,8 +483,8 @@ export default {
       execution_site: "",
       execution_date: "",
       execution_schedule: "",
-      execution_number_hours: "",
-      assigned_by: "",
+      execution_number_hours: 0,
+      assigned_by: 0,
       number_days_requested: "",
       execution_effective_date: "",
       execution_from: "",
@@ -509,8 +509,8 @@ export default {
       execution_site: "",
       execution_date: "",
       execution_schedule: "",
-      execution_number_hours: "",
-      assigned_by: "",
+      execution_number_hours: 0,
+      assigned_by: 0,
       number_days_requested: "",
       execution_effective_date: "",
       execution_from: "",
@@ -611,6 +611,14 @@ export default {
     this.initialize();
   },
 
+  computed: {
+    multiplicar: function () {
+      return (
+        +this.editedItem.assigned_by * +this.editedItem.execution_number_hours
+      );
+    },
+  },
+
   methods: {
     async initialize() {
       this.loading = true;
@@ -646,8 +654,8 @@ export default {
     async save() {
       this.$v.$touch();
 
-      if (this.$v.editedItem.$invalid || this.radios == "") {
-        this.radioAlert = true;
+      if (this.$v.editedItem.$invalid) {
+        // this.radioAlert = true;
         this.updateAlert(true, "Campos obligatorios.", "fail");
         return;
       }
@@ -672,13 +680,13 @@ export default {
     },
 
     showHourForm() {
-      this.radioAlert = false;
+      // this.radioAlert = false;
       this.showDayInputs = false;
       this.showHourInputs = true;
     },
 
     showDayForm() {
-      this.radioAlert = false;
+      // this.radioAlert = false;
       this.showHourInputs = false;
       this.showDayInputs = true;
     },

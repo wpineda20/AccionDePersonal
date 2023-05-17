@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PersonnelAction;
 use App\Models\User;
 use App\Models\Dependency;
+use App\Models\Remark;
 use App\Models\Status;
 use App\Models\JustificationType;
 use App\Models\HistoryPersonnelActionStatus;
@@ -37,6 +38,15 @@ class PersonnelActionController extends Controller
         $search = (isset($request->search)) ? "%$request->search%" : '%%';
 
         $personnelAction = PersonnelAction::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
+
+        foreach ($personnelAction as $key => $value) {
+            $value->remarks = Remark::where('personnel_action_id', $value->id)->get();
+
+            foreach ($value->remarks as $remark) {
+                $remark->status = ($remark->status == 0) ? "No Corregida" : "Corregida";
+            }
+        }
+
         $personnelAction = Encrypt::encryptObject($personnelAction, "id");
 
         $total = PersonnelAction::counterPagination($search);
@@ -209,7 +219,16 @@ class PersonnelActionController extends Controller
         $skip = $request->skip;
         $limit = $request->take - $skip; // the limit
 
-        $registeredRecords = PersonnelAction::select('*', 's.status_name', 'jt.justification_name')
+        $registeredRecords = PersonnelAction::select(
+            '*',
+            'u.name as employee_name',
+            'u.position_signature',
+            'd.dependency_name',
+            'jt.justification_name',
+            's.status_name',
+        )
+            ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
+            ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
             ->join('status as s', 'personnel_action.status_id', '=', 's.id')
             ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
             ->where($filters)
@@ -227,20 +246,46 @@ class PersonnelActionController extends Controller
     }
 
     /**
-     * Get user personnel actions.
+     * Get request personnel action to verify
      *
      * @param  \App\Models\PersonnelAction  $personnelAction
      * @return \Illuminate\Http\Response
      */
     public function verifyPersonnelActions(Request $request)
     {
-        $registeredRecords = PersonnelAction::all();
+        $registeredRecords =  PersonnelAction::select(
+            'personnel_action.*',
+            'u.name as employee_name',
+            'u.position_signature',
+            'd.dependency_name',
+            'jt.justification_name',
+            's.status_name'
+        )
+            ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
+            ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
+            ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
+            ->join('status as s', 'personnel_action.status_id', '=', 's.id')
+            ->where('personnel_action.status_id', 1)
 
-        dd($registeredRecords);
+            // ->skip($skip)
+            // ->take($itemsPerPage)
+            ->orderBy("personnel_action.date_request_created")
+            ->get();
+
+        foreach ($registeredRecords as $key => $value) {
+            $value->remarks = Remark::where('personnel_action_id', $value->id)->get();
+
+            foreach ($value->remarks as $remark) {
+                $remark->status = ($remark->status == 0) ? "No Corregida" : "Corregida";
+            }
+        }
 
         return response()->json([
-            'message' => 'success',
-            'registeredRecords' => $registeredRecords,
+            "status" => 200,
+            "message" => "Registros obtenidos correctamente.",
+            "records" => $registeredRecords,
+            // "total" => $total,
+            "success" => true,
         ]);
     }
 
@@ -253,14 +298,20 @@ class PersonnelActionController extends Controller
 
     public function setStatus(Request $request)
     {
-        $id = Encrypt::decryptValue($request->id);
-
-        $personnelAction = PersonnelAction::where('id', $id)->first();
+        $personnelAction = PersonnelAction::where('id', $request->id)->first();
         $personnelAction->status_id =  Status::where('status_name', $request->status)->first()->id;
         $personnelAction->save();
 
+        if (!empty($request->data)) {
+            Remark::insert([
+                'observation' => $request->data[0]['observation'],
+                'personnel_action_id' => $personnelAction->id,
+                'status' => $request->data[0]['status'] == "No corregida" ? 0 : 1,
+            ]);
+        }
+
         HistoryPersonnelActionStatus::insert([
-            'personnel_action_id' => $id,
+            'personnel_action_id' => $personnelAction->id,
             'user_id' => auth()->user()->id,
             'status_id' => $personnelAction->status_id,
             'update_date' => now(),

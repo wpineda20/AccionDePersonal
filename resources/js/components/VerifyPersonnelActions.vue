@@ -182,16 +182,26 @@
             <v-col cols="12" md="12">
               <base-text-area
                 label="Observación"
-                v-model.trim="$v.remarks.observation.$model"
-                :validation="$v.remarks.observation"
+                v-model.trim="$v.remark.observation.$model"
+                :validation="$v.remark.observation"
                 validationTextType="none"
                 :rows="3"
+                :disabled="
+                  disableRemark != false || this.editedItem.remarks.length > 0
+                "
               />
             </v-col>
             <v-col cols="12" md="6">
-              <a href="#" class="btn btn-normal" @click="createRemark()">
+              <v-btn
+                color="btn-normal"
+                rounded
+                @click="createRemark()"
+                :disabled="
+                  disableRemark != false || this.editedItem.remarks.length > 0
+                "
+              >
                 AGREGAR
-              </a>
+              </v-btn>
             </v-col>
 
             <v-simple-table class="mt-2">
@@ -203,19 +213,31 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in remarksCreated" :key="index">
+                <tr v-for="(item, index) in editedItem.remarks" :key="index">
                   <td>{{ item.observation }}</td>
-                  <td></td>
+                  <td>{{ item.status }}</td>
                   <td>
-                    <v-icon @click="verifyRemark()">
-                      mdi-checkbox-marked-circle
-                    </v-icon>
-                    <v-icon @click="deleteRemarksCreated(index)">
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-icon
+                          @click="verifyRemark(item)"
+                          v-on="on"
+                          v-bind="attrs"
+                        >
+                          mdi-checkbox-marked-circle
+                        </v-icon>
+                      </template>
+                      <span>Validar observación</span>
+                    </v-tooltip>
+
+                    <!-- <v-icon @click="deleteRemarksCreated(index)">
                       delete
-                    </v-icon>
+                    </v-icon> -->
                   </td>
                 </tr>
-                <tr></tr>
+                <!-- <tr v-if="editedItem.remarksCreated.length == 0">
+                  <td colspan="3">No hay observaciones</td>
+                </tr> -->
               </tbody>
             </v-simple-table>
           </v-container>
@@ -225,6 +247,9 @@
                 color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
                 rounded
                 @click="setStatus('Aprobada')"
+                :disabled="
+                  disableRemark != false || this.editedItem.remarks.length > 0
+                "
               >
                 Aprobar
               </v-btn>
@@ -255,6 +280,7 @@ import { format } from "date-fns";
 import esEsLocale from "date-fns/locale/es";
 import personnelActionApi from "../apis/personnelActionApi";
 import justificationTypeApi from "../apis/justificationTypeApi";
+import remarkApi from "../apis/remarkApi";
 
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
@@ -264,6 +290,7 @@ export default {
       search: "",
       selected: [],
       dialog: false,
+      disableRemark: false,
       dialogActions: false,
       dialogDelete: false,
       headers: [
@@ -275,6 +302,7 @@ export default {
       ],
       records: [],
       recordsFiltered: [],
+      remarksCreated: [],
       editedIndex: -1,
       title: "",
       totalItems: 0,
@@ -311,10 +339,9 @@ export default {
         justification_file: "",
         remarks: [],
       },
-      remarksCreated: [],
-      remarks: {
+      remark: {
         observation: "",
-        status: "",
+        status: 0,
       },
       justifications: [],
       selectedTab: 0,
@@ -328,17 +355,17 @@ export default {
     };
   },
 
-  watch: {
-    options: {
-      handler() {
-        this.getDataFromApi();
-      },
-      deep: true,
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-  },
+  // watch: {
+  //   options: {
+  //     handler() {
+  //       this.getDataFromApi();
+  //     },
+  //     deep: true,
+  //   },
+  //   dialogDelete(val) {
+  //     val || this.closeDelete();
+  //   },
+  // },
 
   // Validations
   validations: {
@@ -397,11 +424,9 @@ export default {
         maxLength: maxLength(800),
       },
       justification_file: {},
-      remarksCreated: {
-        required,
-      },
+      remarks: {},
     },
-    remarks: {
+    remark: {
       observation: {
         required,
       },
@@ -416,18 +441,21 @@ export default {
   },
 
   watch: {
-    options: {
-      handler() {
-        this.getDataFromApi();
-      },
-      deep: false,
-      dirty: false,
-    },
+    // options: {
+    //   // handler() {
+    //   //   this.getDataFromApi();
+    //   // },
+    //   deep: false,
+    //   dirty: false,
+    // },
     dialog(val) {
       val || this.close();
     },
     dialogBlock(val) {
       val || this.closeBlock();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
     },
   },
 
@@ -443,7 +471,8 @@ export default {
       this.recordsFiltered = [];
 
       let requests = [
-        this.getDataFromApi(),
+        // this.getDataFromApi(),
+        personnelActionApi.post(`/verifyPersonnelActions`),
         justificationTypeApi.get(null, {
           params: { itemsPerPage: -1 },
         }),
@@ -459,7 +488,19 @@ export default {
       });
 
       if (responses) {
+        console.log(responses);
+        this.recordsFiltered = responses[0].data.records;
         this.justifications = responses[1].data.records;
+
+        this.recordsFiltered.forEach((item) => {
+          item.date_request_created = format(
+            new Date(item.date_request_created),
+            "d/MM/y, hh:mm a",
+            {
+              locale: esEsLocale,
+            }
+          );
+        });
       }
 
       this.loading = false;
@@ -535,7 +576,6 @@ export default {
     },
 
     deleteItem(item = null) {
-      console.log(item);
       if (item) {
         this.editedIndex = this.recordsFiltered.indexOf(item);
         this.editedItem = Object.assign({}, item);
@@ -583,41 +623,41 @@ export default {
       this.closeDelete();
     },
 
-    getDataFromApi() {
-      this.loading = true;
-      this.records = [];
-      this.recordsFiltered = [];
+    // getDataFromApi() {
+    //   this.loading = true;
+    //   this.records = [];
+    //   this.recordsFiltered = [];
 
-      //debounce
-      clearTimeout(this.debounce);
-      this.debounce = setTimeout(async () => {
-        const { data } = await personnelActionApi
-          .get(null, {
-            params: this.options,
-          })
-          .catch((error) => {
-            this.updateAlert(
-              true,
-              "No fue posible obtener los registros.",
-              "fail"
-            );
-          });
+    //   //debounce
+    //   clearTimeout(this.debounce);
+    //   this.debounce = setTimeout(async () => {
+    //     const { data } = await personnelActionApi
+    //       .get(null, {
+    //         params: this.options,
+    //       })
+    //       .catch((error) => {
+    //         this.updateAlert(
+    //           true,
+    //           "No fue posible obtener los registros.",
+    //           "fail"
+    //         );
+    //       });
 
-        this.records = data.records;
-        this.recordsFiltered = data.records;
-        this.total = data.total;
-        this.recordsFiltered.forEach((item) => {
-          item.date_request_created = format(
-            new Date(item.date_request_created),
-            "d/MM/y, hh:mm a",
-            {
-              locale: esEsLocale,
-            }
-          );
-        });
-        this.loading = false;
-      }, 500);
-    },
+    //     this.records = data.records;
+    //     this.recordsFiltered = data.records;
+    //     this.total = data.total;
+    //     this.recordsFiltered.forEach((item) => {
+    //       item.date_request_created = format(
+    //         new Date(item.date_request_created),
+    //         "d/MM/y, hh:mm a",
+    //         {
+    //           locale: esEsLocale,
+    //         }
+    //       );
+    //     });
+    //     this.loading = false;
+    //   }, 500);
+    // },
 
     addRecord() {
       this.dialog = true;
@@ -637,6 +677,7 @@ export default {
       const response = await personnelActionApi
         .post(`/setStatus`, {
           id: this.editedItem.id,
+          data: this.editedItem.remarks,
           status: status,
         })
         .catch((error) => {
@@ -655,28 +696,36 @@ export default {
       }
     },
 
-    createRemark() {
-      this.$v.remarks.$touch();
+    async createRemark() {
+      this.$v.remark.$touch();
 
-      if (this.$v.remarks.$invalid) {
+      if (this.$v.remark.$invalid) {
         return;
       }
 
-      // console.log(this.remarks);
-      // this.remarksCreated.push({ ...this.remarks });
-      // this.remarks.observation = "";
-      // this.remarks.status = "";
+      this.remark["status"] = "No corregida";
 
-      this.$v.remarks.$reset();
+      this.editedItem.remarks.push({ ...this.remark });
+
+      if (this.editedItem.remarks.length > 0) {
+        this.disableRemark = true;
+      } else {
+        this.disableRemark = false;
+      }
+
+      this.remark.observation = "";
+      this.$v.remark.$reset();
     },
 
-    verifyRemark() {},
-
-    deleteRemarksCreated(index) {
-      this.remarksCreated.splice(index, 1);
-      this.remarks.observation = "";
-      this.remarks.status = "";
+    async verifyRemark(item) {
+      console.log("hola");
     },
+
+    // deleteRemarksCreated(index) {
+    //   this.remarksCreated.splice(index, 1);
+    //   this.remarks.observation = "";
+    //   this.remarks.status = "";
+    // },
 
     closeActions() {
       this.$nextTick(() => {
