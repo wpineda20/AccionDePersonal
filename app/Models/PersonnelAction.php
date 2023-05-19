@@ -45,7 +45,7 @@ class PersonnelAction extends Model
 
     public $timestamps = true;
 
-    public static function allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage)
+    public static function allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage, $filter)
     {
         return PersonnelAction::select(
             'personnel_action.*',
@@ -59,7 +59,9 @@ class PersonnelAction extends Model
             ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
             ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
             ->join('status as s', 'personnel_action.status_id', '=', 's.id')
-            ->where('u.name', 'like', $search)
+            ->where('jt.justification_name', 'like', $search)
+            ->where('s.status_name', $filter)
+            ->where('personnel_action.user_id', auth()->user()->id)
 
             ->skip($skip)
             ->take($itemsPerPage)
@@ -81,7 +83,8 @@ class PersonnelAction extends Model
             ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
             ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
             ->join('status as s', 'personnel_action.status_id', '=', 's.id')
-            ->where('u.name', 'like', $search)
+            ->where('jt.justification_name', 'like', $search)
+            ->where('personnel_action.user_id', auth()->user()->id)
 
             ->count();
     }

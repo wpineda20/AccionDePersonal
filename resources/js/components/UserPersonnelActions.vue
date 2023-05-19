@@ -8,63 +8,84 @@
       class="mb-2"
     />
 
-    <v-data-table
-      :headers="headers"
-      :items="registeredRecords"
-      :options.sync="options"
-      :server-items-length="total"
-      :footer-props="{ itemsPerPageOptions: [50] }"
-      :items-per-page="take"
-      @update:options="updatePagination"
-      :page.sync="actualPage"
-      item-key="employee_id"
-      class="elevation-3 shadow p-3 mt-3"
-    >
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-toolbar-title>Acciones de Personal</v-toolbar-title>
-        </v-toolbar>
-        <v-toolbar flat>
-          <div class="container-fluid pb-5">
-            <v-row>
-              <v-tabs grow background-color="transparent">
-                <v-tab @click="filterRecords('Solicitada')">Solicitadas</v-tab>
-                <v-tab @click="filterRecords('Observada')">Observadas</v-tab>
-                <v-tab @click="filterRecords('Rechazada')">Rechazadas</v-tab>
-                <v-tab @click="filterRecords('Aprobada')">Aprobadas</v-tab>
-                <v-tab @click="filterRecords('Procesada')">Procesadas</v-tab>
-              </v-tabs>
-            </v-row>
-          </div>
-        </v-toolbar>
-      </template>
-      <template v-slot:[`item.actions`]="{ item }">
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              small
-              class="mr-2"
-              @click="editItem(item)"
-              v-bind="attrs"
-              v-on="on"
-            >
-              mdi-eye
-            </v-icon>
-          </template>
-          <span>Ver Acción de Personal</span>
-        </v-tooltip>
-      </template>
+    <v-card class="p-3">
+      <v-row>
+        <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+          <h2 style="margin-left: 15px">Acciones de Personal</h2>
+        </v-col>
+        <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
+          <!-- <v-btn
+            rounded
+            @click="addRecord()"
+            class="mb-2 btn-normal no-uppercase"
+            title="Agregar"
+          >
+            Agregar
+          </v-btn> -->
+        </v-col>
+        <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
+          <v-text-field
+            dense
+            outlined
+            label="Buscar"
+            type="text"
+            v-model="options.search"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <!-- <template v-slot:top> -->
+      <!-- <v-toolbar flat> -->
+      <div class="container-fluid pb-5 pt-4">
+        <v-row>
+          <v-tabs grow background-color="transparent">
+            <v-tab @click="filter = 'Solicitada'">Solicitadas</v-tab>
+            <v-tab @click="filter = 'Observada'">Observadas</v-tab>
+            <v-tab @click="filter = 'Rechazada'">Rechazadas</v-tab>
+            <v-tab @click="filter = 'Aprobada'">Aprobadas</v-tab>
+            <v-tab @click="filter = 'Procesada'">Procesadas</v-tab>
+          </v-tabs>
+        </v-row>
+      </div>
+      <!-- </v-toolbar> -->
+      <!-- </template> -->
+      <v-data-table
+        :search="options.search"
+        :headers="headers"
+        :items="recordsFiltered"
+        :options.sync="options"
+        :loading="loading"
+        item-key="id"
+        sort-by="id"
+        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
+      >
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(item)"
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-eye
+              </v-icon>
+            </template>
+            <span>Ver Acción de Personal</span>
+          </v-tooltip>
+        </template>
 
-      <template v-slot:no-data>
-        <a
-          href="#"
-          class="btn btn-normal-secondary no-decoration"
-          @click="loadMore"
-        >
-          Reiniciar
-        </a>
-      </template>
-    </v-data-table>
+        <template v-slot:no-data>
+          <a
+            href="#"
+            class="btn btn-normal-secondary no-decoration"
+            @click="initialize"
+          >
+            Reiniciar
+          </a>
+        </template>
+      </v-data-table>
+    </v-card>
     <v-dialog v-model="dialogShowPersonnelAction" max-width="600px">
       <v-card color="h-100">
         <v-container>
@@ -72,9 +93,10 @@
             Acción de Personal
           </h3>
           <v-container>
-            <show-personnel-action
-              :editedItem="editedItem"
+            <show-personnel-action-form
+              :editedItem="$v.editedItem"
               :justifications="justifications"
+              @save-form="save()"
             />
           </v-container>
         </v-container>
@@ -85,10 +107,17 @@
 
 <script>
 import personnelActionApi from "../apis/personnelActionApi";
+import justificationTypeApi from "../apis/justificationTypeApi";
 import StatusApi from "../apis/StatusApi";
 import { format } from "date-fns";
 import esEsLocale from "date-fns/locale/es";
 import axios from "axios";
+import {
+  required,
+  email,
+  minLength,
+  maxLength,
+} from "vuelidate/lib/validators";
 
 export default {
   data: () => ({
@@ -97,25 +126,20 @@ export default {
       { text: "JUSTIFICACIÓN", value: "justification_name" },
       { text: "ACCIÓN", value: "actions", sortable: false },
     ],
+    search: "",
     textAlert: "",
     alertEvent: "success",
     showAlert: false,
     dialogShowPersonnelAction: false,
     filter: "Solicitada",
-    registeredRecords: [],
-    registeredRecordSelected: "",
-    numberItemsToAdd: 50,
+    records: [],
+    recordsFiltered: [],
     total: 0,
-    loadMoreItems: false,
     options: {},
-    actualPage: 1,
-    expanded: [],
-    skip: 0,
-    take: 50,
-    counter: 0,
     justifications: [],
     editedIndex: -1,
-
+    debounce: 0,
+    totalItems: 0,
     editedItem: {
       employee_name: "",
       position_signature: "",
@@ -149,109 +173,160 @@ export default {
   }),
 
   created() {
-    // this.initialize();
+    this.initialize();
   },
 
   watch: {
     options: {
       handler() {
-        this.loadMore();
+        this.getDataFromApi();
       },
       deep: false,
+      dirty: false,
+    },
+    filter: {
+      handler() {
+        this.getDataFromApi();
+      },
+    },
+  },
+
+  validations: {
+    editedItem: {
+      employee_name: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(500),
+      },
+      position_signature: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(500),
+      },
+      dependency_name: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(500),
+      },
+      justification_name: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(500),
+      },
+      from_hour: {
+        // required,
+        minLength: minLength(1),
+      },
+      to_hour: {
+        // required,
+        minLength: minLength(1),
+      },
+      total_hours: {
+        // required,
+        minLength: minLength(1),
+      },
+      from_date: {
+        // required,
+        minLength: minLength(1),
+      },
+      to_date: {
+        // required,
+        minLength: minLength(1),
+      },
+      total_days: {
+        // required,
+        minLength: minLength(1),
+      },
+      effective_date: {
+        // required,
+        minLength: minLength(1),
+      },
+      justification: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(800),
+      },
+      justification_file: {},
     },
   },
 
   methods: {
-    async loadMore(filter = "Solicitada") {
-      this.filter = filter;
-      if (this.actualPage == 1) {
-        this.actualPage = 1;
-        this.skip = 0;
-        this.take = this.numberItemsToAdd;
+    async initialize() {
+      this.loading = true;
+      this.records = [];
+      this.recordsFiltered = [];
+
+      let requests = [
+        this.getDataFromApi(),
+        justificationTypeApi.get(null, {
+          params: {
+            itemsPerPage: -1,
+          },
+        }),
+      ];
+
+      const responses = await Promise.all(requests).catch((error) => {
+        this.updateAlert(true, "No fue posible obtener el registro.", "fail");
+
+        this.redirectSessionFinished = lib.verifySessionFinished(
+          error.response.status,
+          419
+        );
+      });
+
+      if (responses) {
+        this.justifications = responses[1].data.records;
       }
-      const res = await axios
-        .get("api/personnelAction/userPersonnelActions", {
-          params: { skip: this.skip, take: this.take, filter: filter },
-        })
-        .catch((error) => {
-          this.updateAlert(
-            true,
-            "No fue posible obtener los registros.",
-            "fail"
-          );
-          this.redirectSessionFinished = lib.verifySessionFinished(
-            error.response.status,
-            401
+
+      this.loading = false;
+    },
+
+    getDataFromApi() {
+      this.loading = true;
+      this.records = [];
+      this.recordsFiltered = [];
+
+      //debounce
+      clearTimeout(this.debounce);
+      this.debounce = setTimeout(async () => {
+        const { data } = await personnelActionApi
+          .get(null, {
+            params: {
+              ...this.options,
+              filter: this.filter,
+            },
+          })
+          .catch((error) => {
+            this.updateAlert(
+              true,
+              "No fue posible obtener los registros.",
+              "fail"
+            );
+          });
+
+        this.records = data.records;
+        this.recordsFiltered = data.records;
+
+        this.recordsFiltered.forEach((item) => {
+          item.date_request_created = format(
+            new Date(item.date_request_created),
+            "d/MM/y, hh:mm a",
+            {
+              locale: esEsLocale,
+            }
           );
         });
 
-      this.registeredRecords = res.data.registeredRecords;
-      this.total = res.data.total;
-      this.setDateFormat();
-    },
-
-    updatePagination(pagination) {
-      if (pagination.page != 1) {
-        // Si la página es distinta de 1, verifica los datos a tomar y quitar
-        if (pagination.page <= this.actualPage) {
-          //Si la página es menor que la actual, se está retrocediendo
-          this.take = this.skip;
-          this.skip = this.take - this.numberItemsToAdd;
-        } else {
-          //Sino, se está aumentando en la cantidad de usuarios por ver
-          this.skip = this.take;
-          this.take += this.numberItemsToAdd;
-        }
-      } else {
-        //Si es igual a cero, es la vista inicial
-        this.skip = 0;
-        this.take = this.numberItemsToAdd;
-      }
-      this.actualPage = pagination.page;
-      //   console.log(this.skip, this.take);
-    },
-
-    async filterRecords(filter = "Solicitada") {
-      this.filter = filter;
-
-      const res = await axios
-        .get("api/personnelAction/userPersonnelActions", {
-          params: { skip: this.skip, take: this.take, filter: filter },
-        })
-        .catch((error) => {
-          this.updateAlert(
-            true,
-            "No fue posible obtener los registros.",
-            "fail"
-          );
-          this.redirectSessionFinished = lib.verifySessionFinished(
-            error.response.status,
-            401
-          );
-        });
-
-      this.registeredRecords = res.data.registeredRecords;
-      this.total = res.data.total;
-      this.setDateFormat();
+        this.total = data.total;
+        this.loading = false;
+      }, 200);
     },
 
     editItem(item) {
       console.log(item);
       this.dialogShowPersonnelAction = true;
-      this.editedIndex = this.registeredRecords.indexOf(item);
+      this.editedIndex = this.recordsFiltered.indexOf(item);
       this.editedItem = Object.assign({}, item);
-    },
-
-    setDateFormat() {
-      this.registeredRecords.forEach((item) => {
-        item.date_request_created = format(
-          new Date(item.date_request_created),
-          "d/MM/y, hh:mm a",
-          {
-            locale: esEsLocale,
-          }
-        );
-      });
     },
 
     updateAlert(show = false, text = "Alerta", event = "success") {

@@ -171,8 +171,8 @@
             Verificación de Acción de Personal
           </h3>
           <v-container>
-            <show-personnel-action
-              :editedItem="editedItem"
+            <show-personnel-action-form
+              :editedItem="$v.editedItem"
               :justifications="justifications"
             />
           </v-container>

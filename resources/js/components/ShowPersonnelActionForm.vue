@@ -5,8 +5,8 @@
       <v-col cols="12" sm="12" md="12" class="m-0 pb-3">
         <base-input
           label="Nombre del empleado"
-          v-model="$v.editedItem.employee_name.$model"
-          :validation="$v.editedItem.employee_name"
+          v-model="editedItem.employee_name.$model"
+          :validation="editedItem.employee_name"
           validationTextType="none"
           type="text"
           :disabled="true"
@@ -18,8 +18,8 @@
       <v-col cols="12" sm="12" md="12" class="m-0 pb-3">
         <base-input
           label="Cargo"
-          v-model="$v.editedItem.position_signature.$model"
-          :validation="$v.editedItem.position_signature"
+          v-model="editedItem.position_signature.$model"
+          :validation="editedItem.position_signature"
           validationTextType="none"
           type="text"
           :disabled="true"
@@ -31,8 +31,8 @@
       <v-col cols="12" sm="12" md="12" class="m-0 pb-3">
         <base-input
           label="Unidad de trabajo"
-          v-model="$v.editedItem.dependency_name.$model"
-          :validation="$v.editedItem.dependency_name"
+          v-model="editedItem.dependency_name.$model"
+          :validation="editedItem.dependency_name"
           validationTextType="none"
           type="text"
           :disabled="true"
@@ -44,10 +44,10 @@
       <v-col cols="12" sm="12" md="12" class="m-0 pb-4">
         <base-select-search
           label="Tipo de justificación"
-          v-model.trim="$v.editedItem.justification_name.$model"
+          v-model.trim="editedItem.justification_name.$model"
           :items="justifications"
           item="justification_name"
-          :validation="$v.editedItem.justification_name"
+          :validation="editedItem.justification_name"
           :readonly="true"
         />
       </v-col>
@@ -89,8 +89,8 @@
           <v-col cols="12" sm="6" md="6" class="" v-if="editedItem.from_hour">
             <base-input
               label="De las"
-              v-model="$v.editedItem.from_hour.$model"
-              :validation="$v.editedItem.from_hour"
+              v-model="editedItem.from_hour.$model"
+              :validation="editedItem.from_hour"
               validationTextType="default"
               type="time"
               :disabled="true"
@@ -101,8 +101,8 @@
           <v-col cols="12" sm="6" md="6" class="" v-if="editedItem.to_hour">
             <base-input
               label="horas a las"
-              v-model="$v.editedItem.to_hour.$model"
-              :validation="$v.editedItem.to_hour"
+              v-model="editedItem.to_hour.$model"
+              :validation="editedItem.to_hour"
               validationTextType="default"
               type="time"
               :disabled="true"
@@ -119,8 +119,8 @@
           >
             <base-input
               label="Total de horas"
-              v-model="$v.editedItem.total_hours.$model"
-              :validation="$v.editedItem.total_hours"
+              v-model="editedItem.total_hours.$model"
+              :validation="editedItem.total_hours"
               validationTextType="none"
               type="number"
               :disabled="true"
@@ -137,8 +137,8 @@
           >
             <base-input
               label="Fecha efectiva para"
-              v-model="$v.editedItem.effective_date.$model"
-              :validation="$v.editedItem.effective_date"
+              v-model="editedItem.effective_date.$model"
+              :validation="editedItem.effective_date"
               validationTextType="default"
               type="date"
               :disabled="true"
@@ -159,8 +159,8 @@
           <v-col cols="12" sm="12" md="6" class="" v-if="editedItem.from_date">
             <base-input
               label="Del"
-              v-model="$v.editedItem.from_date.$model"
-              :validation="$v.editedItem.from_date"
+              v-model="editedItem.from_date.$model"
+              :validation="editedItem.from_date"
               validationTextType="default"
               type="date"
               :disabled="true"
@@ -171,8 +171,8 @@
           <v-col cols="12" sm="12" md="6" class="" v-if="editedItem.to_date">
             <base-input
               label="Al"
-              v-model="$v.editedItem.to_date.$model"
-              :validation="$v.editedItem.to_date"
+              v-model="editedItem.to_date.$model"
+              :validation="editedItem.to_date"
               validationTextType="default"
               type="date"
               :disabled="true"
@@ -189,8 +189,8 @@
           >
             <base-input
               label="Total de días"
-              v-model="$v.editedItem.total_days.$model"
-              :validation="$v.editedItem.total_days"
+              v-model="editedItem.total_days.$model"
+              :validation="editedItem.total_days"
               validationTextType="none"
               type="number"
               :disabled="true"
@@ -212,8 +212,8 @@
       <v-col cols="12" sm="12" md="12" v-if="editedItem.justification">
         <base-text-area
           label="Justificación"
-          v-model="$v.editedItem.justification.$model"
-          :validation="$v.editedItem.justification"
+          v-model="editedItem.justification.$model"
+          :validation="editedItem.justification"
           validationTextType="none"
           :rows="6"
           counter
@@ -249,17 +249,27 @@
       </v-col>
       <!-- Document File -->
     </v-row>
+    <!-- buttons -->
+    <v-row>
+      <v-col align="center" cols="12" sm="12" md="12" class="">
+        <v-btn color="btn-normal no-uppercase" rounded @click="save()">
+          Guardar
+        </v-btn>
+
+        <!-- <v-btn
+          color="btn-normal-close no-uppercase"
+          rounded
+          @click="clearForm()"
+        >
+          Limpiar
+        </v-btn> -->
+      </v-col>
+    </v-row>
+    <!-- buttons -->
   </div>
 </template>
 
 <script>
-import {
-  required,
-  email,
-  minLength,
-  maxLength,
-} from "vuelidate/lib/validators";
-
 export default {
   data: () => ({}),
 
@@ -288,65 +298,11 @@ export default {
     },
   },
 
-  validations: {
-    editedItem: {
-      employee_name: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(500),
-      },
-      position_signature: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(500),
-      },
-      dependency_name: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(500),
-      },
-      justification_name: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(500),
-      },
-      from_hour: {
-        // required,
-        minLength: minLength(1),
-      },
-      to_hour: {
-        // required,
-        minLength: minLength(1),
-      },
-      total_hours: {
-        // required,
-        minLength: minLength(1),
-      },
-      from_date: {
-        // required,
-        minLength: minLength(1),
-      },
-      to_date: {
-        // required,
-        minLength: minLength(1),
-      },
-      total_days: {
-        // required,
-        minLength: minLength(1),
-      },
-      effective_date: {
-        // required,
-        minLength: minLength(1),
-      },
-      justification: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(800),
-      },
-      justification_file: {},
+  methods: {
+    save() {
+      this.$emit("save-form", true);
     },
   },
-  methods: {},
 };
 </script>
 

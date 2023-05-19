@@ -193,18 +193,6 @@ export default {
     };
   },
 
-  watch: {
-    options: {
-      handler() {
-        this.getDataFromApi();
-      },
-      deep: true,
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-  },
-
   // Validations
   validations: {
     editedItem: {

@@ -105,10 +105,7 @@
       <!-- radio group -->
 
       <!-- radio alert -->
-      <!-- <div
-        v-if="radioAlert"
-        style="display: flex; justify-content: center; align-items: center"
-      >
+      <!-- <div style="display: flex; justify-content: center; align-items: center">
         <p class="mt-2 text-center orange-text">
           <i class="material-icons">error_outline</i> Campo requerido.
         </p>

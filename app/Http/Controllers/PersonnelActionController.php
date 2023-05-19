@@ -37,7 +37,7 @@ class PersonnelActionController extends Controller
 
         $search = (isset($request->search)) ? "%$request->search%" : '%%';
 
-        $personnelAction = PersonnelAction::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
+        $personnelAction = PersonnelAction::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage, $request->filter);
 
         foreach ($personnelAction as $key => $value) {
             $value->remarks = Remark::where('personnel_action_id', $value->id)->get();
