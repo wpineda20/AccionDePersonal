@@ -35,7 +35,7 @@
       </v-row>
       <!-- <template v-slot:top> -->
       <!-- <v-toolbar flat> -->
-      <div class="container-fluid pb-5 pt-4">
+      <div class="container-fluid pb-4 pt-4">
         <v-row>
           <v-tabs grow background-color="transparent">
             <v-tab @click="filter = 'Solicitada'">Solicitadas</v-tab>
@@ -95,7 +95,11 @@
           <v-container>
             <show-personnel-action-form
               :editedItem="$v.editedItem"
+              :remark="$v.remark"
               :justifications="justifications"
+              :showUpdateBtn="editedItem.status_name == 'Observada'"
+              :showObservations="false"
+              :enableInputs="editedItem.status_name == 'Observada'"
               @save-form="save()"
             />
           </v-container>
@@ -137,6 +141,7 @@ export default {
     total: 0,
     options: {},
     justifications: [],
+    remarksCreated: [],
     editedIndex: -1,
     debounce: 0,
     totalItems: 0,
@@ -154,6 +159,7 @@ export default {
       total_days: "",
       justification: "",
       justification_file: "",
+      remarks: [],
     },
     defaultItem: {
       employee_name: "",
@@ -169,7 +175,15 @@ export default {
       total_days: "",
       justification: "",
       justification_file: "",
+      remarks: [],
     },
+    remark: {
+      observation: "",
+      status: 0,
+    },
+    showUpdateBtn: false,
+    showObservations: false,
+    enableInputs: false,
   }),
 
   created() {
@@ -247,6 +261,14 @@ export default {
         maxLength: maxLength(800),
       },
       justification_file: {},
+      remarks: {},
+    },
+
+    remark: {
+      observation: {
+        required,
+      },
+      status: {},
     },
   },
 
@@ -336,6 +358,10 @@ export default {
       if (show) {
         this.$refs.top.scrollIntoView();
       }
+    },
+
+    save() {
+      console.log("actualizar registro observado");
     },
   },
 };

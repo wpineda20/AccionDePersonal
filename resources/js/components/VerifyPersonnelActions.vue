@@ -173,102 +173,14 @@
           <v-container>
             <show-personnel-action-form
               :editedItem="$v.editedItem"
+              :remark="$v.remark"
+              :showObservations="true"
               :justifications="justifications"
+              @verify-remark="verifyRemark()"
+              @set-status="setStatus()"
+              @create-remark="createRemark()"
             />
           </v-container>
-          <v-container>
-            <h4 class="mb-0">Observaciones</h4>
-            <hr />
-            <v-col cols="12" md="12">
-              <base-text-area
-                label="Observación"
-                v-model.trim="$v.remark.observation.$model"
-                :validation="$v.remark.observation"
-                validationTextType="none"
-                :rows="3"
-                :disabled="
-                  disableRemark != false || this.editedItem.remarks.length > 0
-                "
-              />
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-btn
-                color="btn-normal"
-                rounded
-                @click="createRemark()"
-                :disabled="
-                  disableRemark != false || this.editedItem.remarks.length > 0
-                "
-              >
-                AGREGAR
-              </v-btn>
-            </v-col>
-
-            <v-simple-table class="mt-2">
-              <thead>
-                <tr>
-                  <th>Observación</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in editedItem.remarks" :key="index">
-                  <td>{{ item.observation }}</td>
-                  <td>{{ item.status }}</td>
-                  <td>
-                    <v-tooltip top>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-icon
-                          @click="verifyRemark(item)"
-                          v-on="on"
-                          v-bind="attrs"
-                        >
-                          mdi-checkbox-marked-circle
-                        </v-icon>
-                      </template>
-                      <span>Validar observación</span>
-                    </v-tooltip>
-
-                    <!-- <v-icon @click="deleteRemarksCreated(index)">
-                      delete
-                    </v-icon> -->
-                  </td>
-                </tr>
-                <!-- <tr v-if="editedItem.remarksCreated.length == 0">
-                  <td colspan="3">No hay observaciones</td>
-                </tr> -->
-              </tbody>
-            </v-simple-table>
-          </v-container>
-          <v-row>
-            <v-col align="center">
-              <v-btn
-                color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
-                rounded
-                @click="setStatus('Aprobada')"
-                :disabled="
-                  disableRemark != false || this.editedItem.remarks.length > 0
-                "
-              >
-                Aprobar
-              </v-btn>
-              <v-btn
-                color="btn-normal-close no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
-                rounded
-                @click="setStatus('Observada')"
-              >
-                Observar
-              </v-btn>
-              <!-- <v-btn
-                color="btn-normal-close no-uppercase mt-3 mb-3"
-                rounded
-                @click="closeActions()"
-              >
-                Cerrar
-              </v-btn> -->
-            </v-col>
-          </v-row>
         </v-container>
       </v-card>
     </v-dialog>
@@ -622,42 +534,6 @@ export default {
       this.initialize();
       this.closeDelete();
     },
-
-    // getDataFromApi() {
-    //   this.loading = true;
-    //   this.records = [];
-    //   this.recordsFiltered = [];
-
-    //   //debounce
-    //   clearTimeout(this.debounce);
-    //   this.debounce = setTimeout(async () => {
-    //     const { data } = await personnelActionApi
-    //       .get(null, {
-    //         params: this.options,
-    //       })
-    //       .catch((error) => {
-    //         this.updateAlert(
-    //           true,
-    //           "No fue posible obtener los registros.",
-    //           "fail"
-    //         );
-    //       });
-
-    //     this.records = data.records;
-    //     this.recordsFiltered = data.records;
-    //     this.total = data.total;
-    //     this.recordsFiltered.forEach((item) => {
-    //       item.date_request_created = format(
-    //         new Date(item.date_request_created),
-    //         "d/MM/y, hh:mm a",
-    //         {
-    //           locale: esEsLocale,
-    //         }
-    //       );
-    //     });
-    //     this.loading = false;
-    //   }, 500);
-    // },
 
     addRecord() {
       this.dialog = true;

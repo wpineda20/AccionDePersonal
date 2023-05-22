@@ -48,7 +48,7 @@
           :items="justifications"
           item="justification_name"
           :validation="editedItem.justification_name"
-          :readonly="true"
+          :readonly="!enableInputs"
         />
       </v-col>
       <!-- justificaction_name -->
@@ -93,7 +93,7 @@
               :validation="editedItem.from_hour"
               validationTextType="default"
               type="time"
-              :disabled="true"
+              :disabled="!enableInputs"
             />
           </v-col>
           <!-- from_hour -->
@@ -105,7 +105,7 @@
               :validation="editedItem.to_hour"
               validationTextType="default"
               type="time"
-              :disabled="true"
+              :disabled="!enableInputs"
             />
           </v-col>
           <!-- from_hour -->
@@ -123,7 +123,7 @@
               :validation="editedItem.total_hours"
               validationTextType="none"
               type="number"
-              :disabled="true"
+              :disabled="!enableInputs"
             />
           </v-col>
           <!-- total_hours -->
@@ -141,7 +141,7 @@
               :validation="editedItem.effective_date"
               validationTextType="default"
               type="date"
-              :disabled="true"
+              :disabled="!enableInputs"
             />
           </v-col>
           <!-- effective_date -->
@@ -163,7 +163,7 @@
               :validation="editedItem.from_date"
               validationTextType="default"
               type="date"
-              :disabled="true"
+              :disabled="!enableInputs"
             />
           </v-col>
           <!-- from_date -->
@@ -175,7 +175,7 @@
               :validation="editedItem.to_date"
               validationTextType="default"
               type="date"
-              :disabled="true"
+              :disabled="!enableInputs"
             />
           </v-col>
           <!-- from_date -->
@@ -193,7 +193,7 @@
               :validation="editedItem.total_days"
               validationTextType="none"
               type="number"
-              :disabled="true"
+              :disabled="!enableInputs"
             />
           </v-col>
           <!-- total_days -->
@@ -217,7 +217,7 @@
           validationTextType="none"
           :rows="6"
           counter
-          :disabled="true"
+          :disabled="!enableInputs"
         />
         <div style="display: flex; justify-content: flex-end">
           <span class="">(Máximo 800 caracteres)</span>
@@ -248,21 +248,93 @@
         <p v-else>No se adjunto ningún documento.</p>
       </v-col>
       <!-- Document File -->
+
+      <v-col cols="12" sm="12" md="12">
+        <h4 class="mb-0">Observaciones</h4>
+        <hr />
+        <base-text-area
+          label="Observación"
+          v-model.trim="remark.observation.$model"
+          :validation="remark.observation"
+          validationTextType="none"
+          :rows="3"
+          :disabled="
+            disableRemark != false || this.editedItem.remarks.length > 0
+          "
+          v-show="showObservations"
+        />
+      </v-col>
+      <v-col cols="12" md="6" v-show="showObservations">
+        <v-btn
+          color="btn-normal"
+          rounded
+          @click="createRemark()"
+          :disabled="
+            disableRemark != false || this.editedItem.remarks.length > 0
+          "
+        >
+          AGREGAR
+        </v-btn>
+      </v-col>
+
+      <v-simple-table class="mt-2">
+        <thead>
+          <tr>
+            <th class="fw-bold text-black">OBSERVACIÓN</th>
+            <th class="fw-bold text-black">ESTADO</th>
+            <th class="fw-bold text-black">ACCIÓN</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in editedItem.remarks" :key="index">
+            <td>{{ item.observation }}</td>
+            <td>{{ item.status }}</td>
+            <td>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon @click="verifyRemark(item)" v-on="on" v-bind="attrs">
+                    mdi-checkbox-marked-circle
+                  </v-icon>
+                </template>
+                <span>Validar observación</span>
+              </v-tooltip>
+            </td>
+          </tr>
+          <tr v-if="remarks.length == 0">
+            <td colspan="3">No se realizó ninguna observación.</td>
+          </tr>
+        </tbody>
+      </v-simple-table>
+
+      <v-row v-show="showObservations">
+        <v-col align="center">
+          <v-btn
+            color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+            rounded
+            @click="setStatus('Aprobada')"
+            :disabled="
+              disableRemark != false || this.editedItem.remarks.length > 0
+            "
+          >
+            Aprobar
+          </v-btn>
+          <v-btn
+            color="btn-normal-close no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+            rounded
+            @click="setStatus('Observada')"
+          >
+            Observar
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-row>
+
     <!-- buttons -->
-    <v-row>
+    <v-row v-if="showUpdateBtn">
       <v-col align="center" cols="12" sm="12" md="12" class="">
         <v-btn color="btn-normal no-uppercase" rounded @click="save()">
-          Guardar
+          Actualizar
         </v-btn>
-
-        <!-- <v-btn
-          color="btn-normal-close no-uppercase"
-          rounded
-          @click="clearForm()"
-        >
-          Limpiar
-        </v-btn> -->
       </v-col>
     </v-row>
     <!-- buttons -->
@@ -290,17 +362,62 @@ export default {
         effective_date: "",
         justification: "",
         justification_file: "",
+        remarks: [],
+      }),
+    },
+    remark: {
+      type: Object,
+      default: () => ({
+        observation: "",
+        status: 0,
       }),
     },
     justifications: {
       type: Array,
       default: () => [],
     },
+    remarksCreated: {
+      type: Array,
+      default: () => [],
+    },
+    remarks: {
+      type: Array,
+      default: () => [],
+    },
+    disableRemark: {
+      type: Boolean,
+      default: () => false,
+    },
+    showUpdateBtn: {
+      type: Boolean,
+      default: () => false,
+    },
+    showObservations: {
+      type: Boolean,
+      default: () => false,
+    },
+    enableInputs: {
+      type: Boolean,
+      default: () => false,
+    },
   },
 
   methods: {
     save() {
       this.$emit("save-form", true);
+      console.log("emit: Actualizar registro");
+    },
+    verifyRemark() {
+      console.log("Verificar observación");
+      this.$emit("emit: verify-remark", true);
+    },
+    setStatus() {
+      this.$emit("set-status", true);
+      console.log("emit: set status");
+    },
+    createRemark() {
+      this.$emit("create-remark", this.remark);
+      console.log("emit: crear observación");
     },
   },
 };
