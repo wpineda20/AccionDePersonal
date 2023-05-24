@@ -110,6 +110,14 @@ class PersonnelActionController extends Controller
 
         $personnelAction->save();
 
+        //Create history personnel action status
+        HistoryPersonnelActionStatus::insert([
+            'personnel_action_id' => $personnelAction->id,
+            'user_id' => auth()->user()->id,
+            'status_id' => $personnelAction->status_id,
+            'update_date' => now(),
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => "Tu solicitud ha sido enviada exitosamente.",
@@ -170,9 +178,49 @@ class PersonnelActionController extends Controller
      * @param  \App\Models\PersonnelAction  $personnelAction
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PersonnelAction $personnelAction)
+    public function update(Request $request)
     {
-        //
+        $data = Encrypt::decryptArray($request->all(), 'id');
+
+        $personnelAction = PersonnelAction::where('id', $data['id'])->first();
+
+        //Base64 to file convertion
+        // if ($request->justification_file) {
+        //     $justification_file = FileController::base64ToFile($request->justification_file, date('Y-m-d') . '-' . Str::random(4) . '-documentacion', 'documents');
+
+        //     $justification_file = asset($justification_file);
+        // } else {
+        //     $justification_file = $request->justification_file;
+        // }
+
+        $personnelAction->justification_type_id = JustificationType::where('justification_name', $request->justification_name)->first()->id;
+        $personnelAction->from_hour = $request->from_hour;
+        $personnelAction->to_hour = $request->to_hour;
+        $personnelAction->total_hours = $request->total_hours;
+        $personnelAction->effective_date = $request->effective_date;
+        $personnelAction->from_date = $request->from_date;
+        $personnelAction->to_date = $request->to_date;
+        $personnelAction->total_days = $request->total_days;
+        $personnelAction->justification = $request->justification;
+        $personnelAction->current_year = $request->current_year;
+        $personnelAction->status_id = 1;
+        // $personnelAction->justification_file = $justification_file;
+
+        $personnelAction->save();
+
+        //Create history personnel action status
+        HistoryPersonnelActionStatus::insert([
+            'personnel_action_id' => $personnelAction->id,
+            'user_id' => auth()->user()->id,
+            'status_id' => $personnelAction->status_id,
+            'update_date' => now(),
+        ]);
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Registro modificado correctamente.",
+            "success" => true,
+        ]);
     }
 
     /**

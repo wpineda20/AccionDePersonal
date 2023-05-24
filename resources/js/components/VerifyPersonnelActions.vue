@@ -50,34 +50,6 @@
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
       >
         <template v-slot:[`item.actions`]="{ item }">
-          <!-- <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                small
-                class="mr-2"
-                @click="editItem(item)"
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-pencil
-              </v-icon>
-            </template>
-            <span>Editar</span>
-          </v-tooltip> -->
-          <!-- <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                small
-                class="mr-2"
-                @click="deleteItem(item)"
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-delete
-              </v-icon>
-            </template>
-            <span>Eliminar</span>
-          </v-tooltip> -->
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -98,7 +70,7 @@
         </template>
       </v-data-table>
     </v-card>
-
+    <!-- 
     <v-dialog v-model="dialog" max-width="600px" persistent>
       <v-card class="flexcard" height="100%">
         <v-card-title>
@@ -109,9 +81,7 @@
 
         <v-card-text>
           <v-container>
-            <!-- Form -->
             <v-row class="pt-3"> </v-row>
-            <!-- Form -->
             <v-row>
               <v-col align="center">
                 <v-btn
@@ -133,9 +103,9 @@
           </v-container>
         </v-card-text>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
 
-    <v-dialog v-model="dialogDelete" max-width="400px">
+    <!-- <v-dialog v-model="dialogDelete" max-width="400px">
       <v-card class="h-100">
         <v-container>
           <h1 class="black-secondary text-center mt-3 mb-3">
@@ -162,14 +132,15 @@
           </v-row>
         </v-container>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
+
     <!-- Authorize / Denied -->
     <v-dialog v-model="dialogActions" max-width="600px">
       <v-card class="h-100">
         <v-container>
-          <h3 class="black-secondary text-center mt-3 mb-3">
+          <h2 class="black-secondary text-center mt-3 mb-3">
             Verificación de Acción de Personal
-          </h3>
+          </h2>
           <v-container>
             <show-personnel-action-form
               :editedItem="$v.editedItem"
@@ -400,7 +371,6 @@ export default {
       });
 
       if (responses) {
-        console.log(responses);
         this.recordsFiltered = responses[0].data.records;
         this.justifications = responses[1].data.records;
 

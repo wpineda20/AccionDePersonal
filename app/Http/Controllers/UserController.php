@@ -19,25 +19,27 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $skip = $request->skip;
-        $limit = $request->take - $skip; // the limit
+        $itemsPerPage = $request->itemsPerPage;
+        $skip = ($request->page - 1) * $request->itemsPerPage;
 
-        $users = User::skip($skip)->take($limit)
-            ->get();
-
-        $users->makeVisible(["password"]);
-
-        foreach ($users as $user) {
-            $user->rol = $user->getRoleNames()[0];
+        if (($request->itemsPerPage == -1)) {
+            $itemsPerPage =  User::count();
+            $skip = 0;
         }
 
-        $users = Encrypt::encryptObject($users, "id");
+        $sortBy = (isset($request->sortBy[0])) ? $request->sortBy[0] : 'id';
+        $sort = (isset($request->sortDesc[0])) ? "asc" : 'desc';
 
-        $total = User::count();
+        $search = (isset($request->search)) ? "%$request->search%" : '%%';
+
+        $users = User::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
+
+        $total = User::counterPagination($search);
 
         return response()->json([
-            "status" => "success",
-            "message" => "Registros obtenidos correctamente.",
+            "success" => true,
+            "status" => 200,
+            "message" => "Usuarios obtenidos correctamente.",
             "users" => $users,
             "total" => $total,
         ]);
@@ -108,9 +110,10 @@ class UserController extends Controller
 
         $data = [
             "name" => $request->name,
-            "lastName" => $request->lastName,
             "email" => $request->email,
-            "password" => $password,
+            "position_signature" => $request->position_signature,
+            "dependency_name" => Dependency::where('dependency_name', $request->dependency_name)->first()->id,
+            "inmediate_superior_id" => User::where('name', $request->inmediate_superior_id)->first()->id,
         ];
 
         if (isset($request->rol)) {
@@ -155,7 +158,7 @@ class UserController extends Controller
 
         return response()->json([
             "status" => "success",
-            "message" => "Registro creado correctamente.",
+            "message" => "Registro obtenido correctamente.",
             "user" => $user
         ]);
     }
@@ -174,5 +177,25 @@ class UserController extends Controller
             ->first();
 
         return response()->json(['message' => 'success', 'userInfoLogged' => $user]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function usersByDependency(Request $request)
+    {
+        $userLogged = auth()->user();
+
+        $users = User::where('dependency_id', $userLogged->dependency_id)->get();
+
+        return response()->json([
+            "success" => true,
+            "status" => 200,
+            "message" => "Usuarios obtenidos correctamente.",
+            "users" => $users,
+        ]);
     }
 }

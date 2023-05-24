@@ -100,6 +100,9 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
 
         // User Personnel Actions
         Route::get('api/personnelAction/userPersonnelActions', [PersonnelActionController::class, 'userPersonnelActions']);
+
+        // Users by Dependency
+        Route::post('/api/web/user/usersByDependency', [UserController::class, 'usersByDependency']);
     });
 
     // //Reports

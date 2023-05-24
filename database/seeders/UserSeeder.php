@@ -18,17 +18,18 @@ class UserSeeder extends Seeder
     {
         $roleAdmin = Role::findOrFail(1);
         $roleUser = Role::findOrFail(2);
+        $roleJefe = Role::findOrFail(3);
+        $roleRrhh = Role::findOrFail(4);
 
         $user = User::create([
             'id' => 1,
             'name' => 'William',
             'last_name' => 'Pineda',
             'position_signature' => 'Técnico Especialista en Medios de Comunicación Web',
-            // 'dui' => '02475605-7',
-            'dependency_id' => 9,
             'email' => 'admin@gmail.com',
+            'dependency_id' => 9,
+            'inmediate_superior_id' => null,
             'password' => Hash::make('12345678'),
-            'name' => 'William',
             'email_verified_at' => now(),
         ]);
         $user->assignRole($roleAdmin);

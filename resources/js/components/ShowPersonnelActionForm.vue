@@ -1,6 +1,9 @@
 <template>
   <div>
     <v-row>
+      <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 1px solid lightgray">
+        I- DATOS GENERALES
+      </h5>
       <!-- employee_name -->
       <v-col cols="12" sm="12" md="12" class="m-0 pb-3">
         <base-input
@@ -52,34 +55,10 @@
         />
       </v-col>
       <!-- justificaction_name -->
-      <!-- <div>
-        <v-radio-group v-model="radios" row>
-          <v-radio value="hours" @click="showHourForm()">
-            <template v-slot:label>
-              <div>
-                <strong style="margin-left: 8px; color: #313945">HORAS</strong>
-              </div>
-            </template>
-          </v-radio>
-          <v-radio value="days" @click="showDayForm()">
-            <template v-slot:label>
-              <div>
-                <strong style="margin-left: 8px; color: #313945">DÍAS</strong>
-              </div>
-            </template>
-          </v-radio>
-        </v-radio-group>
-      </div> -->
-      <!-- <div
-        v-if="radioAlert"
-        style="display: flex; justify-content: center; align-items: center"
-      >
-        <p class="mt-2 text-center orange-text">
-          <i class="material-icons">error_outline</i> Campo requerido.
-        </p>
-      </div> -->
 
-      <!-- <hr /> -->
+      <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 1px solid lightgray">
+        III.- PERIODO POR:
+      </h5>
 
       <!-- hours col -->
       <v-col cols="12" sm="12" md="12">
@@ -201,12 +180,12 @@
       </v-col>
       <!-- dates col -->
 
-      <!-- <h5
+      <h5
         class="fw-bold pb-2 mb-4 pt-4"
         style="border-bottom: 1px solid lightgray"
       >
         IV- JUSTIFICANTES
-      </h5> -->
+      </h5>
 
       <!-- justification -->
       <v-col cols="12" sm="12" md="12" v-if="editedItem.justification">
@@ -225,23 +204,22 @@
       </v-col>
       <!-- justification -->
 
-      <!-- <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 1px solid lightgray">
+      <!-- 
+      <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 1px solid lightgray">
         V. TIEMPO EXTRAORDINARIO / DESCANSO
-      </h5>
+      </h5> -->
 
       <h5 class="fw-bold pb-2 mb-2" style="border-bottom: 1px solid lightgray">
         ANEXAR DOCUMENTOS
-      </h5> -->
+      </h5>
+      <!-- <hr> -->
 
       <!-- Document File -->
-      <v-col cols="12" xs="12" sm="12" md="12">
-        <h4 class="mb-0">Documentación anexada.</h4>
-        <hr />
-        <!-- <span class="text-muted">(Opcional)</span> -->
+      <v-col cols="12" xs="12" sm="12" md="6">
         <a
-          :href="editedItem.justification_file"
+          :href="editedItem.justification_file.$model"
           target="_blank"
-          v-if="editedItem.justification_file"
+          v-if="editedItem.justification_file.$model"
         >
           Visualizar documento anexo
         </a>
@@ -249,9 +227,30 @@
       </v-col>
       <!-- Document File -->
 
+      <!-- justification_file -->
+      <v-col cols="12" xs="12" sm="12" md="6" v-if="showUpdateBtn">
+        <h6 class="mb-0">
+          Documentación original para justificación de acción de personal (PDF).
+        </h6>
+        <span class="text-muted">(Opcional)</span>
+        <input-file
+          accept="application/pdf"
+          v-model="editedItem.justification_file.$model"
+          :validation="editedItem.justification_file"
+          @update-file="editedItem.justification_file = $event"
+          @file-size-exceeded="$emit('file-size-exceeded', true)"
+        />
+      </v-col>
+      <!-- justification_file -->
+
+      <h5
+        class="fw-bold pt-3 pb-2 mb-2"
+        style="border-bottom: 1px solid lightgray"
+      >
+        OBSERVACIONES
+      </h5>
+
       <v-col cols="12" sm="12" md="12">
-        <h4 class="mb-0">Observaciones</h4>
-        <hr />
         <base-text-area
           label="Observación"
           v-model.trim="remark.observation.$model"
@@ -330,11 +329,23 @@
     </v-row>
 
     <!-- buttons -->
-    <v-row v-if="showUpdateBtn">
-      <v-col align="center" cols="12" sm="12" md="12" class="">
-        <v-btn color="btn-normal no-uppercase" rounded @click="save()">
+    <v-row>
+      <v-col align="center" cols="12" sm="12" md="12">
+        <v-btn
+          v-if="showUpdateBtn"
+          color="btn-normal no-uppercase"
+          rounded
+          @click="updateForm()"
+        >
           Actualizar
         </v-btn>
+        <!-- <v-btn
+          color="btn-normal-close no-uppercase"
+          rounded
+          @click="closeFormActions()"
+        >
+          Cerrar
+        </v-btn> -->
       </v-col>
     </v-row>
     <!-- buttons -->
@@ -403,21 +414,28 @@ export default {
   },
 
   methods: {
-    save() {
-      this.$emit("save-form", true);
-      console.log("emit: Actualizar registro");
+    updateForm() {
+      this.$emit("update-form", true);
+      this.closeFormActions();
     },
+
     verifyRemark() {
       console.log("Verificar observación");
       this.$emit("emit: verify-remark", true);
     },
+
     setStatus() {
       this.$emit("set-status", true);
       console.log("emit: set status");
     },
+
     createRemark() {
       this.$emit("create-remark", this.remark);
       console.log("emit: crear observación");
+    },
+
+    closeFormActions() {
+      this.$emit("close-form", true);
     },
   },
 };

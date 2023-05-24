@@ -93,6 +93,7 @@
                         <li><a href="{{ url('/justificationTypes') }}">Tipos justificación</a></li>
                         <li><a href="{{ url('/dependencies') }}">Dependencias</a></li>
                         <li><a href="{{ url('/status') }}">Estados</a></li>
+                        <li><a href="{{ url('/users') }}">Usuarios</a></li>
                     </ul>
                 </li>
                 @endif

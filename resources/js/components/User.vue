@@ -12,28 +12,27 @@
       class="mb-2"
     />
     <v-data-table
+      v-model="selected"
+      :single-select="false"
+      :search="options.search"
       :headers="headers"
       :items="recordsFiltered"
-      :search="search"
       :options.sync="options"
-      :server-items-length="total"
-      :footer-props="{ itemsPerPageOptions: [50] }"
-      :items-per-page="take"
-      @update:options="updatePagination"
-      :page.sync="actualPage"
+      :loading="loading"
       item-key="id"
-      sort-by="name"
+      sort-by="id"
+      :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
       class="elevation-3 shadow p-3 mt-3"
     >
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Usuarios</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="600px" persistent>
+          <v-dialog v-model="dialog" max-width="800px" persistent>
             <template v-slot:activator="{ on, attrs }">
               <v-row>
                 <v-col align="right">
-                  <v-btn
+                  <!-- <v-btn
                     class="mb-2 btn-normal no-uppercase"
                     v-bind="attrs"
                     v-on="on"
@@ -41,7 +40,7 @@
                     @click="newUser()"
                   >
                     Agregar
-                  </v-btn>
+                  </v-btn> -->
                 </v-col>
                 <v-col
                   xs="6"
@@ -54,8 +53,7 @@
                     label="Buscar"
                     outlined
                     type="text"
-                    v-model="search"
-                    @input="searchValue()"
+                    v-model="options.search"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -71,94 +69,104 @@
                 <v-container>
                   <!-- Form -->
                   <v-row>
-                    <!-- User Name -->
+                    <!-- name -->
                     <v-col cols="12" sm="6" md="6">
                       <base-input
                         label="Nombre"
                         v-model="$v.editedItem.name.$model"
                         :validation.sync="$v.editedItem.name"
                         validationTextType="default"
-                        :validationsInput="{
-                          required: true,
-                          minLength: true,
-                          maxLength: true,
-                        }"
                       />
                     </v-col>
-                    <v-col cols="12" sm="6" md="6">
+                    <!-- name -->
+                    <!-- <v-col cols="12" sm="6" md="6">
                       <base-input
                         label="Apellidos"
                         v-model="$v.editedItem.last_name.$model"
                         :validation.sync="$v.editedItem.last_name"
                         validationTextType="default"
-                        :validationsInput="{
-                          required: true,
-                          minLength: true,
-                          maxLength: true,
-                        }"
                       />
-                    </v-col>
+                    </v-col> -->
 
-                    <!-- DUI -->
+                    <!-- position_signature -->
                     <v-col cols="12" sm="6" md="6">
                       <base-input
-                        label="DUI"
-                        v-model.trim="$v.editedItem.dui.$model"
-                        :validation="$v.editedItem.dui"
-                        validationTextType="only-numbers"
-                        v-mask="'########-#'"
-                        :validationsInput="{
-                          required: true,
-                          isValidDui: true,
-                        }"
+                        label="Cargo"
+                        v-model="$v.editedItem.position_signature.$model"
+                        :validation.sync="$v.editedItem.position_signature"
+                        validationTextType="default"
                       />
                     </v-col>
+                    <!-- position_signature -->
 
-                    <!-- Rol  -->
-                    <v-col cols="12" sm="6" md="6">
-                      <base-select
-                        label="Rol"
-                        v-model.trim="$v.editedItem.rol.$model"
-                        :items="roles"
-                        :validation="$v.editedItem.rol"
-                      />
-                    </v-col>
-                    <!-- Rol  -->
-                    <!-- E-mail -->
+                    <!-- email -->
                     <v-col cols="12" sm="6" md="6">
                       <base-input
                         label="Correo electrónico"
                         v-model="$v.editedItem.email.$model"
                         :validation.sync="$v.editedItem.email"
                         validationTextType="none"
-                        :validationsInput="{
-                          required: true,
-                          email: true,
-                        }"
                       />
                     </v-col>
-                    <!-- E-mail -->
-                    <!-- Password -->
+                    <!-- email -->
+
+                    <!-- dependency_name  -->
                     <v-col cols="12" sm="6" md="6">
+                      <base-select-search
+                        label="Dependencia"
+                        v-model.trim="$v.editedItem.dependency_name.$model"
+                        :items="dependencies"
+                        item="dependency_name"
+                        :validation="$v.editedItem.dependency_name"
+                      />
+                    </v-col>
+                    <!-- dependency_name  -->
+
+                    <!-- inmediate_superior_id  -->
+                    <v-col cols="12" sm="6" md="6">
+                      <base-select-search
+                        label="Jefe inmediato (Opcional)"
+                        v-model.trim="
+                          $v.editedItem.inmediate_superior_id.$model
+                        "
+                        :items="users"
+                        item="name"
+                        :validation="$v.editedItem.inmediate_superior_id"
+                      />
+                    </v-col>
+                    <!-- inmediate_superior_id  -->
+
+                    <!-- rol -->
+                    <v-col cols="12" sm="6" md="6">
+                      <base-select-search
+                        label="Rol"
+                        v-model.trim="$v.editedItem.rol.$model"
+                        :items="roles"
+                        :validation="$v.editedItem.rol"
+                      />
+                    </v-col>
+                    <!-- rol -->
+
+                    <!-- password -->
+                    <!-- <v-col cols="12" sm="6" md="6">
                       <base-input
                         label="Contraseña"
                         v-model="$v.editedItem.password.$model"
                         :validation.sync="$v.editedItem.password"
                         validationTextType="none"
                         :type="typePassword"
-                        :min="1"
                         autocomplete="off"
                         :validationsInput="{
-                          required: true,
-                          minLength: true,
+                          required: false,
+                          minLength: false,
                           maxnLength: true,
                           isValidPassword: true,
                           showPassword: true,
                         }"
                         @update-password="showPassword($event)"
                       />
-                    </v-col>
-                    <!-- Password -->
+                    </v-col> -->
+                    <!-- password -->
                   </v-row>
                   <!-- Form -->
                   <v-row>
@@ -204,6 +212,7 @@
 <script>
 import roleApi from "../apis/roleApi";
 import userApi from "../apis/userApi";
+import dependencyApi from "../apis/dependencyApi";
 import lib from "../libs/function";
 
 import {
@@ -221,43 +230,49 @@ export default {
       dialog: false,
       headers: [
         { text: "USUARIO", value: "name" },
-        { text: "ROL", value: "rol" },
+        { text: "ROL", value: "rol", sortable: false },
         { text: "CORREO ELECTRÓNICO", value: "email" },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
+      selected: [],
       records: [],
       recordsFiltered: [],
       editedIndex: -1,
-      skip: 0,
-      take: 50,
       title: "Usuarios",
-      numberItemsToAdd: 50,
-      total: 50,
-      loadMoreItems: false,
+      selectedTab: 0,
       options: {},
-      actualPage: 1,
       editedItem: {
         name: "",
         last_name: "",
         email: "",
         password: "",
-        dui: "",
+        // dui: "",
         rol: "Administrator",
+        position_signature: "",
+        dependency_name: "",
+        inmediate_superior_id: "",
       },
       defaultItem: {
         name: "",
         email: "",
         last_name: "",
         password: "",
-        dui: "",
+        // dui: "",
         rol: "Administrator",
+        position_signature: "",
+        dependency_name: "",
+        inmediate_superior_id: "",
       },
       textAlert: "",
       alertEvent: "success",
       roles: [],
+      dependencies: [],
+      users: [],
       redirectSessionFinished: false,
       showAlert: false,
       typePassword: "password",
+      debounce: 0,
+      options: {},
     };
   },
 
@@ -265,7 +280,7 @@ export default {
   validations: {
     editedItem: {
       password: {
-        required,
+        // required,
         minLength: minLength(8),
         maxLength: maxLength(13),
         isValidPassword: helpers.regex(
@@ -283,6 +298,11 @@ export default {
         maxLength: maxLength(500),
       },
       last_name: {
+        // required,
+        minLength: minLength(1),
+        maxLength: maxLength(500),
+      },
+      position_signature: {
         required,
         minLength: minLength(1),
         maxLength: maxLength(500),
@@ -290,10 +310,16 @@ export default {
       rol: {
         required,
       },
-      dui: {
+      dependency_name: {
         required,
-        isValidDui: helpers.regex("isValidDui", /[0-9]{8}-[0-9]/),
       },
+      inmediate_superior_id: {
+        // required,
+      },
+      // dui: {
+      //   required,
+      //   isValidDui: helpers.regex("isValidDui", /[0-9]{8}-[0-9]/),
+      // },
     },
   },
 
@@ -307,7 +333,7 @@ export default {
   watch: {
     options: {
       handler() {
-        this.loadMore();
+        this.getDataFromApi();
       },
       deep: false,
       dirty: false,
@@ -331,25 +357,29 @@ export default {
       this.recordsFiltered = [];
 
       let requests = [
-        userApi.get(null, {
-          params: { skip: this.skip, take: this.take },
-        }),
+        this.getDataFromApi(),
         roleApi.get(),
+        dependencyApi.get(null, {
+          params: {
+            itemsPerPage: -1,
+          },
+        }),
+        userApi.post(`/usersByDependency`),
       ];
 
       const responses = await Promise.all(requests).catch((error) => {
-        this.updateAlert(true, "No fue posible eliminar el registros.", "fail");
+        this.updateAlert(true, "No fue posible obtener los registros.", "fail");
         this.redirectSessionFinished = lib.verifySessionFinished(
           error.response.status,
           419
         );
       });
 
-      this.records = responses[0].data.users;
-      this.recordsFiltered = responses[0].data.users;
-      this.total = responses[0].data.total;
-
-      this.roles = responses[1].data.roles;
+      if (responses) {
+        this.roles = responses[1].data.roles;
+        this.dependencies = responses[2].data.records;
+        this.users = responses[3].data.users;
+      }
     },
 
     editItem(item) {
@@ -439,79 +469,36 @@ export default {
       return;
     },
 
-    searchValue() {
+    getDataFromApi() {
+      this.loading = true;
+      this.records = [];
       this.recordsFiltered = [];
 
-      if (this.search != "") {
-        this.records.forEach((record) => {
-          let searchConcat = "";
+      //debounce
+      clearTimeout(this.debounce);
+      this.debounce = setTimeout(async () => {
+        const { data } = await userApi
+          .get(null, {
+            params: this.options,
+          })
+          .catch((error) => {
+            this.updateAlert(
+              true,
+              "No fue posible obtener los registros.",
+              "fail"
+            );
+          });
 
-          for (let i = 0; i < record.name.length; i++) {
-            searchConcat += record.name[i].toUpperCase();
-
-            if (
-              searchConcat === this.search.toUpperCase() &&
-              !this.recordsFiltered.some((rec) => rec == record)
-            ) {
-              this.recordsFiltered.push(record);
-            }
-          }
-        });
-        return;
-      }
-
-      this.recordsFiltered = this.records;
-    },
-
-    async loadMore() {
-      if (this.actualPage == 1) {
-        this.actualPage = 1;
-        this.skip = 0;
-        this.take = this.numberItemsToAdd;
-      }
-      const res = await userApi
-        .get(null, {
-          params: { skip: this.skip, take: this.take },
-        })
-        .catch((error) => {
-          this.redirectSessionFinished = lib.verifySessionFinished(
-            res.status,
-            200
-          );
-          this.updateAlert(
-            true,
-            "Registro almacenado correctamente.",
-            "success"
-          );
-        });
-
-      this.records = res.data.users;
-      this.recordsFiltered = res.data.users;
-
-      this.search = "";
-
-      this.$v.editedItem.rol.$model = "Postulante";
-    },
-
-    updatePagination(pagination) {
-      if (pagination.page != 1) {
-        if (pagination.page <= this.actualPage) {
-          this.skip -= this.take;
-          this.take -= this.numberItemsToAdd;
-        } else {
-          this.skip = this.take;
-          this.take += this.numberItemsToAdd;
-        }
-      } else {
-        this.skip = 0;
-        this.take = this.numberItemsToAdd;
-      }
-      this.actualPage = pagination.page;
+        this.records = data.users;
+        this.recordsFiltered = data.users;
+        this.total = data.total;
+        this.loading = false;
+      }, 500);
     },
 
     newUser() {
       this.dialog = true;
-
+      this.$v.$reset();
       this.editedItem.rol = this.roles[0].name;
     },
 

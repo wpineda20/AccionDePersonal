@@ -13,16 +13,7 @@
         <v-col cols="12" sm="12" md="4" lg="4" xl="4">
           <h2 style="margin-left: 15px">Acciones de Personal</h2>
         </v-col>
-        <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
-          <!-- <v-btn
-            rounded
-            @click="addRecord()"
-            class="mb-2 btn-normal no-uppercase"
-            title="Agregar"
-          >
-            Agregar
-          </v-btn> -->
-        </v-col>
+        <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end"> </v-col>
         <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
           <v-text-field
             dense
@@ -33,8 +24,8 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <!-- <template v-slot:top> -->
-      <!-- <v-toolbar flat> -->
+
+      <!-- filters -->
       <div class="container-fluid pb-4 pt-4">
         <v-row>
           <v-tabs grow background-color="transparent">
@@ -46,8 +37,9 @@
           </v-tabs>
         </v-row>
       </div>
-      <!-- </v-toolbar> -->
-      <!-- </template> -->
+      <!-- filters -->
+
+      <!-- datatable -->
       <v-data-table
         :search="options.search"
         :headers="headers"
@@ -85,13 +77,14 @@
           </a>
         </template>
       </v-data-table>
+      <!-- datatable -->
     </v-card>
-    <v-dialog v-model="dialogShowPersonnelAction" max-width="600px">
+    <v-dialog v-model="dialogShowPersonnelAction" max-width="700px">
       <v-card color="h-100">
         <v-container>
-          <h3 class="black-secondary text-center mt-3 mb-3">
+          <h2 class="black-secondary text-center mt-3 mb-3">
             Acción de Personal
-          </h3>
+          </h2>
           <v-container>
             <show-personnel-action-form
               :editedItem="$v.editedItem"
@@ -100,7 +93,15 @@
               :showUpdateBtn="editedItem.status_name == 'Observada'"
               :showObservations="false"
               :enableInputs="editedItem.status_name == 'Observada'"
-              @save-form="save()"
+              @update-form="updateForm()"
+              @close-form="closeFormActions()"
+              @file-size-exceeded="
+                updateAlert(
+                  true,
+                  'El archivo no debe superar los 5 MB.',
+                  'fail'
+                )
+              "
             />
           </v-container>
         </v-container>
@@ -345,7 +346,6 @@ export default {
     },
 
     editItem(item) {
-      console.log(item);
       this.dialogShowPersonnelAction = true;
       this.editedIndex = this.recordsFiltered.indexOf(item);
       this.editedItem = Object.assign({}, item);
@@ -355,13 +355,35 @@ export default {
       this.textAlert = text;
       this.alertEvent = event;
       this.showAlert = show;
-      if (show) {
-        this.$refs.top.scrollIntoView();
-      }
     },
 
-    save() {
-      console.log("actualizar registro observado");
+    closeFormActions() {
+      // this.$nextTick(() => {
+      //   this.editedItem = this.defaultItem;
+      //   this.editedIndex = -1;
+      // });
+      this.dialogShowPersonnelAction = false;
+    },
+
+    async updateForm() {
+      const response = await personnelActionApi
+        .put(`/${this.editedItem.id}`, this.editedItem)
+        .catch((error) => {
+          this.updateAlert(
+            true,
+            "No fue posible actualizar el registro.",
+            "fail"
+          );
+          this.redirectSessionFinished = lib.verifySessionFinished(
+            error.response.status,
+            419
+          );
+        });
+
+      if (response.data.success == true) {
+        this.updateAlert(true, response.data.message, "success");
+        this.initialize();
+      }
     },
   },
 };

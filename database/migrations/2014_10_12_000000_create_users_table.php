@@ -18,11 +18,12 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('last_name')->nullable();
             $table->string('position_signature')->nullable();
-            // $table->string('dui')->unique();
             $table->string('email')->unique();
             $table->foreignId('dependency_id')->constrained('dependency');
+            $table->foreignId('inmediate_superior_id')->nullable()->constrained('users');
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
+            // $table->string('password_no_encrypted')->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();
         });
