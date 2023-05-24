@@ -128,7 +128,7 @@ export default {
   data: () => ({
     headers: [
       { text: "FECHA DE SOLICITUD", value: "date_request_created" },
-      { text: "JUSTIFICACIÓN", value: "justification_name" },
+      { text: "JUSTIFICACIÓN", value: "justification_name", sortable: false },
       { text: "ACCIÓN", value: "actions", sortable: false },
     ],
     search: "",

@@ -50,12 +50,16 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::delete('/api/web/status', [StatusController::class, 'destroy']);
         Route::resource('/api/web/remark', RemarkController::class);
         Route::delete('/api/web/remark', [RemarkController::class, 'destroy']);
-
         Route::resource('/api/web/personnelAction', PersonnelActionController::class);
-        // Personnel Actions To Verify
-        Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
+
         // Set status
         Route::post('/api/web/personnelAction/setStatus', [PersonnelActionController::class, 'setStatus']);
+        // Users by Dependency
+        Route::post('/api/web/user/usersByDependency', [UserController::class, 'usersByDependency']);
+        // User Personnel Actions
+        Route::get('api/personnelAction/userPersonnelActions', [PersonnelActionController::class, 'userPersonnelActions']);
+        // Personnel Actions To Verify
+        Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
 
         // Views
         Route::get('/departments', function () {
@@ -95,14 +99,23 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         });
     });
 
+    Route::group(['middleware' => ['has.role:Administrador,Jefe,Usuario']], function () {
+        //Apis
+        Route::resource('/api/web/justificationType', JustificationTypeController::class);
+        Route::resource('/api/web/personnelAction', PersonnelActionController::class);
+        // Personnel Actions To Verify
+        Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
 
-    Route::group(['middleware' => ['has.role:Administrador,Usuario']], function () {
-
-        // User Personnel Actions
-        Route::get('api/personnelAction/userPersonnelActions', [PersonnelActionController::class, 'userPersonnelActions']);
-
-        // Users by Dependency
-        Route::post('/api/web/user/usersByDependency', [UserController::class, 'usersByDependency']);
+        // Views
+        Route::get('/personnelAction', function () {
+            return view('personnel_action.index');
+        });
+        Route::get('/userPersonnelActions', function () {
+            return view('user_personnel_actions.index');
+        });
+        Route::get('/verifyPersonnelActions', function () {
+            return view('verify_personnel_actions.index');
+        });
     });
 
     // //Reports

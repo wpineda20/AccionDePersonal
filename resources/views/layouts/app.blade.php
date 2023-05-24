@@ -39,10 +39,10 @@
                 <!-- Home -->
                 <li class="text-center pb-1">
                     <a href="{{ url('/home') }}" class="text-center">
-                        <i class="material-icons md-18 mx-auto">home</i>
+                        <i class="material-icons md-18 mx-auto">dashboard</i>
                     </a>
                     <a href="{{ url('/home') }}">
-                        <p class="link mx-auto">Inicio</p>
+                        <p class="link mx-auto">Dashboard</p>
                     </a>
                 </li>
                 <!-- Home -->
@@ -68,6 +68,7 @@
                 </li>
                 <!-- Mis A.P -->
 
+                @if (auth()->user()->hasRole(['Administrador', 'Jefe']))
                 <!-- A.P -->
                 <li class="text-center pb-1">
                     <a href="{{ url('/verifyPersonnelActions') }}" class="text-center">
@@ -78,6 +79,7 @@
                     </a>
                 </li>
                 <!-- A.P -->
+                @endif
 
                 <!-- Settings -->
                 <!-- Administrative routes -->

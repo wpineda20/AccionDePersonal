@@ -301,30 +301,60 @@ class PersonnelActionController extends Controller
      */
     public function verifyPersonnelActions(Request $request)
     {
-        $registeredRecords =  PersonnelAction::select(
-            'personnel_action.*',
-            'u.name as employee_name',
-            'u.position_signature',
-            'd.dependency_name',
-            'jt.justification_name',
-            's.status_name'
-        )
-            ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
-            ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
-            ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
-            ->join('status as s', 'personnel_action.status_id', '=', 's.id')
-            ->where('personnel_action.status_id', 1)
+        //Getting the role
+        $roles = auth()->user()->getRoleNames();
+        //Getting user info
+        $userLogged = auth()->user();
 
-            // ->skip($skip)
-            // ->take($itemsPerPage)
-            ->orderBy("personnel_action.date_request_created")
-            ->get();
+        if (isset($roles[0])) {
+            if ($roles[0] == "Administrador") { //Administrador
 
-        foreach ($registeredRecords as $key => $value) {
-            $value->remarks = Remark::where('personnel_action_id', $value->id)->get();
+                $registeredRecords =  PersonnelAction::select(
+                    'personnel_action.*',
+                    'u.name as employee_name',
+                    'u.position_signature',
+                    'u.inmediate_superior_id',
+                    'd.dependency_name',
+                    'jt.justification_name',
+                    's.status_name'
+                )
+                    ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
+                    ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
+                    ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
+                    ->join('status as s', 'personnel_action.status_id', '=', 's.id')
+                    ->where('personnel_action.status_id', 1)
 
-            foreach ($value->remarks as $remark) {
-                $remark->status = ($remark->status == 0) ? "No Corregida" : "Corregida";
+                    ->orderBy("personnel_action.date_request_created")
+                    ->get();
+            }
+            if ($roles[0] == "Jefe") { //Jefe inmediato
+
+                $registeredRecords =  PersonnelAction::select(
+                    'personnel_action.*',
+                    'u.name as employee_name',
+                    'u.position_signature',
+                    'u.inmediate_superior_id',
+                    'd.dependency_name',
+                    'jt.justification_name',
+                    's.status_name'
+                )
+                    ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
+                    ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
+                    ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
+                    ->join('status as s', 'personnel_action.status_id', '=', 's.id')
+                    ->where('personnel_action.status_id', 1)
+                    ->where('u.inmediate_superior_id', $userLogged->id)
+
+                    ->orderBy("personnel_action.date_request_created")
+                    ->get();
+            }
+
+            foreach ($registeredRecords as $key => $value) {
+                $value->remarks = Remark::where('personnel_action_id', $value->id)->get();
+
+                foreach ($value->remarks as $remark) {
+                    $remark->status = ($remark->status == 0) ? "No Corregida" : "Corregida";
+                }
             }
         }
 
@@ -332,7 +362,6 @@ class PersonnelActionController extends Controller
             "status" => 200,
             "message" => "Registros obtenidos correctamente.",
             "records" => $registeredRecords,
-            // "total" => $total,
             "success" => true,
         ]);
     }
