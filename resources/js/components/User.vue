@@ -194,7 +194,35 @@
         </v-toolbar>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+              small
+              class="mr-2"
+              @click="editItem(item)"
+              v-bind="attrs"
+              v-on="on"
+            >
+              mdi-pencil
+            </v-icon>
+          </template>
+          <span>Editar</span>
+        </v-tooltip>
+        <!-- <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+              small
+              class="mr-2"
+              @click="blockItem(item)"
+              v-bind="attrs"
+              v-on="on"
+            >
+              mdi-cancel
+            </v-icon>
+          </template>
+          <span>Desactivar</span>
+        </v-tooltip> -->
+        <!-- <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon> -->
       </template>
       <template v-slot:no-data>
         <a
@@ -206,6 +234,35 @@
         </a>
       </template>
     </v-data-table>
+
+    <!-- Dialog block user -->
+    <v-dialog v-model="dialogBlock" max-width="400px">
+      <v-card class="h-100">
+        <v-container>
+          <h1 class="black-secondary text-center mt-3 mb-3">
+            Desactivar usuario
+          </h1>
+          <v-row>
+            <v-col align="center">
+              <v-btn
+                color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="disableUser"
+                >Confirmar</v-btn
+              >
+              <v-btn
+                color="btn-normal-close no-uppercase mt-3 mb-3"
+                rounded
+                @click="closeBlock"
+              >
+                Cancelar
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
+    <!-- Dialog block user -->
   </div>
 </template>
 
@@ -228,10 +285,12 @@ export default {
     return {
       search: "",
       dialog: false,
+      dialogBlock: false,
       headers: [
         { text: "USUARIO", value: "name" },
         { text: "ROL", value: "rol", sortable: false },
         { text: "CORREO ELECTRÓNICO", value: "email" },
+        { text: "ESTADO", value: "status" },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       selected: [],
@@ -246,7 +305,6 @@ export default {
         last_name: "",
         email: "",
         password: "",
-        // dui: "",
         rol: "Administrator",
         position_signature: "",
         dependency_name: "",
@@ -257,7 +315,6 @@ export default {
         email: "",
         last_name: "",
         password: "",
-        // dui: "",
         rol: "Administrator",
         position_signature: "",
         dependency_name: "",
@@ -316,10 +373,6 @@ export default {
       inmediate_superior_id: {
         // required,
       },
-      // dui: {
-      //   required,
-      //   isValidDui: helpers.regex("isValidDui", /[0-9]{8}-[0-9]/),
-      // },
     },
   },
 
@@ -396,6 +449,12 @@ export default {
       });
     },
 
+    blockItem(item) {
+      this.editedIndex = this.recordsFiltered.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogBlock = true;
+    },
+
     closeBlock() {
       this.dialogBlock = false;
 
@@ -438,7 +497,11 @@ export default {
             res.status,
             200
           );
-          this.updateAlert(true, "Registro actualizado.", "success");
+          this.updateAlert(
+            true,
+            "Registro actualizado correctamente.",
+            "success"
+          );
         }
       } else {
         //Creating user
@@ -456,11 +519,7 @@ export default {
             res.status,
             200
           );
-          this.updateAlert(
-            true,
-            "Registro almacenado correctamente.",
-            "success"
-          );
+          this.updateAlert(true, "Registro creado correctamente.", "success");
         }
       }
 
@@ -494,6 +553,27 @@ export default {
         this.total = data.total;
         this.loading = false;
       }, 500);
+    },
+
+    async disableUser() {
+      const response = await userApi
+        .post(`/disableUser`, {
+          id: this.editedItem.id,
+        })
+        .catch((error) => {
+          this.updateAlert(
+            true,
+            "No fue posible desactivar el usuario.",
+            "fail"
+          );
+          this.closeBlock();
+        });
+
+      if (response.data.success == true) {
+        this.updateAlert(true, response.data.message, "success");
+        this.initialize();
+        this.closeBlock();
+      }
     },
 
     newUser() {

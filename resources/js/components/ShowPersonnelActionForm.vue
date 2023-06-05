@@ -324,6 +324,20 @@
           >
             Observar
           </v-btn>
+          <v-btn
+            color="btn-normal-red no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+            rounded
+            @click="setStatus('Rechazada')"
+          >
+            Rechazar
+          </v-btn>
+          <v-btn
+            color="btn-normal-green no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+            rounded
+            @click="setStatus('Procesada')"
+          >
+            Procesar
+          </v-btn>
         </v-col>
       </v-row>
     </v-row>
@@ -424,9 +438,8 @@ export default {
       this.$emit("emit: verify-remark", true);
     },
 
-    setStatus() {
-      this.$emit("set-status", true);
-      console.log("emit: set status");
+    setStatus(str) {
+      this.$emit("set-status", str);
     },
 
     createRemark() {

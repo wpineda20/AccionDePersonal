@@ -147,6 +147,27 @@ class UserController extends Controller
     }
 
     /**
+     * Change the status resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function disableUser(Request $request)
+    {
+        $id = Encrypt::decryptValue($request->id);
+
+        $user = User::where('id', $id)->first();
+        $user->status = 0;
+        $user->save();
+
+        return response()->json([
+            "status" => 200,
+            "success" => true,
+            "message" => "Usuario desactivado correctamente."
+        ]);
+    }
+
+    /**
      * Gets the specified user resource from storage.
      *
      * @param  int  $id

@@ -70,69 +70,6 @@
         </template>
       </v-data-table>
     </v-card>
-    <!-- 
-    <v-dialog v-model="dialog" max-width="600px" persistent>
-      <v-card class="flexcard" height="100%">
-        <v-card-title>
-          <h1 class="mx-auto pt-3 mb-3 text-center black-secondary">
-            {{ formTitle }}
-          </h1>
-        </v-card-title>
-
-        <v-card-text>
-          <v-container>
-            <v-row class="pt-3"> </v-row>
-            <v-row>
-              <v-col align="center">
-                <v-btn
-                  color="btn-normal no-uppercase mt-3"
-                  rounded
-                  @click="save"
-                >
-                  Guardar
-                </v-btn>
-                <v-btn
-                  color="btn-normal-close no-uppercase mt-3"
-                  rounded
-                  @click="close"
-                >
-                  Cancelar
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-      </v-card>
-    </v-dialog> -->
-
-    <!-- <v-dialog v-model="dialogDelete" max-width="400px">
-      <v-card class="h-100">
-        <v-container>
-          <h1 class="black-secondary text-center mt-3 mb-3">
-            {{
-              selected.length > 0 ? "Eliminar registros" : "Eliminar registro"
-            }}
-          </h1>
-          <v-row>
-            <v-col align="center">
-              <v-btn
-                color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
-                rounded
-                @click="deleteItemConfirm"
-                >Confirmar</v-btn
-              >
-              <v-btn
-                color="btn-normal-close no-uppercase mt-3 mb-3"
-                rounded
-                @click="closeDelete"
-              >
-                Cancelar
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card>
-    </v-dialog> -->
 
     <!-- Authorize / Denied -->
     <v-dialog v-model="dialogActions" max-width="600px">
@@ -148,7 +85,7 @@
               :showObservations="true"
               :justifications="justifications"
               @verify-remark="verifyRemark()"
-              @set-status="setStatus()"
+              @set-status="setStatus($event)"
               @create-remark="createRemark()"
             />
           </v-container>
@@ -237,18 +174,6 @@ export default {
       alertTimeOut: 0,
     };
   },
-
-  // watch: {
-  //   options: {
-  //     handler() {
-  //       this.getDataFromApi();
-  //     },
-  //     deep: true,
-  //   },
-  //   dialogDelete(val) {
-  //     val || this.closeDelete();
-  //   },
-  // },
 
   // Validations
   validations: {
@@ -519,12 +444,12 @@ export default {
       this.dialogActions = true;
     },
 
-    async setStatus(status = "Aprobada") {
+    async setStatus(event) {
       const response = await personnelActionApi
         .post(`/setStatus`, {
           id: this.editedItem.id,
           data: this.editedItem.remarks,
-          status: status,
+          status: event,
         })
         .catch((error) => {
           this.updateAlert(true, "No fue posible asignarle un estado.", "fail");
@@ -534,7 +459,7 @@ export default {
       if (response.data.message == "success") {
         this.updateAlert(
           true,
-          `La solicitud fue ${status.toLowerCase()}.`,
+          `La solicitud fue ${event.toLowerCase()}.`,
           "success"
         );
         this.initialize();
@@ -585,6 +510,9 @@ export default {
       this.textAlert = text;
       this.alertEvent = event;
       this.showAlert = show;
+      // if (show) {
+      //   this.$refs.top.scrollIntoView();
+      // }
     },
   },
 };

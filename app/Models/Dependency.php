@@ -20,7 +20,7 @@ class Dependency extends Model
         'id',
         'dependency_name',
         'address',
-        'superior_dependency',
+        // 'superior_dependency',
         'created_at',
         'updated_at',
         'deleted_at',

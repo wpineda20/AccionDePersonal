@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('dependency_name');
             $table->string('address', 500)->nullable()->default(null);
-            $table->string('superior_dependency')->nullable()->comment('Jefe Superior');
+            // $table->string('superior_dependency')->nullable()->comment('Jefe Superior');
             $table->timestamps();
             $table->softDeletes();
         });

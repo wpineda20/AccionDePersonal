@@ -85,6 +85,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
             'position_signature' => $this->position_signature,
             'inmediate_superior_id' => ($this->inmediate_superior_id != null) ? User::where('id', $this->inmediate_superior_id)->first('name')->name : null,
             'dependency_name' => $this->dependency->dependency_name,
+            'status' => ($this->status == 1) ? "Activo" : "Inactivo",
             'email_verified_at' => $this->email_verified_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

@@ -307,7 +307,8 @@ class PersonnelActionController extends Controller
         $userLogged = auth()->user();
 
         if (isset($roles[0])) {
-            if ($roles[0] == "Administrador") { //Administrador
+            //Administrador
+            if ($roles[0] == "Administrador") {
 
                 $registeredRecords =  PersonnelAction::select(
                     'personnel_action.*',
@@ -327,7 +328,8 @@ class PersonnelActionController extends Controller
                     ->orderBy("personnel_action.date_request_created")
                     ->get();
             }
-            if ($roles[0] == "Jefe") { //Jefe inmediato
+            //Jefe inmediato
+            else if ($roles[0] == "Jefe") {
 
                 $registeredRecords =  PersonnelAction::select(
                     'personnel_action.*',
@@ -376,7 +378,7 @@ class PersonnelActionController extends Controller
     public function setStatus(Request $request)
     {
         $personnelAction = PersonnelAction::where('id', $request->id)->first();
-        $personnelAction->status_id =  Status::where('status_name', $request->status)->first()->id;
+        $personnelAction->status_id = Status::where('status_name', $request->status)->first()->id;
         $personnelAction->save();
 
         if (!empty($request->data)) {
@@ -395,5 +397,130 @@ class PersonnelActionController extends Controller
         ]);
 
         return response()->json(["message" => "success"]);
+    }
+
+    /**
+     * Latest 5 Personnel Actions.
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+    public function latestPersonnelActions(Request $request)
+    {
+        $latest = PersonnelAction::select('*', 'jt.justification_name', 's.status_name', 'personnel_action.id as id')
+            ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
+            ->join('status as s', 'personnel_action.status_id', '=', 's.id')
+            ->where('user_id', auth()->user()->id)
+            ->limit(5)
+            ->orderBy('date_request_created', 'desc')
+            ->get();
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Registros obtenidos correctamente.",
+            "records" => $latest,
+            "success" => true,
+        ]);
+    }
+
+    /**
+     * Total Requested.
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+    public function totalRequested()
+    {
+        $total_requested = count(PersonnelAction::select('*')
+            ->where('user_id', auth()->user()->id)
+            ->where('status_id', 1)
+            ->get());
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Registros obtenidos correctamente.",
+            "totalRequested" => $total_requested,
+            "success" => true,
+        ]);
+    }
+    /**
+     * Total Observed.
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+    public function totalObserved()
+    {
+        $total_observed = count(PersonnelAction::select('*')
+            ->where('user_id', auth()->user()->id)
+            ->where('status_id', 2)
+            ->get());
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Registros obtenidos correctamente.",
+            "totalObserved" => $total_observed,
+            "success" => true,
+        ]);
+    }
+    /**
+     * Total Rejected.
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+    public function totalRejected()
+    {
+        $total_rejected = count(PersonnelAction::select('*')
+            ->where('user_id', auth()->user()->id)
+            ->where('status_id', 3)
+            ->get());
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Registros obtenidos correctamente.",
+            "totalRejected" => $total_rejected,
+            "success" => true,
+        ]);
+    }
+    /**
+     * Total Approved.
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+    public function totalApproved()
+    {
+        $total_approved = count(PersonnelAction::select('*')
+            ->where('user_id', auth()->user()->id)
+            ->where('status_id', 4)
+            ->get());
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Registros obtenidos correctamente.",
+            "totalApproved" => $total_approved,
+            "success" => true,
+        ]);
+    }
+    /**
+     * Total Rejected.
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+    public function totalProcessed()
+    {
+        $total_processed = count(PersonnelAction::select('*')
+            ->where('user_id', auth()->user()->id)
+            ->where('status_id', 5)
+            ->get());
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Registros obtenidos correctamente.",
+            "totalProcessed" => $total_processed,
+            "success" => true,
+        ]);
     }
 }

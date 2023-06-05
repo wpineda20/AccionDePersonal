@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->foreignId('inmediate_superior_id')->nullable()->constrained('users');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
-            // $table->string('password_no_encrypted')->nullable()->default(null);
+            $table->tinyInteger('status')->nullable()->comment('0 = Inactivo, 1 = Activo')->default(1);
             $table->rememberToken();
             $table->timestamps();
         });
