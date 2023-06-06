@@ -88,10 +88,7 @@
           <v-container>
             <show-personnel-action-form
               :editedItem="$v.editedItem"
-              :remark="$v.remark"
               :justifications="justifications"
-              :showUpdateBtn="editedItem.status_name == 'Observada'"
-              :showObservations="false"
               :enableInputs="editedItem.status_name == 'Observada'"
               @update-form="updateForm()"
               @close-form="closeFormActions()"
@@ -103,6 +100,62 @@
                 )
               "
             />
+            <!-- Remarks -->
+            <h5
+              class="fw-bold pt-3 pb-2 mb-2"
+              style="border-bottom: 1px solid lightgray"
+            >
+              OBSERVACIONES
+            </h5>
+            <v-simple-table class="mt-2">
+              <thead>
+                <tr>
+                  <th class="fw-bold text-black">OBSERVACIÓN</th>
+                  <th class="fw-bold text-black">ESTADO</th>
+                  <!-- <th class="fw-bold text-black">ACCIÓN</th> -->
+                </tr>
+              </thead>
+              <tbody v-if="editedItem.remarks.length > 0">
+                <tr v-for="(remark, index) in editedItem.remarks" :key="index">
+                  <td>{{ remark.observation }}</td>
+                  <td>{{ remark.status }}</td>
+                  <!-- <td>
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-icon
+                          @click="verifyRemark(item)"
+                          v-on="on"
+                          v-bind="attrs"
+                        >
+                          mdi-checkbox-marked-circle
+                        </v-icon>
+                      </template>
+                      <span>Validar observación</span>
+                    </v-tooltip>
+                  </td> -->
+                </tr>
+              </tbody>
+              <tbody v-else>
+                <tr class="text-center">
+                  <td colspan="3">No se realizó ninguna observación.</td>
+                </tr>
+              </tbody>
+            </v-simple-table>
+            <!-- Remarks -->
+            <!-- buttons -->
+            <v-row>
+              <v-col align="center" cols="12" sm="12" md="12">
+                <v-btn
+                  v-if="editedItem.status_name == 'Observada'"
+                  color="btn-normal no-uppercase"
+                  rounded
+                  @click="updateForm()"
+                >
+                  Actualizar
+                </v-btn>
+              </v-col>
+            </v-row>
+            <!-- buttons -->
           </v-container>
         </v-container>
       </v-card>
@@ -183,7 +236,7 @@ export default {
       status: 0,
     },
     showUpdateBtn: false,
-    showObservations: false,
+    // showObservations: false,
     enableInputs: false,
   }),
 
@@ -382,6 +435,7 @@ export default {
 
       if (response.data.success == true) {
         this.updateAlert(true, response.data.message, "success");
+        this.closeFormActions();
         this.initialize();
       }
     },

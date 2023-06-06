@@ -382,11 +382,25 @@ class PersonnelActionController extends Controller
         $personnelAction->save();
 
         if (!empty($request->data)) {
-            Remark::insert([
-                'observation' => $request->data[0]['observation'],
-                'personnel_action_id' => $personnelAction->id,
-                'status' => $request->data[0]['status'] == "No corregida" ? 0 : 1,
-            ]);
+
+            Remark::where('personnel_action_id', $personnelAction->id)->delete();
+
+            foreach ($request->data as $value) {
+
+                // if ($value['status'] == "No corregida") {
+                //     $status = 0;
+                // }
+                // if ($value['status'] == "Corregida") {
+                //     $status = 1;
+                // }
+
+                Remark::insert([
+                    'observation' => $value['observation'] . '- Observado por: ' . auth()->user()->name,
+                    'personnel_action_id' => $personnelAction->id,
+                    'status' => $value['status'] == "No corregida" ? 0 : 1,
+                    // 'status' => $status,
+                ]);
+            }
         }
 
         HistoryPersonnelActionStatus::insert([

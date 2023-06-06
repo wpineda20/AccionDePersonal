@@ -17,8 +17,11 @@
             <p>Cantidad de acciones de personal por estado.</p>
           </div>
           <div class="dashboard-card-body">
+            <!-- Loader -->
+            <loader v-if="loading" class="pt-5" style=""> </loader>
+            <!-- /.Loader -->
             <div class="body-content">
-              <div class="body-item">
+              <div class="body-item" v-if="!loading">
                 <v-icon
                   large
                   class="color-primary"
@@ -30,7 +33,7 @@
                 <p class="mb-0">Solicitadas</p>
               </div>
 
-              <div class="body-item">
+              <div class="body-item" v-if="!loading">
                 <v-icon
                   large
                   class="color-primary"
@@ -41,7 +44,7 @@
                 <span> {{ totalObserved }} </span>
                 <p class="mb-0">Observadas</p>
               </div>
-              <div class="body-item">
+              <div class="body-item" v-if="!loading">
                 <v-icon
                   large
                   class="color-primary"
@@ -52,7 +55,7 @@
                 <span> {{ totalApproved }} </span>
                 <p class="mb-0">Aprobadas</p>
               </div>
-              <div class="body-item">
+              <div class="body-item" v-if="!loading">
                 <v-icon
                   large
                   class="color-primary"
@@ -63,7 +66,7 @@
                 <span> {{ totalRejected }} </span>
                 <p class="mb-0">Rechazadas</p>
               </div>
-              <div class="body-item">
+              <div class="body-item" v-if="!loading">
                 <v-icon
                   large
                   class="color-primary"
@@ -74,7 +77,7 @@
                 <span> {{ totalProcessed }} </span>
                 <p class="mb-0">Procesadas</p>
               </div>
-              <div class="body-item">
+              <div class="body-item" v-if="!loading">
                 <v-icon
                   large
                   class="color-primary"
@@ -124,13 +127,16 @@
             </div>
             <!-- Item  -->
             <!-- No Item -->
-            <div v-if="records.length == 0" class="">
+            <div v-if="records.length == 0 && !loading" class="">
               <h4 class="fw-bold text-center">
                 Aún no se registrado ninguna acción de personal!
               </h4>
             </div>
             <!-- No Item -->
           </div>
+          <!-- Loader -->
+          <loader v-if="loading" class=""> </loader>
+          <!-- /.Loader -->
         </div>
       </v-col>
       <!-- Latest justifications -->
@@ -180,7 +186,6 @@ export default {
     async initialize() {
       this.loading = true;
       this.records = [];
-      // this.recordsFiltered = [];
 
       let requests = [
         personnelActionApi.post(`/latestPersonnelActions`),

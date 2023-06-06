@@ -86,7 +86,7 @@
                     <div class="form-group row-fluid mb-0">
                         <div class="col-md-12 text-center">
                             <a href="/redirectToProvider" class=" btn btn-normal shadow-none text-uppercase">
-                                {{ __('Iniciar sesión con LoginSV') }}
+                                {{ __('Iniciar sesión') }}
                             </a>
                         </div>
                     </div>

@@ -193,6 +193,9 @@ class UserController extends Controller
     public function infoUserLoggedIn(Request $request)
     {
         $user = auth()->user();
+        // Getting the role of the user
+        // $role = auth()->user()->getRoleNames()[0];
+        // $user->role = $role;
 
         $user->dependency = Dependency::where('id', $user->dependency_id)
             ->first();

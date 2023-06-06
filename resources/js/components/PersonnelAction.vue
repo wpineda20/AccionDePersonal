@@ -231,16 +231,16 @@
       </v-col>
       <!-- justification -->
 
-      <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 1px solid lightgray">
+      <!-- <h5 class="fw-bold pb-2 mb-4" style="border-bottom: 1px solid lightgray">
         V. TIEMPO EXTRAORDINARIO / DESCANSO
       </h5>
 
       <h6 class="fw-bold mb-0">
         En caso de solicitud de descanso compensatorio detallar causa o motivo
         que lo generó:
-      </h6>
+      </h6> -->
       <!-- extraordinary_work -->
-      <v-col cols="12" xs="12" sm="12" md="6">
+      <!-- <v-col cols="12" xs="12" sm="12" md="6">
         <v-checkbox
           v-model="$v.editedItem.extraordinary_work.$model"
           :validation.sync="$v.editedItem.extraordinary_work"
@@ -251,11 +251,11 @@
             </div>
           </template>
         </v-checkbox>
-      </v-col>
+      </v-col> -->
       <!-- extraordinary_work -->
 
       <!-- training -->
-      <v-col cols="12" xs="12" sm="12" md="6">
+      <!-- <v-col cols="12" xs="12" sm="12" md="6">
         <v-checkbox
           v-model="$v.editedItem.training.$model"
           :validation.sync="$v.editedItem.training"
@@ -266,13 +266,13 @@
             </div>
           </template>
         </v-checkbox>
-      </v-col>
+      </v-col> -->
       <!-- training -->
 
-      <h6 class="fw-bold">Detalle de la actividad realizada:</h6>
+      <!-- <h6 class="fw-bold">Detalle de la actividad realizada:</h6> -->
 
       <!-- execution_site -->
-      <v-col cols="12" sm="12" md="8" class="m-0 pb-3">
+      <!-- <v-col cols="12" sm="12" md="8" class="m-0 pb-3">
         <base-input
           label="Lugar de ejecución"
           v-model.trim="$v.editedItem.execution_site.$model"
@@ -280,11 +280,11 @@
           validationTextType="none"
           type="text"
         />
-      </v-col>
+      </v-col> -->
       <!-- execution_site -->
 
       <!-- execution_date -->
-      <v-col cols="12" sm="12" md="4" class="m-0 pb-3">
+      <!-- <v-col cols="12" sm="12" md="4" class="m-0 pb-3">
         <base-input
           label="Fecha de ejecución"
           v-model="$v.editedItem.execution_date.$model"
@@ -292,11 +292,11 @@
           validationTextType="none"
           type="date"
         />
-      </v-col>
+      </v-col> -->
       <!-- execution_date -->
 
       <!-- execution_schedule -->
-      <v-col cols="12" sm="12" md="4" class="m-0 pb-3">
+      <!-- <v-col cols="12" sm="12" md="4" class="m-0 pb-3">
         <base-input
           label="Horario de ejecución"
           v-model="$v.editedItem.execution_schedule.$model"
@@ -304,11 +304,11 @@
           validationTextType="none"
           type="text"
         />
-      </v-col>
+      </v-col> -->
       <!-- execution_schedule -->
 
       <!-- execution_number_hours -->
-      <v-col cols="12" sm="12" md="4" class="m-0 pb-3">
+      <!-- <v-col cols="12" sm="12" md="4" class="m-0 pb-3">
         <base-input
           label="Cantidad de horas"
           v-model="$v.editedItem.execution_number_hours.$model"
@@ -316,11 +316,11 @@
           validationTextType="none"
           type="number"
         />
-      </v-col>
+      </v-col> -->
       <!-- execution_number_hours -->
 
       <!-- assigned_by -->
-      <v-col cols="12" sm="12" md="4" class="m-0 pb-3">
+      <!-- <v-col cols="12" sm="12" md="4" class="m-0 pb-3">
         <base-input
           label="Asignado por"
           v-model="$v.editedItem.assigned_by.$model"
@@ -328,11 +328,11 @@
           validationTextType="none"
           type="number"
         />
-      </v-col>
+      </v-col> -->
       <!-- assigned_by -->
 
       <!-- number_days_requested -->
-      <v-col cols="12" sm="12" md="3" class="m-0 pb-3">
+      <!-- <v-col cols="12" sm="12" md="3" class="m-0 pb-3">
         <base-input
           label="Cantidad de días solicitados"
           v-model="$v.editedItem.number_days_requested.$model"
@@ -340,11 +340,11 @@
           validationTextType="none"
           type="number"
         />
-      </v-col>
+      </v-col> -->
       <!-- number_days_requested -->
 
       <!-- execution_effective_date -->
-      <v-col cols="12" sm="12" md="3" class="m-0 pb-3">
+      <!-- <v-col cols="12" sm="12" md="3" class="m-0 pb-3">
         <base-input
           label="Fecha que se hará efectivo"
           v-model="$v.editedItem.execution_effective_date.$model"
@@ -352,11 +352,11 @@
           validationTextType="none"
           type="date"
         />
-      </v-col>
+      </v-col> -->
       <!-- execution_effective_date -->
 
       <!-- execution_from -->
-      <v-col cols="12" sm="12" md="3" class="m-0 pb-3">
+      <!-- <v-col cols="12" sm="12" md="3" class="m-0 pb-3">
         <base-input
           label="Desde"
           v-model="$v.editedItem.execution_from.$model"
@@ -364,11 +364,11 @@
           validationTextType="none"
           type="text"
         />
-      </v-col>
+      </v-col> -->
       <!-- execution_from -->
 
       <!-- execution_to -->
-      <v-col cols="12" sm="12" md="3" class="m-0 pb-3">
+      <!-- <v-col cols="12" sm="12" md="3" class="m-0 pb-3">
         <base-input
           label="Hasta"
           v-model="$v.editedItem.execution_to.$model"
@@ -376,7 +376,7 @@
           validationTextType="none"
           type="text"
         />
-      </v-col>
+      </v-col> -->
       <!-- execution_to -->
 
       <h5
@@ -592,7 +592,7 @@ export default {
       training: false,
       execution_site: {
         required: requiredIf(function () {
-          console.log("Image validator called");
+          // console.log("Image validator called");
           return this.extraordinary_work;
         }),
       },

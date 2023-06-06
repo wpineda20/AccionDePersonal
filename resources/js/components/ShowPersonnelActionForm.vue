@@ -242,127 +242,7 @@
         />
       </v-col>
       <!-- justification_file -->
-
-      <h5
-        class="fw-bold pt-3 pb-2 mb-2"
-        style="border-bottom: 1px solid lightgray"
-      >
-        OBSERVACIONES
-      </h5>
-
-      <v-col cols="12" sm="12" md="12">
-        <base-text-area
-          label="Observación"
-          v-model.trim="remark.observation.$model"
-          :validation="remark.observation"
-          validationTextType="none"
-          :rows="3"
-          :disabled="
-            disableRemark != false || this.editedItem.remarks.length > 0
-          "
-          v-show="showObservations"
-        />
-      </v-col>
-      <v-col cols="12" md="6" v-show="showObservations">
-        <v-btn
-          color="btn-normal"
-          rounded
-          @click="createRemark()"
-          :disabled="
-            disableRemark != false || this.editedItem.remarks.length > 0
-          "
-        >
-          AGREGAR
-        </v-btn>
-      </v-col>
-
-      <v-simple-table class="mt-2">
-        <thead>
-          <tr>
-            <th class="fw-bold text-black">OBSERVACIÓN</th>
-            <th class="fw-bold text-black">ESTADO</th>
-            <th class="fw-bold text-black">ACCIÓN</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in editedItem.remarks" :key="index">
-            <td>{{ item.observation }}</td>
-            <td>{{ item.status }}</td>
-            <td>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-icon @click="verifyRemark(item)" v-on="on" v-bind="attrs">
-                    mdi-checkbox-marked-circle
-                  </v-icon>
-                </template>
-                <span>Validar observación</span>
-              </v-tooltip>
-            </td>
-          </tr>
-          <tr v-if="remarks.length == 0">
-            <td colspan="3">No se realizó ninguna observación.</td>
-          </tr>
-        </tbody>
-      </v-simple-table>
-
-      <v-row v-show="showObservations">
-        <v-col align="center">
-          <v-btn
-            color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
-            rounded
-            @click="setStatus('Aprobada')"
-            :disabled="
-              disableRemark != false || this.editedItem.remarks.length > 0
-            "
-          >
-            Aprobar
-          </v-btn>
-          <v-btn
-            color="btn-normal-close no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
-            rounded
-            @click="setStatus('Observada')"
-          >
-            Observar
-          </v-btn>
-          <v-btn
-            color="btn-normal-red no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
-            rounded
-            @click="setStatus('Rechazada')"
-          >
-            Rechazar
-          </v-btn>
-          <v-btn
-            color="btn-normal-green no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
-            rounded
-            @click="setStatus('Procesada')"
-          >
-            Procesar
-          </v-btn>
-        </v-col>
-      </v-row>
     </v-row>
-
-    <!-- buttons -->
-    <v-row>
-      <v-col align="center" cols="12" sm="12" md="12">
-        <v-btn
-          v-if="showUpdateBtn"
-          color="btn-normal no-uppercase"
-          rounded
-          @click="updateForm()"
-        >
-          Actualizar
-        </v-btn>
-        <!-- <v-btn
-          color="btn-normal-close no-uppercase"
-          rounded
-          @click="closeFormActions()"
-        >
-          Cerrar
-        </v-btn> -->
-      </v-col>
-    </v-row>
-    <!-- buttons -->
   </div>
 </template>
 
@@ -387,25 +267,9 @@ export default {
         effective_date: "",
         justification: "",
         justification_file: "",
-        remarks: [],
-      }),
-    },
-    remark: {
-      type: Object,
-      default: () => ({
-        observation: "",
-        status: 0,
       }),
     },
     justifications: {
-      type: Array,
-      default: () => [],
-    },
-    remarksCreated: {
-      type: Array,
-      default: () => [],
-    },
-    remarks: {
       type: Array,
       default: () => [],
     },
@@ -417,10 +281,10 @@ export default {
       type: Boolean,
       default: () => false,
     },
-    showObservations: {
-      type: Boolean,
-      default: () => false,
-    },
+    // showObservations: {
+    //   type: Boolean,
+    //   default: () => false,
+    // },
     enableInputs: {
       type: Boolean,
       default: () => false,
@@ -428,28 +292,24 @@ export default {
   },
 
   methods: {
-    updateForm() {
-      this.$emit("update-form", true);
-      this.closeFormActions();
-    },
-
-    verifyRemark() {
-      console.log("Verificar observación");
-      this.$emit("emit: verify-remark", true);
-    },
-
-    setStatus(str) {
-      this.$emit("set-status", str);
-    },
-
-    createRemark() {
-      this.$emit("create-remark", this.remark);
-      console.log("emit: crear observación");
-    },
-
-    closeFormActions() {
-      this.$emit("close-form", true);
-    },
+    // updateForm() {
+    //   this.$emit("update-form", true);
+    //   this.closeFormActions();
+    // },
+    // verifyRemark() {
+    //   console.log("Verificar observación");
+    //   this.$emit("emit: verify-remark", true);
+    // },
+    // setStatus(str) {
+    //   this.$emit("set-status", str);
+    // },
+    // createRemark() {
+    //   this.$emit("create-remark", this.remark);
+    //   console.log(this.remark);
+    // },
+    // closeFormActions() {
+    //   this.$emit("close-form", true);
+    // },
   },
 };
 </script>
