@@ -680,3 +680,19 @@ select:-webkit-autofill {
     border-bottom-style: dashed;
     border-bottom-color: $grey-primary-light;
 }
+.justifications-colors{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    column-gap: 15px;
+    padding: 6px;
+}
+.picker{
+    height: 20px;
+    width: 20px;
+    border-radius: 5px;
+    color: $white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -445,7 +445,7 @@ class PersonnelActionController extends Controller
      */
     public function totalRequested()
     {
-        $total_requested = count(PersonnelAction::select('*')
+        $totalRequested = count(PersonnelAction::select('*')
             ->where('user_id', auth()->user()->id)
             ->where('status_id', 1)
             ->get());
@@ -453,7 +453,7 @@ class PersonnelActionController extends Controller
         return response()->json([
             "status" => 200,
             "message" => "Registros obtenidos correctamente.",
-            "totalRequested" => $total_requested,
+            "totalRequested" => $totalRequested,
             "success" => true,
         ]);
     }
@@ -465,7 +465,7 @@ class PersonnelActionController extends Controller
      */
     public function totalObserved()
     {
-        $total_observed = count(PersonnelAction::select('*')
+        $totalObserved = count(PersonnelAction::select('*')
             ->where('user_id', auth()->user()->id)
             ->where('status_id', 2)
             ->get());
@@ -473,7 +473,7 @@ class PersonnelActionController extends Controller
         return response()->json([
             "status" => 200,
             "message" => "Registros obtenidos correctamente.",
-            "totalObserved" => $total_observed,
+            "totalObserved" => $totalObserved,
             "success" => true,
         ]);
     }
@@ -485,7 +485,7 @@ class PersonnelActionController extends Controller
      */
     public function totalRejected()
     {
-        $total_rejected = count(PersonnelAction::select('*')
+        $totalRejected = count(PersonnelAction::select('*')
             ->where('user_id', auth()->user()->id)
             ->where('status_id', 3)
             ->get());
@@ -493,7 +493,7 @@ class PersonnelActionController extends Controller
         return response()->json([
             "status" => 200,
             "message" => "Registros obtenidos correctamente.",
-            "totalRejected" => $total_rejected,
+            "totalRejected" => $totalRejected,
             "success" => true,
         ]);
     }
@@ -505,7 +505,7 @@ class PersonnelActionController extends Controller
      */
     public function totalApproved()
     {
-        $total_approved = count(PersonnelAction::select('*')
+        $totalApproved = count(PersonnelAction::select('*')
             ->where('user_id', auth()->user()->id)
             ->where('status_id', 4)
             ->get());
@@ -513,7 +513,7 @@ class PersonnelActionController extends Controller
         return response()->json([
             "status" => 200,
             "message" => "Registros obtenidos correctamente.",
-            "totalApproved" => $total_approved,
+            "totalApproved" => $totalApproved,
             "success" => true,
         ]);
     }
@@ -525,7 +525,7 @@ class PersonnelActionController extends Controller
      */
     public function totalProcessed()
     {
-        $total_processed = count(PersonnelAction::select('*')
+        $totalProcessed = count(PersonnelAction::select('*')
             ->where('user_id', auth()->user()->id)
             ->where('status_id', 5)
             ->get());
@@ -533,7 +533,41 @@ class PersonnelActionController extends Controller
         return response()->json([
             "status" => 200,
             "message" => "Registros obtenidos correctamente.",
-            "totalProcessed" => $total_processed,
+            "totalProcessed" => $totalProcessed,
+            "success" => true,
+        ]);
+    }
+
+    /**
+     * Latest 5 Personnel Actions.
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+    public function personnelActionsByJustifications(Request $request)
+    {
+        // $actionsByJustifications = count(PersonnelAction::select('*', 'jt.justification_name', 'personnel_action.id as id')
+        //     ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
+        //     // ->join('status as s', 'personnel_action.status_id', '=', 's.id')
+        //     ->where('justification_type_id', 12)
+        //     ->get());
+
+        $actionsByJustifications = [
+            [
+                "country" => "A",
+                "value" => 1,
+            ],
+            [
+                "country" => "B",
+                "value" => 5,
+            ],
+        ];
+
+        // dd($actionsByJustifications);
+        return response()->json([
+            "status" => 200,
+            "message" => "Registros obtenidos correctamente.",
+            "records" => $actionsByJustifications,
             "success" => true,
         ]);
     }

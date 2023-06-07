@@ -123,4 +123,50 @@ class JustificationTypeController extends Controller
             "success" => true,
         ]);
     }
+
+    /**
+     * List of Justificactions with colors & letters
+     *
+     * @param  \App\Models\Reason  $reason
+     * @return \Illuminate\Http\Response
+     */
+    public function justificationLettersColors(Request $request)
+    {
+        $justifications = JustificationType::all();
+
+        $colors =
+            [
+                "#6cb4d5", //A 1
+                "#628acb", //B 2
+                "#626bcb", //C 3              
+                "#8c76df", //D 4
+                "#a26cd5", //E 5
+                "#c26cd5", //F 6 
+                "#df76d3", //G 7
+                "#d56ca9", //H 8
+                "#d56c8a", //I 9
+                "#d56e6c", //J 10
+                "#cb8362", //K 11
+                "#dfb776", //L 12
+                "#dfd676", //M 13
+            ];
+
+        $letters = range('A', 'Z'); // Letras disponibles
+
+        foreach ($justifications as $key => $value) {
+
+            $colorIndex = $key % count($colors); // Índice del color actual
+            $letterIndex = $key % count($letters); // Índice de la letra actual
+
+            $value->letter = $letters[$letterIndex];
+            $value->color = $colors[$colorIndex];
+        }
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Registros obtenidos correctamente.",
+            "records" => $justifications,
+            "success" => true,
+        ]);
+    }
 }

@@ -34,6 +34,19 @@ Auth::routes(['verify' => true, 'remember_me' => false]);
 
 //Api User Logged In
 Route::get('/api/web/user/infoUserLoggedIn', [UserController::class, 'infoUserLoggedIn']);
+// Latest Personnel Actions
+Route::get('/api/web/personnelAction/latestPersonnelActions', [PersonnelActionController::class, 'latestPersonnelActions']);
+// Personnel Actions By Justifications
+Route::get('/api/web/personnelAction/personnelActionsByJustifications', [PersonnelActionController::class, 'personnelActionsByJustifications']);
+// Total Requested
+Route::get('/api/web/personnelAction/totalRequested', [PersonnelActionController::class, 'totalRequested']);
+Route::get('/api/web/personnelAction/totalObserved', [PersonnelActionController::class, 'totalObserved']);
+Route::get('/api/web/personnelAction/totalRejected', [PersonnelActionController::class, 'totalRejected']);
+Route::get('/api/web/personnelAction/totalApproved', [PersonnelActionController::class, 'totalApproved']);
+Route::get('/api/web/personnelAction/totalProcessed', [PersonnelActionController::class, 'totalProcessed']);
+//Justification list
+Route::get('/api/web/justificationType/justificationLettersColors', [JustificationTypeController::class, 'justificationLettersColors']);
+
 
 Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], function () {
     Route::group(['middleware' => ['has.role:Administrador']], function () {
@@ -107,14 +120,6 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::resource('/api/web/personnelAction', PersonnelActionController::class);
         // Personnel Actions To Verify
         Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
-        // Latest Personnel Actions
-        Route::post('/api/web/personnelAction/latestPersonnelActions', [PersonnelActionController::class, 'latestPersonnelActions']);
-        // Total Requested
-        Route::post('/api/web/personnelAction/totalRequested', [PersonnelActionController::class, 'totalRequested']);
-        Route::post('/api/web/personnelAction/totalObserved', [PersonnelActionController::class, 'totalObserved']);
-        Route::post('/api/web/personnelAction/totalRejected', [PersonnelActionController::class, 'totalRejected']);
-        Route::post('/api/web/personnelAction/totalApproved', [PersonnelActionController::class, 'totalApproved']);
-        Route::post('/api/web/personnelAction/totalProcessed', [PersonnelActionController::class, 'totalProcessed']);
 
         // Views
         Route::get('/personnelAction', function () {
