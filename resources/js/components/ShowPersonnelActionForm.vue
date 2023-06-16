@@ -210,7 +210,7 @@
       </h5> -->
 
       <h5 class="fw-bold pb-2 mb-2" style="border-bottom: 1px solid lightgray">
-        ANEXAR DOCUMENTOS
+        ANEXAR DOCUMENTO
       </h5>
       <!-- <hr> -->
 

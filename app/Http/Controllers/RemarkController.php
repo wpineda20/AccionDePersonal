@@ -70,4 +70,22 @@ class RemarkController extends Controller
     {
         //
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Remark  $remark
+     * @return \Illuminate\Http\Response
+     */
+    public function verifyRemark(Request $request)
+    {
+        $remark = Remark::where('id', $request->data['id'])
+            ->where('status', 0)
+            ->first();
+
+        $remark->status = 1;
+        $remark->save();
+
+        return response()->json(["message" => "success"]);
+    }
 }

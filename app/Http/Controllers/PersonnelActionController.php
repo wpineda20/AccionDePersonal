@@ -395,9 +395,9 @@ class PersonnelActionController extends Controller
                 // }
 
                 Remark::insert([
-                    'observation' => $value['observation'] . '- Observado por: ' . auth()->user()->name,
+                    'observation' => $value['observation'] . ' - observada por: ' . auth()->user()->name,
                     'personnel_action_id' => $personnelAction->id,
-                    'status' => $value['status'] == "No corregida" ? 0 : 1,
+                    'status' => $value['status'] == "No Corregida" ? 0 : 1,
                     // 'status' => $status,
                 ]);
             }

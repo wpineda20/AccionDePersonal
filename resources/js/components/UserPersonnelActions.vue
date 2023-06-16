@@ -137,7 +137,7 @@
               </tbody>
               <tbody v-else>
                 <tr class="text-center">
-                  <td colspan="3">No se realizó ninguna observación.</td>
+                  <td colspan="3">No se ha realizado ninguna observación.</td>
                 </tr>
               </tbody>
             </v-simple-table>
@@ -446,5 +446,8 @@ export default {
 <style>
 .v-tabs-slider {
   background: #2d52a8 !important;
+}
+.theme--light.v-label--is-disabled{
+  color: grey !important;
 }
 </style>
