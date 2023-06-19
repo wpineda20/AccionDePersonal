@@ -68,8 +68,8 @@
                 </li>
                 <!-- Mis A.P -->
 
-                @if (auth()->user()->hasRole(['Administrador', 'Jefe']))
-                <!-- A.P -->
+                <!-- Verification A.P -->
+                @if (auth()->user()->hasRole(['Administrador', 'Jefe', 'Coordinador']))
                 <li class="text-center pb-1">
                     <a href="{{ url('/verifyPersonnelActions') }}" class="text-center">
                         <i class="material-icons md-18 mx-auto">verified_user</i>
@@ -78,8 +78,21 @@
                         <p class="link mx-auto">Verificación</p>
                     </a>
                 </li>
-                <!-- A.P -->
                 @endif
+                <!-- Verification A.P -->
+
+                <!-- Process A.P RRHH -->
+                @if (auth()->user()->hasRole(['Administrador', 'RRHH']))
+                <li class="text-center pb-1">
+                    <a href="{{ url('/processPersonnelActions') }}" class="text-center">
+                        <i class="material-icons md-18 mx-auto">published_with_changes</i>
+                    </a>
+                    <a href="{{ url('/processPersonnelActions') }}">
+                        <p class="link mx-auto">Aprobación</p>
+                    </a>
+                </li>
+                @endif
+                <!-- Process A.P RRHH -->
 
                 <!-- Settings -->
                 <!-- Administrative routes -->

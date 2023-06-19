@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             DepartmentSeeder::class,
             MunicipalitiesSeeder::class,
             DependencySeeder::class,
-            UserSeeder::class,
+            // UserSeeder::class,
             JustificationTypeSeeder::class,
             StatusSeeder::class,
         ]);

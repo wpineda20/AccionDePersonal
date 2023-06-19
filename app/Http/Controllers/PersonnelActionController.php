@@ -193,6 +193,16 @@ class PersonnelActionController extends Controller
         //     $justification_file = $request->justification_file;
         // }
 
+        if (substr($request->justification_file, 0, 20) == "data:application/pdf") {
+
+            $request->justification_file = FileController::base64ToFile($request->justification_file, date('Y-m-d') . '-' . Str::random(4) . '-documentacion', 'documents');
+
+            $justification_file = $request->justification_file;
+        } else {
+            $justification_file = $request->justification_file;
+        }
+        // dd($request);
+
         $personnelAction->justification_type_id = JustificationType::where('justification_name', $request->justification_name)->first()->id;
         $personnelAction->from_hour = $request->from_hour;
         $personnelAction->to_hour = $request->to_hour;
@@ -204,7 +214,7 @@ class PersonnelActionController extends Controller
         $personnelAction->justification = $request->justification;
         $personnelAction->current_year = $request->current_year;
         $personnelAction->status_id = 1;
-        // $personnelAction->justification_file = $justification_file;
+        $personnelAction->justification_file = $justification_file;
 
         $personnelAction->save();
 
@@ -235,66 +245,7 @@ class PersonnelActionController extends Controller
     }
 
     /**
-     * Get user personnel actions.
-     *
-     * @param  \App\Models\PersonnelAction  $personnelAction
-     * @return \Illuminate\Http\Response
-     */
-    public function userPersonnelActions(Request $request)
-    {
-        $filters = [];
-
-        if (isset($request->filter)) {
-            switch ($request->filter) {
-                case "Solicitada":
-                    $filters['s.status_name'] = "Solicitada";
-                    break;
-                case "Observada":
-                    $filters['s.status_name'] = "Observada";
-                    break;
-                case "Rechazada":
-                    $filters['s.status_name'] = "Rechazada";
-                    break;
-                case "Aprobada":
-                    $filters['s.status_name'] = "Aprobada";
-                    break;
-                case "Procesada":
-                    $filters['s.status_name'] = "Procesada";
-                    break;
-            }
-        }
-
-        $skip = $request->skip;
-        $limit = $request->take - $skip; // the limit
-
-        $registeredRecords = PersonnelAction::select(
-            '*',
-            'u.name as employee_name',
-            'u.position_signature',
-            'd.dependency_name',
-            'jt.justification_name',
-            's.status_name',
-        )
-            ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
-            ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
-            ->join('status as s', 'personnel_action.status_id', '=', 's.id')
-            ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
-            ->where($filters)
-            ->skip($skip)
-            ->take($limit)
-            ->get();
-
-        $total = PersonnelAction::count();
-
-        return response()->json([
-            'message' => 'success',
-            'registeredRecords' => $registeredRecords,
-            'total' => $total
-        ]);
-    }
-
-    /**
-     * Get request personnel action to verify
+     * Get request personnel action to verify for Jefe & Coordinador
      *
      * @param  \App\Models\PersonnelAction  $personnelAction
      * @return \Illuminate\Http\Response
@@ -328,8 +279,8 @@ class PersonnelActionController extends Controller
                     ->orderBy("personnel_action.date_request_created")
                     ->get();
             }
-            //Jefe inmediato
-            else if ($roles[0] == "Jefe") {
+            //Coordinador
+            else if ($roles[0] == "Coordinador") {
 
                 $registeredRecords =  PersonnelAction::select(
                     'personnel_action.*',
@@ -346,6 +297,82 @@ class PersonnelActionController extends Controller
                     ->join('status as s', 'personnel_action.status_id', '=', 's.id')
                     ->where('personnel_action.status_id', 1)
                     ->where('u.inmediate_superior_id', $userLogged->id)
+
+                    ->orderBy("personnel_action.date_request_created")
+                    ->get();
+            }
+            //Jefe
+            else if ($roles[0] == "Jefe") {
+
+                $registeredRecords =  PersonnelAction::select(
+                    'personnel_action.*',
+                    'u.name as employee_name',
+                    'u.position_signature',
+                    'u.inmediate_superior_id',
+                    'u.dependency_id',
+                    'd.dependency_name',
+                    'jt.justification_name',
+                    's.status_name'
+                )
+                    ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
+                    ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
+                    ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
+                    ->join('status as s', 'personnel_action.status_id', '=', 's.id')
+                    ->where('personnel_action.status_id', 1)
+                    ->where('u.dependency_id', $userLogged->dependency_id)
+                    ->whereNull('u.inmediate_superior_id')
+
+                    ->orderBy("personnel_action.date_request_created")
+                    ->get();
+            }
+
+            foreach ($registeredRecords as $key => $value) {
+                $value->remarks = Remark::where('personnel_action_id', $value->id)->get();
+
+                foreach ($value->remarks as $remark) {
+                    $remark->status = ($remark->status == 0) ? "No Corregida" : "Corregida";
+                }
+            }
+        }
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Registros obtenidos correctamente.",
+            "records" => $registeredRecords,
+            "success" => true,
+        ]);
+    }
+    /**
+     * Get request personnel action to process RRHH
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+    public function processPersonnelActions(Request $request)
+    {
+        //Getting the role
+        $roles = auth()->user()->getRoleNames();
+        //Getting user info
+        $userLogged = auth()->user();
+
+        if (isset($roles[0])) {
+            //RRHH
+            if ($roles[0] == "RRHH" || $roles[0] == "Administrador") {
+
+                $registeredRecords =  PersonnelAction::select(
+                    'personnel_action.*',
+                    'u.name as employee_name',
+                    'u.position_signature',
+                    'u.inmediate_superior_id',
+                    'd.dependency_name',
+                    'jt.justification_name',
+                    's.status_name'
+                )
+                    ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
+                    ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
+                    ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
+                    ->join('status as s', 'personnel_action.status_id', '=', 's.id')
+                    ->where('personnel_action.status_id', 4)
 
                     ->orderBy("personnel_action.date_request_created")
                     ->get();
@@ -387,18 +414,10 @@ class PersonnelActionController extends Controller
 
             foreach ($request->data as $value) {
 
-                // if ($value['status'] == "No corregida") {
-                //     $status = 0;
-                // }
-                // if ($value['status'] == "Corregida") {
-                //     $status = 1;
-                // }
-
                 Remark::insert([
                     'observation' => $value['observation'] . ' - observada por: ' . auth()->user()->name,
                     'personnel_action_id' => $personnelAction->id,
                     'status' => $value['status'] == "No Corregida" ? 0 : 1,
-                    // 'status' => $status,
                 ]);
             }
         }

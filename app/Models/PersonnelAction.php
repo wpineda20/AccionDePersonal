@@ -32,6 +32,7 @@ class PersonnelAction extends Model
         'current_year',
         'status_id',
         'justification_file',
+        'note',
         'deleted_at',
         'created_at',
         'updated_at',

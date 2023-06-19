@@ -90,6 +90,7 @@
               :editedItem="$v.editedItem"
               :justifications="justifications"
               :enableInputs="editedItem.status_name == 'Observada'"
+              :showUpdateBtn = "editedItem.status_name == 'Observada'"
               @update-form="updateForm()"
               @close-form="closeFormActions()"
               @file-size-exceeded="

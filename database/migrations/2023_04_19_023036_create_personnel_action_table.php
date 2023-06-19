@@ -29,6 +29,7 @@ return new class extends Migration
             $table->integer('current_year');
             $table->foreignId('status_id')->constrained('status')->comment('Estado');
             $table->string('justification_file')->nullable();
+            $table->string('note')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

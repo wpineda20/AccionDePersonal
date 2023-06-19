@@ -1,33 +1,55 @@
 <template>
   <div data-app>
-    <alert-time-out :redirect="redirectSessionFinished" @redirect="updateTimeOut($event)" />
-    <alert :text="textAlert" :event="alertEvent" :show="showAlert" @show-alert="updateAlert($event)" class="mb-2" />
+    <alert-time-out
+      :redirect="redirectSessionFinished"
+      @redirect="updateTimeOut($event)"
+    />
+    <alert
+      :text="textAlert"
+      :event="alertEvent"
+      :show="showAlert"
+      @show-alert="updateAlert($event)"
+      class="mb-2"
+    />
     <v-card class="p-3">
       <v-row>
         <v-col cols="12" sm="12" md="4" lg="4" xl="4">
-          <h2 style="margin-left: 15px">Verificación de A.P</h2>
+          <h2 style="margin-left: 15px">Aprobación de A.P</h2>
         </v-col>
-        <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
-          <!-- <v-btn
-            rounded
-            @click="addRecord()"
-            class="mb-2 btn-normal no-uppercase"
-            title="Agregar"
-          >
-            Agregar
-          </v-btn> -->
-        </v-col>
+        <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end"> </v-col>
         <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
-          <v-text-field class="" dense outlined label="Buscar" type="text" v-model="options.search"></v-text-field>
+          <v-text-field
+            class=""
+            dense
+            outlined
+            label="Buscar"
+            type="text"
+            v-model="options.search"
+          ></v-text-field>
         </v-col>
       </v-row>
-      <v-data-table v-model="selected" :single-select="false" :search="options.search" :headers="headers"
-        :items="recordsFiltered" :options.sync="options" :loading="loading" item-key="id" sort-by="id"
-        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }">
+      <v-data-table
+        v-model="selected"
+        :single-select="false"
+        :search="options.search"
+        :headers="headers"
+        :items="recordsFiltered"
+        :options.sync="options"
+        :loading="loading"
+        item-key="id"
+        sort-by="id"
+        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
+      >
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon small class="mr-2" @click="verifyPersonnelAction(item)" v-bind="attrs" v-on="on">
+              <v-icon
+                small
+                class="mr-2"
+                @click="verifyPersonnelAction(item)"
+                v-bind="attrs"
+                v-on="on"
+              >
                 pending_actions
               </v-icon>
             </template>
@@ -50,88 +72,95 @@
 
           <!-- form -->
           <v-container>
-            <show-personnel-action-form :editedItem="$v.editedItem" :showObservations="true"
-              :justifications="justifications" />
+            <show-personnel-action-form
+              :editedItem="$v.editedItem"
+              :showObservations="true"
+              :justifications="justifications"
+            />
           </v-container>
           <!-- form -->
 
           <!-- Remarks -->
           <v-container>
-            <h5 class="fw-bold pt-3 pb-2 mb-2" style="border-bottom: 1px solid lightgray">
+            <h5
+              class="fw-bold pt-3 pb-2 mb-2"
+              style="border-bottom: 1px solid lightgray"
+            >
               OBSERVACIONES
             </h5>
-          </v-container>
 
-          <v-col cols="12" sm="12" md="12">
-            <base-text-area label="Observación" v-model.trim="$v.remark.observation.$model"
-              :validation="$v.remark.observation" validationTextType="none" :rows="3"
-              :disabled="editedItem.remarks.length > 0" />
-            <!-- max remark alert -->
-            <div v-if="maxRemark" class="orange-text" style="display: flex; align-items: center">
-              <i class="material-icons">error_outline</i>
-              <span>El máximo de observaciones registradas es de 3.</span>
-            </div>
-            <!-- max remark alert -->
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-btn color="btn-normal" :disabled="editedItem.remarks.length > 0" rounded @click="createRemark()">
-              AGREGAR
-            </v-btn>
-          </v-col>
-          <v-simple-table class="mt-2">
-            <thead>
-              <tr>
-                <th class="fw-bold text-black">OBSERVACIÓN</th>
-                <th class="fw-bold text-black">ESTADO</th>
-                <th class="fw-bold text-black">ACCIÓN</th>
-              </tr>
-            </thead>
-            <tbody v-if="editedItem.remarks.length > 0">
-              <tr v-for="(remark, index) in editedItem.remarks" :key="index">
-                <td>{{ remark.observation }}</td>
-                <td>{{ remark.status }}</td>
-                <td>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-icon @click="verifyRemark(remark)" :disabled="remark.status == 'Corregida'" v-on="on"
-                        v-bind="attrs">
-                        mdi-checkbox-marked-circle
-                      </v-icon>
-                    </template>
-                    <span>Validar observación</span>
-                  </v-tooltip>
-                </td>
-              </tr>
-            </tbody>
-            <tbody v-else>
-              <tr class="text-center">
-                <td colspan="3">No se ha realizado ninguna observación.</td>
-              </tr>
-            </tbody>
-          </v-simple-table>
+            <v-simple-table class="mt-2">
+              <thead>
+                <tr>
+                  <th class="fw-bold text-black">OBSERVACIÓN</th>
+                  <th class="fw-bold text-black">ESTADO</th>
+                  <th class="fw-bold text-black">ACCIÓN</th>
+                </tr>
+              </thead>
+              <tbody v-if="editedItem.remarks.length > 0">
+                <tr v-for="(remark, index) in editedItem.remarks" :key="index">
+                  <td>{{ remark.observation }}</td>
+                  <td>{{ remark.status }}</td>
+                  <td>
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-icon
+                          @click="verifyRemark(remark)"
+                          :disabled="remark.status == 'Corregida'"
+                          v-on="on"
+                          v-bind="attrs"
+                        >
+                          mdi-checkbox-marked-circle
+                        </v-icon>
+                      </template>
+                      <span>Validar observación</span>
+                    </v-tooltip>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody v-else>
+                <tr class="text-center">
+                  <td colspan="3">No se ha realizado ninguna observación.</td>
+                </tr>
+              </tbody>
+            </v-simple-table>
+          </v-container>
           <!-- Remarks -->
+
+          <!-- <v-container>
+            <h5
+              class="fw-bold pt-3 pb-2 mb-2"
+              style="border-bottom: 1px solid lightgray"
+            >
+              NOTA
+            </h5>
+            <v-row>
+              <v-col cols="12" sm="12" md="12">
+                <base-input
+                  label="Agregar nota"
+                  v-model.trim="$v.defaultItem.note.$model"
+                  :validation="$v.defaultItem.note"
+                  validationTextType="none"
+                />
+              </v-col>
+            </v-row>
+          </v-container> -->
 
           <!-- Approve / Observe / Reject / Approve / Process -->
           <v-row>
             <v-col align="center">
-              <v-btn color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded @click="setStatus('Aprobada')"
-                :disabled="this.remark.status == 'No Corregida' || disableRemark">
-
-                Aprobar
-              </v-btn>
-              <v-btn color="btn-normal-close no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
-                @click="setStatus('Observada')">
-                Observar
-              </v-btn>
-              <v-btn color="btn-normal-red no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
-                @click="setStatus('Rechazada')" :disabled="this.remark.status == 'No Corregida'">
-                Rechazar
-              </v-btn>
-              <!-- <v-btn v-if="actualUser.role == 'RRHH' || actualUser.role == 'Administrador'"
-                color="btn-normal-green no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded @click="setStatus('Procesada')"
-                :disabled="this.remark.status == 'No Corregida'">
+              <v-btn
+                v-if="
+                  actualUser.role == 'RRHH' ||
+                  actualUser.role == 'Administrador'
+                "
+                color="btn-normal-green no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="setStatus('Procesada')"
+                :disabled="this.remark.status == 'No Corregida'"
+              >
                 Procesar
-              </v-btn> -->
+              </v-btn>
             </v-col>
           </v-row>
           <!-- Approve / Observe / Reject / Approve / Process -->
@@ -191,6 +220,7 @@ export default {
         justification: "",
         justification_file: "",
         remarks: [],
+        note: "",
       },
       defaultItem: {
         employee_name: "",
@@ -207,6 +237,7 @@ export default {
         justification: "",
         justification_file: "",
         remarks: [],
+        note: "",
       },
       remark: {
         observation: "",
@@ -282,6 +313,9 @@ export default {
         maxLength: maxLength(800),
       },
       justification_file: {},
+      note: {
+        minLength: minLength(1),
+      },
       remarks: {},
     },
     remark: {
@@ -329,8 +363,7 @@ export default {
       this.recordsFiltered = [];
 
       let requests = [
-        // this.getDataFromApi(),
-        personnelActionApi.post(`/verifyPersonnelActions`),
+        personnelActionApi.post(`/processPersonnelActions`),
         justificationTypeApi.get(null, {
           params: { itemsPerPage: -1 },
         }),
@@ -352,7 +385,6 @@ export default {
         this.actualUser = responses[2].data.user;
 
         this.recordsFiltered.forEach((item) => {
-          // console.log(item);
           item.date_request_created = format(
             new Date(item.date_request_created),
             "d/MM/y, hh:mm a",
@@ -494,19 +526,6 @@ export default {
     verifyPersonnelAction(item) {
       this.editedIndex = this.recordsFiltered.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      //Disable buttons if remark had status no corregida
-
-      // this.editedItem.forEach((element) => {
-      //   if (element.remarks.length) {
-      //     console.log("hay información en el array");
-      //     element.remarks.forEach((remark) => {
-      //       if (remark.status == "No Corregida") {
-      //         this.disableRemark = true;
-      //         // console.log("si hay una en no corregida");
-      //       }
-      //     });
-      //   }
-      // });
       this.dialogActions = true;
     },
 
@@ -533,62 +552,53 @@ export default {
       }
     },
 
-    async createRemark() {
-      this.$v.remark.$touch();
+    // async createRemark() {
+    //   this.$v.remark.$touch();
 
-      if (this.$v.remark.$invalid) {
-        return;
-      }
+    //   if (this.$v.remark.$invalid) {
+    //     return;
+    //   }
 
-      this.remark["status"] = "No Corregida";
+    //   this.remark["status"] = "No Corregida";
 
-      if (this.editedItem.remarks.length > 2) {
-        this.updateAlert(
-          true,
-          "El máximo de observaciones registradas es de 3",
-          "fail"
-        );
+    //   if (this.editedItem.remarks.length > 2) {
+    //     this.updateAlert(
+    //       true,
+    //       "El máximo de observaciones registradas es de 3",
+    //       "fail"
+    //     );
 
-        this.maxRemark = true;
+    //     this.maxRemark = true;
 
-        return;
-      }
-      this.editedItem.remarks.push({ ...this.remark });
-      // console.log(this.remark);
-      // console.log(this.editedItem.remarks.status);
+    //     return;
+    //   }
+    //   this.editedItem.remarks.push({ ...this.remark });
 
-      this.remark.observation = "";
-      this.$v.remark.$reset();
-    },
+    //   this.remark.observation = "";
+    //   this.$v.remark.$reset();
+    // },
 
-    async verifyRemark(item) {
-      console.log(item);
-      const response = await remarkApi
-        .post(`/verifyRemark`, {
-          data: item,
-        })
-        .catch((error) => {
-          this.updateAlert(true, "No fue posible asignarle un estado.", "fail");
-          this.closeActions();
-        });
+    // async verifyRemark(item) {
+    //   console.log(item);
+    //   const response = await remarkApi
+    //     .post(`/verifyRemark`, {
+    //       data: item,
+    //     })
+    //     .catch((error) => {
+    //       this.updateAlert(true, "No fue posible asignarle un estado.", "fail");
+    //       this.closeActions();
+    //     });
 
-      if (response.data.message == "success") {
-        this.updateAlert(
-          true,
-          "Observación verificada correctamente.",
-          "success"
-        );
-        this.initialize();
-        this.closeActions();
-        console.log("success");
-      }
-
-    },
-
-    // deleteRemarksCreated(index) {
-    //   this.remarksCreated.splice(index, 1);
-    //   this.remarks.observation = "";
-    //   this.remarks.status = "";
+    //   if (response.data.message == "success") {
+    //     this.updateAlert(
+    //       true,
+    //       "Observación verificada correctamente.",
+    //       "success"
+    //     );
+    //     this.initialize();
+    //     this.closeActions();
+    //     console.log("success");
+    //   }
     // },
 
     closeActions() {
@@ -603,9 +613,6 @@ export default {
       this.textAlert = text;
       this.alertEvent = event;
       this.showAlert = show;
-      // if (show) {
-      //   this.$refs.top.scrollIntoView();
-      // }
     },
   },
 };

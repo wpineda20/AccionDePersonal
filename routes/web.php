@@ -75,6 +75,8 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::get('api/personnelAction/userPersonnelActions', [PersonnelActionController::class, 'userPersonnelActions']);
         // Personnel Actions To Verify
         Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
+        // Personnel Actions To Process
+        Route::post('/api/web/personnelAction/processPersonnelActions', [PersonnelActionController::class, 'processPersonnelActions']);
         // Disable user
         Route::post('/api/web/user/disableUser', [UserController::class, 'disableUser']);
 
@@ -114,14 +116,23 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::get('/verifyPersonnelActions', function () {
             return view('verify_personnel_actions.index');
         });
+
+        Route::get('/processPersonnelActions', function () {
+            return view('process_personnel_actions.index');
+        });
     });
 
-    Route::group(['middleware' => ['has.role:Administrador,Jefe,Usuario']], function () {
+    Route::group(['middleware' => ['has.role:Administrador,Jefe,Coordinador,Empleado,RRHH']], function () {
         //Apis
         Route::resource('/api/web/justificationType', JustificationTypeController::class);
         Route::resource('/api/web/personnelAction', PersonnelActionController::class);
+
+        // Set status
+        Route::post('/api/web/personnelAction/setStatus', [PersonnelActionController::class, 'setStatus']);
         // Personnel Actions To Verify
         Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
+        // Personnel Actions To Process
+        Route::post('/api/web/personnelAction/processPersonnelActions', [PersonnelActionController::class, 'processPersonnelActions']);
         // Actual User
         Route::post('/api/web/user/actualUser', [UserController::class, 'actualUser']);
 
@@ -136,7 +147,11 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::get('/verifyPersonnelActions', function () {
             return view('verify_personnel_actions.index');
         });
+        Route::get('/processPersonnelActions', function () {
+            return view('process_personnel_actions.index');
+        });
     });
+
 
     // //Reports
     // Route::get('generate-pdf', [PDFController::class, 'generatePDF']);

@@ -214,19 +214,6 @@
       </h5>
       <!-- <hr> -->
 
-      <!-- Document File -->
-      <v-col cols="12" xs="12" sm="12" md="6">
-        <a
-          :href="editedItem.justification_file.$model"
-          target="_blank"
-          v-if="editedItem.justification_file.$model"
-        >
-          Visualizar documento anexo
-        </a>
-        <p v-else>No se adjunto ningún documento.</p>
-      </v-col>
-      <!-- Document File -->
-
       <!-- justification_file -->
       <v-col cols="12" xs="12" sm="12" md="6" v-if="showUpdateBtn">
         <h6 class="mb-0">
@@ -242,6 +229,18 @@
         />
       </v-col>
       <!-- justification_file -->
+      <!-- Document File -->
+      <v-col cols="12" xs="12" sm="12" md="6">
+        <a
+          :href="editedItem.justification_file.$model"
+          target="_blank"
+          v-if="editedItem.justification_file.$model"
+        >
+          Visualizar documento anexo
+        </a>
+        <p v-else>No se adjunto ningún documento.</p>
+      </v-col>
+      <!-- Document File -->
     </v-row>
   </div>
 </template>
@@ -267,6 +266,7 @@ export default {
         effective_date: "",
         justification: "",
         justification_file: "",
+        note: "",
       }),
     },
     justifications: {
@@ -281,38 +281,12 @@ export default {
       type: Boolean,
       default: () => false,
     },
-    // showObservations: {
-    //   type: Boolean,
-    //   default: () => false,
-    // },
     enableInputs: {
       type: Boolean,
       default: () => false,
     },
   },
-
-  methods: {
-    // updateForm() {
-    //   this.$emit("update-form", true);
-    //   this.closeFormActions();
-    // },
-    // verifyRemark() {
-    //   console.log("Verificar observación");
-    //   this.$emit("emit: verify-remark", true);
-    // },
-    // setStatus(str) {
-    //   this.$emit("set-status", str);
-    // },
-    // createRemark() {
-    //   this.$emit("create-remark", this.remark);
-    //   console.log(this.remark);
-    // },
-    // closeFormActions() {
-    //   this.$emit("close-form", true);
-    // },
-  },
 };
 </script>
 
-<style>
-</style>
+<style></style>
