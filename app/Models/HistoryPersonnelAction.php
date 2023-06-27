@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class HistoryPersonnelActionStatus extends Model
+class HistoryPersonnelAction extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'history_personnel_action_status';
+    protected $table = 'history_personnel_action';
 
     public $incrementing = true;
 
@@ -18,10 +18,11 @@ class HistoryPersonnelActionStatus extends Model
 
     protected $fillable = [
         'id',
-        'personnel_action_id',
         'user_id',
+        'personnel_action_id',
         'status_id',
-        'update_date',
+        'url_file',
+        'active',
         'created_at',
         'updated_at',
         'deleted_at',

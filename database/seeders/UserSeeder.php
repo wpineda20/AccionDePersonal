@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'dependency_id' => 9,
             'inmediate_superior_id' => null,
-            'status' => 1,
+            'send_to_rrhh' => 0,
             'password' => Hash::make('12345678'),
             'email_verified_at' => now(),
         ]);

@@ -1,54 +1,24 @@
 <template>
   <div data-app>
-    <alert-time-out
-      :redirect="redirectSessionFinished"
-      @redirect="updateTimeOut($event)"
-    />
-    <alert
-      :text="textAlert"
-      :event="alertEvent"
-      :show="showAlert"
-      @show-alert="updateAlert($event)"
-      class="mb-2"
-    />
+    <alert-time-out :redirect="redirectSessionFinished" @redirect="updateTimeOut($event)" />
+    <alert :text="textAlert" :event="alertEvent" :show="showAlert" @show-alert="updateAlert($event)" class="mb-2" />
     <v-card class="p-3">
       <v-row>
         <v-col cols="12" sm="12" md="4" lg="4" xl="4">
           <h2 style="margin-left: 15px">Estados</h2>
         </v-col>
         <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
-          <v-btn
-            rounded
-            @click="addRecord()"
-            class="mb-2 btn-normal no-uppercase"
-            title="Agregar"
-          >
+          <v-btn rounded @click="addRecord()" class="mb-2 btn-normal no-uppercase" title="Agregar">
             Agregar
           </v-btn>
         </v-col>
         <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
-          <v-text-field
-            class=""
-            dense
-            outlined
-            label="Buscar"
-            type="text"
-            v-model="options.search"
-          ></v-text-field>
+          <v-text-field class="" dense outlined label="Buscar" type="text" v-model="options.search"></v-text-field>
         </v-col>
       </v-row>
-      <v-data-table
-        v-model="selected"
-        :single-select="false"
-        :search="options.search"
-        :headers="headers"
-        :items="recordsFiltered"
-        :options.sync="options"
-        :loading="loading"
-        item-key="id"
-        sort-by="id"
-        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
-      >
+      <v-data-table v-model="selected" :single-select="false" :search="options.search" :headers="headers"
+        :items="recordsFiltered" :options.sync="options" :loading="loading" item-key="id" sort-by="id"
+        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }">
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">
             mdi-pencil
@@ -77,40 +47,24 @@
             <v-row class="pt-3">
               <!-- status_name -->
               <v-col cols="12" sm="12" md="12">
-                <base-input
-                  label="Estado"
-                  v-model="$v.editedItem.status_name.$model"
-                  :validation="$v.editedItem.status_name"
-                  validationTextType="none"
-                />
+                <base-input label="Estado" v-model="$v.editedItem.status_name.$model"
+                  :validation="$v.editedItem.status_name" validationTextType="none" />
               </v-col>
               <!-- status_name -->
-              <!-- color -->
+              <!-- order_id -->
               <v-col cols="12" sm="12" md="12">
-                <v-color-picker
-                  mode="hexa"
-                  dot-size="17"
-                  v-model="$v.editedItem.color.$model"
-                  :validation="$v.editedItem.color"
-                ></v-color-picker>
+                <base-input label="Orden" v-model="$v.editedItem.order_id.$model" :validation="$v.editedItem.order_id"
+                  type="number" />
               </v-col>
-              <!-- color -->
+              <!-- order_id -->
             </v-row>
             <!-- Form -->
             <v-row>
               <v-col align="center">
-                <v-btn
-                  color="btn-normal no-uppercase mt-3"
-                  rounded
-                  @click="save"
-                >
+                <v-btn color="btn-normal no-uppercase mt-3" rounded @click="save">
                   Guardar
                 </v-btn>
-                <v-btn
-                  color="btn-normal-close no-uppercase mt-3"
-                  rounded
-                  @click="close"
-                >
+                <v-btn color="btn-normal-close no-uppercase mt-3" rounded @click="close">
                   Cancelar
                 </v-btn>
               </v-col>
@@ -130,17 +84,9 @@
           </h1>
           <v-row>
             <v-col align="center">
-              <v-btn
-                color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
-                rounded
-                @click="deleteItemConfirm"
-                >Confirmar</v-btn
-              >
-              <v-btn
-                color="btn-normal-close no-uppercase mt-3 mb-3"
-                rounded
-                @click="closeDelete"
-              >
+              <v-btn color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
+                @click="deleteItemConfirm">Confirmar</v-btn>
+              <v-btn color="btn-normal-close no-uppercase mt-3 mb-3" rounded @click="closeDelete">
                 Cancelar
               </v-btn>
             </v-col>
@@ -165,7 +111,7 @@ export default {
       dialogDelete: false,
       headers: [
         { text: "ESTADO", value: "status_name" },
-        { text: "COLOR", value: "color" },
+        { text: "ORDEN", value: "order_id" },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
@@ -176,11 +122,11 @@ export default {
       options: {},
       editedItem: {
         status_name: "",
-        color: "",
+        order_id: 0,
       },
       defaultItem: {
         status_name: "",
-        color: "",
+        order_id: 0,
       },
       selectedTab: 0,
       loading: false,
@@ -200,7 +146,7 @@ export default {
         required,
         minLength: minLength(1),
       },
-      color: {
+      order_id: {
         required,
         minLength: minLength(1),
       },

@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\PersonnelAction;
-use App\Models\User;
-use App\Models\Dependency;
 use App\Models\Remark;
 use App\Models\Status;
 use App\Models\JustificationType;
-use App\Models\HistoryPersonnelActionStatus;
+use App\Models\HistoryPersonnelAction;
+use App\Models\User;
+
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+
 use Str;
 use Encrypt;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class PersonnelActionController extends Controller
@@ -104,25 +108,81 @@ class PersonnelActionController extends Controller
             'total_days' => $request->total_days,
             'justification' => $request->justification,
             'current_year' => intval(date("Y")),
-            'status_id' => 1,
             'justification_file' => $justification_file,
         ]);
 
         $personnelAction->save();
 
-        //Create history personnel action status
-        HistoryPersonnelActionStatus::insert([
+        //Create first record with status requested
+        HistoryPersonnelAction::insert([
             'personnel_action_id' => $personnelAction->id,
-            'user_id' => auth()->user()->id,
-            'status_id' => $personnelAction->status_id,
-            'update_date' => now(),
+            'user_id' => $personnelAction->user_id,
+            'status_id' => 1,
+            'url_file' => null,
+            'active' => 1,
         ]);
+
+        //Generate pdf
+        $fileName = 'accion-de-personal-' . Str::random(5) . '.pdf';
+
+        $path = 'public/personnel_actions/' . $fileName;
+
+        $pdf = PDF::loadView("PDF.report", compact("request"))->setPaper("A4", "portrait");
+
+        $content = $pdf->download()->getOriginalContent();
+
+        Storage::put($path, $content);
+
+        $url = Storage::url($path);
+
+        $fullUrl = asset($url);
+
+
+        //Send pdf information to login
+        // try {
+        //     $response = Http::dd()->post(
+        //         "https://apilogin",
+        //         [
+        //             'file' => $content,
+        //             'user_id' => $personnelAction->user_id,
+        //             'coordinatesX' => '',
+        //             'coordinatesY' => '',
+        //         ]
+        //     )->throw()->json();
+
+        //     return $response;
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        // }
+
+
+        //Get PDF
+
+
+        //Creamos el segundo registro con url de pdf y status 2
+        $activeState = HistoryPersonnelAction::where([
+            'personnel_action_id' => $personnelAction->id,
+            'active' => 1,
+        ])->first();
+
+        $activeState->active = 0;
+        $activeState->save();
+
+        $history = new HistoryPersonnelAction();
+        $history->user_id = $personnelAction->user_id;
+        $history->personnel_action_id = $personnelAction->id;
+        $history->status_id = 2;
+        $history->active = 1;
+        $history->url_file = $fullUrl;
+        $history->save();
+
 
         return response()->json([
             'success' => true,
             'message' => "Tu solicitud ha sido enviada exitosamente.",
         ]);
     }
+
 
     /**
      * Validate Dates & Hours Personnel Action
@@ -157,6 +217,26 @@ class PersonnelActionController extends Controller
         }
 
         return $validation;
+    }
+
+    /**
+     * send information to login 
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+    public function apiSendPdf()
+    {
+        $response = Http::dd()->post(
+            "https://apilogin",
+            [
+                'file' => '', //id de login sv puede ir vacío si no se tiene
+                'user_id' => auth()->user()->id, //correo de persona que inicia el tramite
+                'tramite_id' => '1460', // La secretaria lo proporciona
+            ]
+        )->throw()->json();
+
+        return $response;
     }
 
     /**
@@ -219,7 +299,7 @@ class PersonnelActionController extends Controller
         $personnelAction->save();
 
         //Create history personnel action status
-        HistoryPersonnelActionStatus::insert([
+        HistoryPersonnelAction::insert([
             'personnel_action_id' => $personnelAction->id,
             'user_id' => auth()->user()->id,
             'status_id' => $personnelAction->status_id,
@@ -342,58 +422,7 @@ class PersonnelActionController extends Controller
             "success" => true,
         ]);
     }
-    /**
-     * Get request personnel action to process RRHH
-     *
-     * @param  \App\Models\PersonnelAction  $personnelAction
-     * @return \Illuminate\Http\Response
-     */
-    public function processPersonnelActions(Request $request)
-    {
-        //Getting the role
-        $roles = auth()->user()->getRoleNames();
-        //Getting user info
-        $userLogged = auth()->user();
 
-        if (isset($roles[0])) {
-            //RRHH
-            if ($roles[0] == "RRHH" || $roles[0] == "Administrador") {
-
-                $registeredRecords =  PersonnelAction::select(
-                    'personnel_action.*',
-                    'u.name as employee_name',
-                    'u.position_signature',
-                    'u.inmediate_superior_id',
-                    'd.dependency_name',
-                    'jt.justification_name',
-                    's.status_name'
-                )
-                    ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
-                    ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
-                    ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
-                    ->join('status as s', 'personnel_action.status_id', '=', 's.id')
-                    ->where('personnel_action.status_id', 4)
-
-                    ->orderBy("personnel_action.date_request_created")
-                    ->get();
-            }
-
-            foreach ($registeredRecords as $key => $value) {
-                $value->remarks = Remark::where('personnel_action_id', $value->id)->get();
-
-                foreach ($value->remarks as $remark) {
-                    $remark->status = ($remark->status == 0) ? "No Corregida" : "Corregida";
-                }
-            }
-        }
-
-        return response()->json([
-            "status" => 200,
-            "message" => "Registros obtenidos correctamente.",
-            "records" => $registeredRecords,
-            "success" => true,
-        ]);
-    }
 
     /**
      * Set personnel action status.
@@ -457,15 +486,14 @@ class PersonnelActionController extends Controller
     }
 
     /**
-     * Total Requested.
+     * Total Requested. 
      *
      * @param  \App\Models\PersonnelAction  $personnelAction
      * @return \Illuminate\Http\Response
      */
     public function totalRequested()
     {
-        $totalRequested = count(PersonnelAction::select('*')
-            ->where('user_id', auth()->user()->id)
+        $totalRequested = count(PersonnelAction::where('user_id', auth()->user()->id)
             ->where('status_id', 1)
             ->get());
 
@@ -484,8 +512,7 @@ class PersonnelActionController extends Controller
      */
     public function totalObserved()
     {
-        $totalObserved = count(PersonnelAction::select('*')
-            ->where('user_id', auth()->user()->id)
+        $totalObserved = count(PersonnelAction::where('user_id', auth()->user()->id)
             ->where('status_id', 2)
             ->get());
 
@@ -504,8 +531,7 @@ class PersonnelActionController extends Controller
      */
     public function totalRejected()
     {
-        $totalRejected = count(PersonnelAction::select('*')
-            ->where('user_id', auth()->user()->id)
+        $totalRejected = count(PersonnelAction::where('user_id', auth()->user()->id)
             ->where('status_id', 3)
             ->get());
 
@@ -524,8 +550,7 @@ class PersonnelActionController extends Controller
      */
     public function totalApproved()
     {
-        $totalApproved = count(PersonnelAction::select('*')
-            ->where('user_id', auth()->user()->id)
+        $totalApproved = count(PersonnelAction::where('user_id', auth()->user()->id)
             ->where('status_id', 4)
             ->get());
 
@@ -544,8 +569,7 @@ class PersonnelActionController extends Controller
      */
     public function totalProcessed()
     {
-        $totalProcessed = count(PersonnelAction::select('*')
-            ->where('user_id', auth()->user()->id)
+        $totalProcessed = count(PersonnelAction::where('user_id', auth()->user()->id)
             ->where('status_id', 5)
             ->get());
 

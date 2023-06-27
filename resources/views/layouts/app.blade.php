@@ -81,19 +81,6 @@
                 @endif
                 <!-- Verification A.P -->
 
-                <!-- Process A.P RRHH -->
-                @if (auth()->user()->hasRole(['Administrador', 'RRHH']))
-                <li class="text-center pb-1">
-                    <a href="{{ url('/processPersonnelActions') }}" class="text-center">
-                        <i class="material-icons md-18 mx-auto">published_with_changes</i>
-                    </a>
-                    <a href="{{ url('/processPersonnelActions') }}">
-                        <p class="link mx-auto">Aprobación</p>
-                    </a>
-                </li>
-                @endif
-                <!-- Process A.P RRHH -->
-
                 <!-- Settings -->
                 <!-- Administrative routes -->
                 @if (auth()->user()->hasRole('Administrador') == 'Administrador')

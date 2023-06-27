@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('history_personnel_action_status', function (Blueprint $table) {
+        Schema::create('history_personnel_action', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users');
             $table->foreignId('personnel_action_id')->constrained('personnel_action');
-            $table->foreignId('user_id')->constrained('users');
             $table->foreignId('status_id')->constrained('status');
-            $table->dateTime('update_date');
+            $table->text('url_file')->nullable();
+            $table->boolean('active');
             $table->SoftDeletes();
             $table->timestamps();
         });

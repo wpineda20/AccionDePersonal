@@ -17,7 +17,7 @@ class Status extends Model
     protected $data = ['deleted_at'];
 
     protected $fillable = [
-        'id', 'status_name', 'color', 'deleted_at', 'created_at', 'updated_at',
+        'id', 'status_name', 'order_id', 'deleted_at', 'created_at', 'updated_at',
     ];
 
     public $hidden = [
@@ -33,6 +33,7 @@ class Status extends Model
         return Status::select('status.*', 'status.id as id')
 
             ->where('status.status_name', 'like', $search)
+            ->orWhere('status.order_id', 'like', $search)
 
             ->skip($skip)
             ->take($itemsPerPage)
@@ -45,6 +46,7 @@ class Status extends Model
         return Status::select('status.*', 'status.id as id')
 
             ->where('status.status_name', 'like', $search)
+            ->orWhere('status.order_id', 'like', $search)
 
             ->count();
     }

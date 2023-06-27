@@ -1,29 +1,10 @@
 <template>
   <div data-app>
-    <alert-time-out
-      :redirect="redirectSessionFinished"
-      @redirect="updateTimeOut($event)"
-    />
-    <alert
-      :text="textAlert"
-      :event="alertEvent"
-      :show="showAlert"
-      @show-alert="updateAlert($event)"
-      class="mb-2"
-    />
-    <v-data-table
-      v-model="selected"
-      :single-select="false"
-      :search="options.search"
-      :headers="headers"
-      :items="recordsFiltered"
-      :options.sync="options"
-      :loading="loading"
-      item-key="id"
-      sort-by="id"
-      :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
-      class="elevation-3 shadow p-3 mt-3"
-    >
+    <alert-time-out :redirect="redirectSessionFinished" @redirect="updateTimeOut($event)" />
+    <alert :text="textAlert" :event="alertEvent" :show="showAlert" @show-alert="updateAlert($event)" class="mb-2" />
+    <v-data-table v-model="selected" :single-select="false" :search="options.search" :headers="headers"
+      :items="recordsFiltered" :options.sync="options" :loading="loading" item-key="id" sort-by="id"
+      :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }" class="elevation-3 shadow p-3 mt-3">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Usuarios</v-toolbar-title>
@@ -42,19 +23,8 @@
                     Agregar
                   </v-btn> -->
                 </v-col>
-                <v-col
-                  xs="6"
-                  sm="6"
-                  md="6"
-                  class="d-none d-md-block d-lg-block"
-                >
-                  <v-text-field
-                    dense
-                    label="Buscar"
-                    outlined
-                    type="text"
-                    v-model="options.search"
-                  ></v-text-field>
+                <v-col xs="6" sm="6" md="6" class="d-none d-md-block d-lg-block">
+                  <v-text-field dense label="Buscar" outlined type="text" v-model="options.search"></v-text-field>
                 </v-col>
               </v-row>
             </template>
@@ -71,12 +41,8 @@
                   <v-row>
                     <!-- name -->
                     <v-col cols="12" sm="6" md="6">
-                      <base-input
-                        label="Nombre"
-                        v-model="$v.editedItem.name.$model"
-                        :validation.sync="$v.editedItem.name"
-                        validationTextType="default"
-                      />
+                      <base-input label="Nombre" v-model="$v.editedItem.name.$model" :validation.sync="$v.editedItem.name"
+                        validationTextType="default" />
                     </v-col>
                     <!-- name -->
                     <!-- <v-col cols="12" sm="6" md="6">
@@ -90,60 +56,36 @@
 
                     <!-- position_signature -->
                     <v-col cols="12" sm="6" md="6">
-                      <base-input
-                        label="Cargo"
-                        v-model="$v.editedItem.position_signature.$model"
-                        :validation.sync="$v.editedItem.position_signature"
-                        validationTextType="default"
-                      />
+                      <base-input label="Cargo" v-model="$v.editedItem.position_signature.$model"
+                        :validation.sync="$v.editedItem.position_signature" validationTextType="default" />
                     </v-col>
                     <!-- position_signature -->
 
                     <!-- email -->
                     <v-col cols="12" sm="6" md="6">
-                      <base-input
-                        label="Correo electrónico"
-                        v-model="$v.editedItem.email.$model"
-                        :validation.sync="$v.editedItem.email"
-                        validationTextType="none"
-                      />
+                      <base-input label="Correo electrónico" v-model="$v.editedItem.email.$model"
+                        :validation.sync="$v.editedItem.email" validationTextType="none" />
                     </v-col>
                     <!-- email -->
 
                     <!-- dependency_name  -->
                     <v-col cols="12" sm="6" md="6">
-                      <base-select-search
-                        label="Dependencia"
-                        v-model.trim="$v.editedItem.dependency_name.$model"
-                        :items="dependencies"
-                        item="dependency_name"
-                        :validation="$v.editedItem.dependency_name"
-                      />
+                      <base-select-search label="Dependencia" v-model.trim="$v.editedItem.dependency_name.$model"
+                        :items="dependencies" item="dependency_name" :validation="$v.editedItem.dependency_name" />
                     </v-col>
                     <!-- dependency_name  -->
 
                     <!-- inmediate_superior_id  -->
                     <v-col cols="12" sm="6" md="6">
-                      <base-select-search
-                        label="Jefe inmediato (Opcional)"
-                        v-model.trim="
-                          $v.editedItem.inmediate_superior_id.$model
-                        "
-                        :items="users"
-                        item="name"
-                        :validation="$v.editedItem.inmediate_superior_id"
-                      />
+                      <base-select-search label="Jefe inmediato (Opcional)" v-model.trim="$v.editedItem.inmediate_superior_id.$model
+                        " :items="users" item="name" :validation="$v.editedItem.inmediate_superior_id" />
                     </v-col>
                     <!-- inmediate_superior_id  -->
 
                     <!-- rol -->
                     <v-col cols="12" sm="6" md="6">
-                      <base-select-search
-                        label="Rol"
-                        v-model.trim="$v.editedItem.rol.$model"
-                        :items="roles"
-                        :validation="$v.editedItem.rol"
-                      />
+                      <base-select-search label="Rol" v-model.trim="$v.editedItem.rol.$model" :items="roles"
+                        :validation="$v.editedItem.rol" />
                     </v-col>
                     <!-- rol -->
 
@@ -171,18 +113,10 @@
                   <!-- Form -->
                   <v-row>
                     <v-col align="center">
-                      <v-btn
-                        color="btn-normal no-uppercase mt-3"
-                        rounded
-                        @click="save"
-                      >
+                      <v-btn color="btn-normal no-uppercase mt-3" rounded @click="save">
                         Guardar
                       </v-btn>
-                      <v-btn
-                        color="btn-normal-close no-uppercase mt-3"
-                        rounded
-                        @click="close"
-                      >
+                      <v-btn color="btn-normal-close no-uppercase mt-3" rounded @click="close">
                         Cancelar
                       </v-btn>
                     </v-col>
@@ -196,13 +130,7 @@
       <template v-slot:[`item.actions`]="{ item }">
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              small
-              class="mr-2"
-              @click="editItem(item)"
-              v-bind="attrs"
-              v-on="on"
-            >
+            <v-icon small class="mr-2" @click="editItem(item)" v-bind="attrs" v-on="on">
               mdi-pencil
             </v-icon>
           </template>
@@ -225,11 +153,7 @@
         <!-- <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon> -->
       </template>
       <template v-slot:no-data>
-        <a
-          href="#"
-          class="btn btn-normal-secondary no-decoration"
-          @click="initialize"
-        >
+        <a href="#" class="btn btn-normal-secondary no-decoration" @click="initialize">
           Reiniciar
         </a>
       </template>
@@ -244,17 +168,9 @@
           </h1>
           <v-row>
             <v-col align="center">
-              <v-btn
-                color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
-                rounded
-                @click="disableUser"
-                >Confirmar</v-btn
-              >
-              <v-btn
-                color="btn-normal-close no-uppercase mt-3 mb-3"
-                rounded
-                @click="closeBlock"
-              >
+              <v-btn color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
+                @click="disableUser">Confirmar</v-btn>
+              <v-btn color="btn-normal-close no-uppercase mt-3 mb-3" rounded @click="closeBlock">
                 Cancelar
               </v-btn>
             </v-col>
@@ -290,7 +206,6 @@ export default {
         { text: "USUARIO", value: "name" },
         { text: "ROL", value: "rol", sortable: false },
         { text: "CORREO ELECTRÓNICO", value: "email" },
-        { text: "ESTADO", value: "status" },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       selected: [],
@@ -305,7 +220,7 @@ export default {
         last_name: "",
         email: "",
         password: "",
-        rol: "Administrator",
+        rol: "",
         position_signature: "",
         dependency_name: "",
         inmediate_superior_id: "",
@@ -315,7 +230,7 @@ export default {
         email: "",
         last_name: "",
         password: "",
-        rol: "Administrator",
+        rol: "",
         position_signature: "",
         dependency_name: "",
         inmediate_superior_id: "",

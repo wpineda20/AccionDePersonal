@@ -75,10 +75,6 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::get('api/personnelAction/userPersonnelActions', [PersonnelActionController::class, 'userPersonnelActions']);
         // Personnel Actions To Verify
         Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
-        // Personnel Actions To Process
-        Route::post('/api/web/personnelAction/processPersonnelActions', [PersonnelActionController::class, 'processPersonnelActions']);
-        // Disable user
-        Route::post('/api/web/user/disableUser', [UserController::class, 'disableUser']);
 
         // Views
         Route::get('/departments', function () {
@@ -131,8 +127,6 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::post('/api/web/personnelAction/setStatus', [PersonnelActionController::class, 'setStatus']);
         // Personnel Actions To Verify
         Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
-        // Personnel Actions To Process
-        Route::post('/api/web/personnelAction/processPersonnelActions', [PersonnelActionController::class, 'processPersonnelActions']);
         // Actual User
         Route::post('/api/web/user/actualUser', [UserController::class, 'actualUser']);
 

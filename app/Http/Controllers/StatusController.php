@@ -55,7 +55,7 @@ class StatusController extends Controller
         $requeststatus = new Status;
 
         $requeststatus->status_name = $request->status_name;
-        $requeststatus->color = $request->color;
+        $requeststatus->order_id = $request->order_id;
         $requeststatus->deleted_at = $request->deleted_at;
 
         $requeststatus->save();
@@ -91,7 +91,7 @@ class StatusController extends Controller
 
         $requeststatus = Status::where('id', $data['id'])->first();
         $requeststatus->status_name = $request->status_name;
-        $requeststatus->color = $request->color;
+        $requeststatus->order_id = $request->order_id;
         $requeststatus->deleted_at = $request->deleted_at;
 
         $requeststatus->save();
