@@ -69,7 +69,7 @@
                 <!-- Mis A.P -->
 
                 <!-- Verification A.P -->
-                @if (auth()->user()->hasRole(['Administrador', 'Jefe', 'Coordinador']))
+                @if (auth()->user()->hasRole(['Administrador', 'Jefe', 'Coordinador', 'RRHH']))
                 <li class="text-center pb-1">
                     <a href="{{ url('/verifyPersonnelActions') }}" class="text-center">
                         <i class="material-icons md-18 mx-auto">verified_user</i>

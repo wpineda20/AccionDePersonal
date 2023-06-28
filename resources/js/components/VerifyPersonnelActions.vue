@@ -1,7 +1,16 @@
 <template>
   <div data-app>
-    <alert-time-out :redirect="redirectSessionFinished" @redirect="updateTimeOut($event)" />
-    <alert :text="textAlert" :event="alertEvent" :show="showAlert" @show-alert="updateAlert($event)" class="mb-2" />
+    <alert-time-out
+      :redirect="redirectSessionFinished"
+      @redirect="updateTimeOut($event)"
+    />
+    <alert
+      :text="textAlert"
+      :event="alertEvent"
+      :show="showAlert"
+      @show-alert="updateAlert($event)"
+      class="mb-2"
+    />
     <v-card class="p-3">
       <v-row>
         <v-col cols="12" sm="12" md="4" lg="4" xl="4">
@@ -18,16 +27,38 @@
           </v-btn> -->
         </v-col>
         <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
-          <v-text-field class="" dense outlined label="Buscar" type="text" v-model="options.search"></v-text-field>
+          <v-text-field
+            class=""
+            dense
+            outlined
+            label="Buscar"
+            type="text"
+            v-model="options.search"
+          ></v-text-field>
         </v-col>
       </v-row>
-      <v-data-table v-model="selected" :single-select="false" :search="options.search" :headers="headers"
-        :items="recordsFiltered" :options.sync="options" :loading="loading" item-key="id" sort-by="id"
-        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }">
+      <v-data-table
+        v-model="selected"
+        :single-select="false"
+        :search="options.search"
+        :headers="headers"
+        :items="recordsFiltered"
+        :options.sync="options"
+        :loading="loading"
+        item-key="id"
+        sort-by="id"
+        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
+      >
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon small class="mr-2" @click="verifyPersonnelAction(item)" v-bind="attrs" v-on="on">
+              <v-icon
+                small
+                class="mr-2"
+                @click="verifyPersonnelAction(item)"
+                v-bind="attrs"
+                v-on="on"
+              >
                 pending_actions
               </v-icon>
             </template>
@@ -50,31 +81,51 @@
 
           <!-- form -->
           <v-container>
-            <show-personnel-action-form :editedItem="$v.editedItem" :showObservations="true"
-              :justifications="justifications" />
+            <show-personnel-action-form
+              :editedItem="$v.editedItem"
+              :showObservations="true"
+              :justifications="justifications"
+            />
           </v-container>
           <!-- form -->
 
           <!-- Remarks -->
           <v-container>
-            <h5 class="fw-bold pt-3 pb-2 mb-2" style="border-bottom: 1px solid lightgray">
+            <h5
+              class="fw-bold pt-3 pb-2 mb-2"
+              style="border-bottom: 1px solid lightgray"
+            >
               OBSERVACIONES
             </h5>
           </v-container>
 
           <v-col cols="12" sm="12" md="12">
-            <base-text-area label="Observación" v-model.trim="$v.remark.observation.$model"
-              :validation="$v.remark.observation" validationTextType="none" :rows="3"
-              :disabled="editedItem.remarks.length > 0" />
+            <base-text-area
+              label="Observación"
+              v-model.trim="$v.remark.observation.$model"
+              :validation="$v.remark.observation"
+              validationTextType="none"
+              :rows="3"
+              :disabled="editedItem.remarks.length > 0"
+            />
             <!-- max remark alert -->
-            <div v-if="maxRemark" class="orange-text" style="display: flex; align-items: center">
+            <div
+              v-if="maxRemark"
+              class="orange-text"
+              style="display: flex; align-items: center"
+            >
               <i class="material-icons">error_outline</i>
               <span>El máximo de observaciones registradas es de 3.</span>
             </div>
             <!-- max remark alert -->
           </v-col>
           <v-col cols="12" md="6">
-            <v-btn color="btn-normal" :disabled="editedItem.remarks.length > 0" rounded @click="createRemark()">
+            <v-btn
+              color="btn-normal"
+              :disabled="editedItem.remarks.length > 0"
+              rounded
+              @click="createRemark()"
+            >
               AGREGAR
             </v-btn>
           </v-col>
@@ -93,8 +144,12 @@
                 <td>
                   <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
-                      <v-icon @click="verifyRemark(remark)" :disabled="remark.status == 'Corregida'" v-on="on"
-                        v-bind="attrs">
+                      <v-icon
+                        @click="verifyRemark(remark)"
+                        :disabled="remark.status == 'Corregida'"
+                        v-on="on"
+                        v-bind="attrs"
+                      >
                         mdi-checkbox-marked-circle
                       </v-icon>
                     </template>
@@ -114,24 +169,55 @@
           <!-- Approve / Observe / Reject / Approve / Process -->
           <v-row>
             <v-col align="center">
-              <v-btn color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded @click="setStatus('Aprobada')"
-                :disabled="this.remark.status == 'No Corregida' || disableRemark">
-
-                Aprobar
+              <v-btn
+                v-if="actualUser.role == 'Coordinador'"
+                color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="updateStatus('Autorizada')"
+              >
+                Autorizar
               </v-btn>
-              <v-btn color="btn-normal-close no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
-                @click="setStatus('Observada')">
+              <v-btn
+                v-if="
+                  actualUser.role == 'Jefe' ||
+                  actualUser.role == 'Administrador'
+                "
+                color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="updateStatus('Procesada')"
+              >
+                Procesar
+              </v-btn>
+              <v-btn
+                v-if="
+                  actualUser.role == 'Coordinador' ||
+                  actualUser.role == 'Administrador'
+                "
+                color="btn-normal-close no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="updateStatus('Observada')"
+              >
                 Observar
               </v-btn>
-              <v-btn color="btn-normal-red no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
-                @click="setStatus('Rechazada')" :disabled="this.remark.status == 'No Corregida'">
+              <v-btn
+                color="btn-normal-red no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="updateStatus('Rechazada')"
+                :disabled="this.remark.status == 'No Corregida'"
+              >
                 Rechazar
               </v-btn>
-              <!-- <v-btn v-if="actualUser.role == 'RRHH' || actualUser.role == 'Administrador'"
-                color="btn-normal-green no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded @click="setStatus('Procesada')"
-                :disabled="this.remark.status == 'No Corregida'">
-                Procesar
-              </v-btn> -->
+              <v-btn
+                v-if="
+                  actualUser.role == 'RRHH' ||
+                  actualUser.role == 'Administrador'
+                "
+                color="btn-normal-green no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="updateStatus('Finalizada')"
+              >
+                Finalizar
+              </v-btn>
             </v-col>
           </v-row>
           <!-- Approve / Observe / Reject / Approve / Process -->
@@ -510,9 +596,9 @@ export default {
       this.dialogActions = true;
     },
 
-    async setStatus(status) {
+    async updateStatus(status) {
       const response = await personnelActionApi
-        .post(`/setStatus`, {
+        .post(`/updateStatus`, {
           id: this.editedItem.id,
           data: this.editedItem.remarks,
           status: status,
@@ -582,7 +668,6 @@ export default {
         this.closeActions();
         console.log("success");
       }
-
     },
 
     // deleteRemarksCreated(index) {

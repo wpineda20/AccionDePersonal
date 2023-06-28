@@ -32,6 +32,10 @@
         text-align: center;
     }
 
+    .fs-8 {
+        font-size: 8px;
+    }
+
     .fs-9 {
         font-size: 9px;
     }
@@ -127,14 +131,14 @@
                 </td>
             </tr>
         </table> -->
-        <p class="fs-11 uppercase" style="margin: 2px">{{$request->justification_name }}</p>
+        <p class="fs-11 uppercase" style="">{{$request->justification_name }}</p>
         <!-- II- NATURALEZA DE LA LICENCIA POR -->
 
         <!-- III- PERIODO POR -->
         <h5 class="fw-bold fs-10 bg-border" style="padding: 0px; margin:4px 0px;">III- PERIODO POR:</h5>
         <table style="padding: 0px; margin:0px; width: 100%;">
             <tr style="padding: 0px; margin:0px">
-                <td style="padding: 0px; margin:0px">
+                <td style="padding: 0px; margin:0px; border-right: 1px solid black;">
                     <h5 class="fw-bold fs-10 text-center" style="padding: 0px; margin:0px">
                         HORAS:
                     </h5>
@@ -192,13 +196,131 @@
         <!-- IV- JUSTIFICANTES -->
         <h5 class="fw-bold fs-10 bg-border" style="padding: 0px; margin:4px 0px;">IV- JUSTIFICANTES: (cuando aplique)
         </h5>
-        <p class="fs-11 uppercase" style="margin: 2px">{{$request->justification }}</p>
+        <table>
+            <tr>
+                <td height="10">
+                    <p class="fs-11 uppercase" style="">{{$request->justification }}</p>
+                </td>
+            </tr>
+        </table>
         <!-- IV- JUSTIFICANTES -->
+
+        <!-- V- TIEMPO EXTRAORDINARIO / DESCANSO -->
+        <h5 class="fw-bold fs-10 bg-border" style="padding: 0px; margin:4px 0px;">V- TIEMPO EXTRAORDINARIO /
+            DESCANSO</h5>
+        <p class="fw-bold fs-10">En caso de solicitud de descanso compensatorio detallar causa o motivo que lo
+            generó:
+        </p>
+        <p class="fs-10" style="padding: 0px 80px 0px 0px; margin:0px; display: inline;">
+            Trabajo extraordinario en día descanso, vacación o asueto {{$request->extraordinary_work }}
+
+        </p>
+        <p class="fs-10" style="padding: 0px; margin:0px; display: inline;">
+            Capacitación en día descanso, vacación o asueto {{$request->training }}
+        </p>
+        <p class="fw-bold fs-10">Detalle de la actividad realizada:</p>
+
         <div>
-            <h5 class="fw-bold fs-10 bg-border">V- TIEMPO EXTRAORDINARIO / DESCANSO</h5>
+            <p style="padding: 0px 30px 0px 0px; margin: 4px 0px; display: inline;" class="fs-10">
+                Lugar de ejecución: <span style="border-bottom: 1px solid black; padding: 0px 150px; 0px 35px">
+                    {{$request->execution_site }}</span>
+            </p>
+            <p style="padding: 0px; margin:4px 0px; display: inline;" class="fs-10">
+                Fecha de ejecución: <span style="border-bottom: 1px solid black; padding: 0px 40px;">
+                    {{$request->execution_date
+                    }}
+                </span>
+            </p>
         </div>
+
         <div>
-            <h5 class="fw-bold fs-10 bg-border">VI. FIRMAS</h5>
+            <p style="padding: 0px 30px 0px 0px; margin:4px 0px; display: inline;" class="fs-10">
+                Horario de ejecución: <span style="border-bottom: 1px solid black; padding: 0px 50px;">
+                    {{$request->execution_schedule
+                    }}
+                </span>
+            </p>
+            <p style="padding: 0px 30px 0px 0px; margin:4px 0px; display: inline;" class="fs-10">
+                Cantidad de horas: <span style="border-bottom: 1px solid black; padding: 0px 40px;">
+                    {{$request->execution_number_hours
+                    }}
+                </span>
+            </p>
+            <p style="padding: 0px; margin:4px 0px; display: inline;" class="fs-10">
+                Asignada por: <span style="border-bottom: 1px solid black; padding: 0px 65px;">
+                    {{$request->assigned_by
+                    }}
+                </span>
+            </p>
+        </div>
+
+        <div>
+            <p style="padding: 0px; margin:4px 0px; display: inline;" class="fs-10">
+                Cantidad de días solicitados: <span style="border-bottom: 1px solid black; padding: 0px 40px;">
+                    {{$request->number_days_requested
+                    }}
+                </span>
+            </p>
+            <p style="padding: 0px; margin:4px 0px; display: inline;" class="fs-10">
+                Fecha que se hará efectivo: <span style="border-bottom: 1px solid black; padding: 0px 40px;">
+                    {{$request->execution_effective_date
+                    }}
+                </span>
+            </p>
+            <p style="padding: 0px; margin:4px 0px; display: inline;" class="fs-10">
+                Desde: <span style="border-bottom: 1px solid black; padding: 0px 40px;">
+                    {{$request->execution_from
+                    }}
+                </span>
+            </p>
+            <p style="padding: 0px; margin:4px 0px; display: inline;" class="fs-10">
+                Hasta: <span style="border-bottom: 1px solid black; padding: 0px 40px;">
+                    {{$request->execution_to
+                    }}
+                </span>
+            </p>
+        </div>
+
+        <!-- V- TIEMPO EXTRAORDINARIO / DESCANSO -->
+
+        <div>
+            <h5 class="fw-bold fs-10 bg-border" style="padding-bottom: 0px; margin-bottom:0px">VI. FIRMAS</h5>
+            <table style="width: 100% !important">
+                <tr style="margin: 0; padding:0px">
+                    <td style="border-right: 1px solid black; width:  33% !important">
+                        <h5 class="fw-bold fs-9 text-center" style="margin: 0; padding:0px">
+                            SOLICITANTE
+                        </h5>
+                        <h5 class="fs-8 text-center" style="margin: 0; padding:0px">
+                            Empleado
+                        </h5>
+                    </td>
+                    <td style="border-right: 1px solid black; width:  33% !important">
+                        <h5 class="fw-bold fs-9 text-center" style="margin: 0; padding:0px">
+                            JEFE INMEDIATO
+                        </h5>
+                        <h5 class="fs-8 text-center" style="margin: 0; padding:0px">
+                            Pre-revisión
+                        </h5>
+                    </td>
+                    <td style="width:  33% !important">
+                        <h5 class="fw-bold fs-9 text-center" style="margin: 0; padding:0px">
+                            JEFE INMEDIATO SUPERIOR
+                        </h5>
+                    </td>
+                </tr>
+                <tr style="margin: 0; padding:0px">
+                    <td height="100" style="border-right: 1px solid black; width:  33% !important">
+                        <img src="img/cultura_logo.jpg" style="width: 100%;" height="100" />
+                    </td>
+                    <td height="100" style="border-right: 1px solid black; width:  33% !important">
+                        <img src="img/cultura_logo.jpg" style="width: 100%;" height="100" />
+                    </td>
+                    <td height="100" style="width:  33% !important">
+                        <img src="img/cultura_logo.jpg" style="width: 100%;" height="100" />
+                    </td>
+                </tr>
+            </table>
         </div>
         <div>
             <p class="fw-bold fs-10" style="padding: 1px; margin:0px; border-top: 1px solid black;">Este formulario debe

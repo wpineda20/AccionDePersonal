@@ -29,11 +29,11 @@
       <div class="container-fluid pb-4 pt-4">
         <v-row>
           <v-tabs grow background-color="transparent">
-            <v-tab @click="filter = 'Solicitada'">Solicitadas</v-tab>
+            <v-tab @click="filter = 'Pediente autorización'">Solicitadas</v-tab>
             <v-tab @click="filter = 'Observada'">Observadas</v-tab>
             <v-tab @click="filter = 'Rechazada'">Rechazadas</v-tab>
-            <v-tab @click="filter = 'Aprobada'">Aprobadas</v-tab>
             <v-tab @click="filter = 'Procesada'">Procesadas</v-tab>
+            <v-tab @click="filter = 'Finalizada'">Finalizadas</v-tab>
           </v-tabs>
         </v-row>
       </div>
@@ -90,7 +90,7 @@
               :editedItem="$v.editedItem"
               :justifications="justifications"
               :enableInputs="editedItem.status_name == 'Observada'"
-              :showUpdateBtn = "editedItem.status_name == 'Observada'"
+              :showUpdateBtn="editedItem.status_name == 'Observada'"
               @update-form="updateForm()"
               @close-form="closeFormActions()"
               @file-size-exceeded="
@@ -190,7 +190,7 @@ export default {
     alertEvent: "success",
     showAlert: false,
     dialogShowPersonnelAction: false,
-    filter: "Solicitada",
+    filter: "Pediente autorización",
     records: [],
     recordsFiltered: [],
     total: 0,
@@ -448,7 +448,7 @@ export default {
 .v-tabs-slider {
   background: #2d52a8 !important;
 }
-.theme--light.v-label--is-disabled{
+.theme--light.v-label--is-disabled {
   color: grey !important;
 }
 </style>

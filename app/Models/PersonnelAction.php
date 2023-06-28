@@ -31,6 +31,17 @@ class PersonnelAction extends Model
         'justification',
         'current_year',
         'justification_file',
+        'extraordinary_work',
+        'training',
+        'execution_site',
+        'execution_date',
+        'execution_schedule',
+        'execution_number_hours',
+        'assigned_by',
+        'number_days_requested',
+        'execution_effective_date',
+        'execution_from',
+        'execution_to',
         'deleted_at',
         'created_at',
         'updated_at',
@@ -52,14 +63,18 @@ class PersonnelAction extends Model
             'u.position_signature',
             'd.dependency_name',
             'jt.justification_name',
-            's.status_name'
+            's.status_name',
+            'hpa.personnel_action_id',
+            'hpa.active',
         )
             ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
             ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
             ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
-            ->join('status as s', 'personnel_action.status_id', '=', 's.id')
+            ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
+            ->join('status as s', 'hpa.status_id', '=', 's.id')
             ->where('jt.justification_name', 'like', $search)
             ->where('s.status_name', $filter)
+            ->where('hpa.active', 1)
             ->where('personnel_action.user_id', auth()->user()->id)
 
             ->skip($skip)
@@ -76,12 +91,16 @@ class PersonnelAction extends Model
             'u.position_signature',
             'd.dependency_name',
             'jt.justification_name',
-            's.status_name'
+            's.status_name',
+            'hpa.personnel_action_id',
+            'hpa.active',
         )
             ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
             ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
             ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
-            ->join('status as s', 'personnel_action.status_id', '=', 's.id')
+            ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
+            ->join('status as s', 'hpa.status_id', '=', 's.id')
+            ->where('hpa.active', 1)
             ->where('jt.justification_name', 'like', $search)
             ->where('personnel_action.user_id', auth()->user()->id)
 

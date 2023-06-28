@@ -66,7 +66,7 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::resource('/api/web/personnelAction', PersonnelActionController::class);
 
         // Set status
-        Route::post('/api/web/personnelAction/setStatus', [PersonnelActionController::class, 'setStatus']);
+        Route::post('/api/web/personnelAction/updateStatus', [PersonnelActionController::class, 'updateStatus']);
         // Cahnge market status
         Route::post('/api/web/remark/verifyRemark', [RemarkController::class, 'verifyRemark']);
         // Users by Dependency
@@ -122,14 +122,12 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         //Apis
         Route::resource('/api/web/justificationType', JustificationTypeController::class);
         Route::resource('/api/web/personnelAction', PersonnelActionController::class);
-
         // Set status
-        Route::post('/api/web/personnelAction/setStatus', [PersonnelActionController::class, 'setStatus']);
+        Route::post('/api/web/personnelAction/updateStatus', [PersonnelActionController::class, 'updateStatus']);
         // Personnel Actions To Verify
         Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
         // Actual User
         Route::post('/api/web/user/actualUser', [UserController::class, 'actualUser']);
-
 
         // Views
         Route::get('/personnelAction', function () {
@@ -145,10 +143,6 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
             return view('process_personnel_actions.index');
         });
     });
-
-
-    // //Reports
-    // Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 });

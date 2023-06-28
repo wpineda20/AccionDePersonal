@@ -26,7 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         'dependency_id',
         'inmediate_superior_id',
         'password',
-        // 'password_no_encrypted',
+        'send_to_rrhh',
         'email_verified_at',
     ];
 
@@ -86,6 +86,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
             'inmediate_superior_id' => ($this->inmediate_superior_id != null) ? User::where('id', $this->inmediate_superior_id)->first('name')->name : null,
             'dependency_name' => $this->dependency->dependency_name,
             'status' => ($this->status == 1) ? "Activo" : "Inactivo",
+            'send_to_rrhh' => ($this->send_to_rrhh == 1) ? true : false,
             'email_verified_at' => $this->email_verified_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

@@ -53,7 +53,7 @@
                   mdi-file-check
                 </v-icon>
                 <span> {{ totalApproved }} </span>
-                <p class="mb-0">Aprobadas</p>
+                <p class="mb-0">Autorizadas</p>
               </div>
               <div class="body-item" v-if="!loading">
                 <v-icon
@@ -75,7 +75,7 @@
                   mdi-file-star
                 </v-icon>
                 <span> {{ totalProcessed }} </span>
-                <p class="mb-0">Procesadas</p>
+                <p class="mb-0">Finalizadas</p>
               </div>
               <div class="body-item" v-if="!loading">
                 <v-icon
