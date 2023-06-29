@@ -14,49 +14,13 @@
             <!-- Loader -->
             <loader v-if="loading" class="pt-5" style=""> </loader>
             <!-- /.Loader -->
-            <div class="body-content">
-              <div class="body-item" v-if="!loading">
+            <div class="body-content" v-if="!loading">
+              <div class="body-item h-100" v-for="(item, index) in totals" :key="index">
                 <v-icon large class="color-primary" style="justify-content: left">
-                  mdi-file-clock
+                  {{ item.icon }}
                 </v-icon>
-                <span> {{ totals.pendingAuthorization }} </span>
-                <p class="mb-0">En autorización</p>
-              </div>
-
-              <div class="body-item" v-if="!loading">
-                <v-icon large class="color-primary" style="justify-content: left">
-                  mdi-file-edit
-                </v-icon>
-                <span> {{ totals.observed }} </span>
-                <p class="mb-0">Observadas</p>
-              </div>
-              <div class="body-item" v-if="!loading">
-                <v-icon large class="color-primary" style="justify-content: left">
-                  mdi-file-check
-                </v-icon>
-                <span> {{ totals.authorized }} </span>
-                <p class="mb-0">Autorizadas</p>
-              </div>
-              <div class="body-item" v-if="!loading">
-                <v-icon large class="color-primary" style="justify-content: left">
-                  mdi-file-remove
-                </v-icon>
-                <span> {{ totals.rejected }} </span>
-                <p class="mb-0">Rechazadas</p>
-              </div>
-              <div class="body-item" v-if="!loading">
-                <v-icon large class="color-primary" style="justify-content: left">
-                  mdi-file-star
-                </v-icon>
-                <span> {{ totals.finished }} </span>
-                <p class="mb-0">Finalizadas</p>
-              </div>
-              <div class="body-item" v-if="!loading">
-                <v-icon large class="color-primary" style="justify-content: left">
-                  mdi-file-multiple
-                </v-icon>
-                <span> {{ totals.total }} </span>
-                <p class="mb-0">Total</p>
+                <span> {{ item.total }} </span>
+                <p class="mb-0">{{ item.title }}</p>
               </div>
             </div>
           </div>

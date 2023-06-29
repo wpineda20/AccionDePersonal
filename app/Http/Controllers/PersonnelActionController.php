@@ -393,13 +393,41 @@ class PersonnelActionController extends Controller
         return response()->json([
             "message" => "Registros obtenidos correctamente.",
             "data" => [
-                'pendingAuthorization' => $pendingAuthorization,
-                'observed' => $observed,
-                'authorized' => $authorized,
-                'processed' => $processed,
-                'rejected' => $rejected,
-                'finished' => $finished,
-                'total' => $total,
+                [
+                    'title' => 'En autorización',
+                    'icon' => 'mdi-file-clock',
+                    'total' => $pendingAuthorization,
+                ],
+                [
+                    'title' => 'Observadas',
+                    'icon' => 'mdi-file-edit',
+                    'total' => $observed,
+                ],
+                [
+                    'title' => 'Autorizadas',
+                    'icon' => 'mdi-file-edit',
+                    'total' => $authorized,
+                ],
+                [
+                    'title' => 'Procesadas',
+                    'icon' => 'mdi-file-check',
+                    'total' => $processed,
+                ],
+                [
+                    'title' => 'Rechazada',
+                    'icon' => 'mdi-file-remove',
+                    'total' => $rejected,
+                ],
+                [
+                    'title' => 'Finalizada',
+                    'icon' => 'mdi-file-star',
+                    'total' => $finished,
+                ],
+                [
+                    'title' => 'Total',
+                    'icon' => 'mdi-file-multiple',
+                    'total' => $total,
+                ],
             ],
         ]);
     }
