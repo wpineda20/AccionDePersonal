@@ -17,11 +17,17 @@ class HasRole
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
+
         foreach ($roles as $role) {
             // if user has given role, continue processing the request
             if (auth()->user()->hasRole($role)) {
                 return $next($request);
             }
+        }
+
+        // dd(auth()->user()->hasUsersInCharge());
+        if (auth()->user()->hasUsersInCharge()) {
+            return $next($request);
         }
 
         App::abort(403);

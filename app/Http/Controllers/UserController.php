@@ -181,6 +181,7 @@ class UserController extends Controller
         // Getting the role of the user
         $role = auth()->user()->getRoleNames()[0];
         $user->role = $role;
+        $user->hasUsersInCharge = auth()->user()->hasUsersInCharge();
 
         return response()->json([
             "status" => "success",
@@ -201,6 +202,7 @@ class UserController extends Controller
 
         $user->dependency = Dependency::where('id', $user->dependency_id)
             ->first();
+        $user->hasUsersInCharge = auth()->user()->hasUsersInCharge();
 
         return response()->json(['message' => 'success', 'userInfoLogged' => $user]);
     }

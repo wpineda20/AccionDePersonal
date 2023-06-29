@@ -116,6 +116,7 @@ class PersonnelActionController extends Controller
             'execution_schedule' => $request->execution_schedule,
             'execution_number_hours' => $request->execution_number_hours,
             'assigned_by' => $request->assigned_by,
+            'period_by' => $request->period_by,
             'number_days_requested' => $request->number_days_requested,
             'execution_effective_date' => $request->execution_effective_date,
             'execution_from' => $request->execution_from,
@@ -212,7 +213,7 @@ class PersonnelActionController extends Controller
         $to_hour = date("Hi", strtotime($data['to_hour']));
 
         //Validate hours
-        if ($from_hour > $to_hour) {
+        if ($from_hour > $to_hour && $data['period_by'] == 'hours') {
             $validation['message'] = "La hora de inicio no puede ser mayor que la de fin.";
             $validation['total'] = 1;
 
@@ -220,9 +221,10 @@ class PersonnelActionController extends Controller
         }
 
         //Validate dates
-        if ($data['from_date'] > $data['to_date']) {
+        if ($data['from_date'] > $data['to_date'] && $data['period_by'] == 'days') {
             $validation['message'] = "La fecha de inicio no puede ser mayor a la fecha fin.";
             $validation['total'] = 1;
+            dd("Hola");
 
             return $validation;
         }
@@ -368,14 +370,14 @@ class PersonnelActionController extends Controller
                     ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
                     ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
                     ->join('status as s', 'hpa.status_id', '=', 's.id')
-                    ->where('hpa.status_id', 2)
+                    // ->where('hpa.status_id', 2)
                     ->where('hpa.active', 1)
 
                     ->orderBy("personnel_action.date_request_created")
                     ->get();
             }
-            //Coordinador
-            else if ($roles[0] == "Coordinador") {
+            //Jefe
+            else if ($roles[0] == "Jefe" || auth()->user()->hasUsersInCharge()) {
 
                 $registeredRecords =  PersonnelAction::select(
                     'personnel_action.*',
@@ -393,7 +395,7 @@ class PersonnelActionController extends Controller
                     ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
                     ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
                     ->join('status as s', 'hpa.status_id', '=', 's.id')
-                    ->where('hpa.status_id', 2)
+                    // ->where('hpa.status_id', 2)
                     ->where('hpa.active', 1)
                     ->where('u.inmediate_superior_id', $userLogged->id) //If the logged-in user is the immediate superior.
                     ->where('u.dependency_id', $userLogged->dependency_id) //If the logged-in user belongs to the same dependency.
@@ -402,33 +404,33 @@ class PersonnelActionController extends Controller
                     ->get();
             }
             //Jefe
-            else if ($roles[0] == "Jefe") {
+            // else if ($roles[0] == "Jefe") {
 
-                $registeredRecords =  PersonnelAction::select(
-                    'personnel_action.*',
-                    'u.name as employee_name',
-                    'u.position_signature',
-                    'u.inmediate_superior_id',
-                    'u.dependency_id',
-                    'd.dependency_name',
-                    'jt.justification_name',
-                    's.status_name',
-                    'hpa.personnel_action_id',
-                    'hpa.active',
-                )
-                    ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
-                    ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
-                    ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
-                    ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
-                    ->join('status as s', 'hpa.status_id', '=', 's.id')
-                    ->where('hpa.status_id', 4)
-                    ->where('hpa.active', 1)
-                    ->where('u.dependency_id', $userLogged->dependency_id) //If the logged-in user belongs to the same dependency.
-                    ->WhereNull('u.inmediate_superior_id')
+            //     $registeredRecords =  PersonnelAction::select(
+            //         'personnel_action.*',
+            //         'u.name as employee_name',
+            //         'u.position_signature',
+            //         'u.inmediate_superior_id',
+            //         'u.dependency_id',
+            //         'd.dependency_name',
+            //         'jt.justification_name',
+            //         's.status_name',
+            //         'hpa.personnel_action_id',
+            //         'hpa.active',
+            //     )
+            //         ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
+            //         ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
+            //         ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
+            //         ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
+            //         ->join('status as s', 'hpa.status_id', '=', 's.id')
+            //         ->where('hpa.status_id', 4)
+            //         ->where('hpa.active', 1)
+            //         ->where('u.dependency_id', $userLogged->dependency_id) //If the logged-in user belongs to the same dependency.
+            //         ->WhereNull('u.inmediate_superior_id')
 
-                    ->orderBy("personnel_action.date_request_created")
-                    ->get();
-            }
+            //         ->orderBy("personnel_action.date_request_created")
+            //         ->get();
+            // }
             //RRHH
             else if ($roles[0] == "RRHH") {
 
@@ -487,7 +489,7 @@ class PersonnelActionController extends Controller
 
     public function updateStatus(Request $request)
     {
-        //get & update active record
+        //Update the lastest record on the history
         $personnelActionActive = HistoryPersonnelAction::where([
             'personnel_action_id' => $request->id,
             'active' => 1,
@@ -496,7 +498,7 @@ class PersonnelActionController extends Controller
         $personnelActionActive->active = 0;
         $personnelActionActive->save();
 
-        //create new record with new status
+        //create new record on the history record
         $personnelActionStatus = new HistoryPersonnelAction();
         $personnelActionStatus->user_id = auth()->user()->id;
         $personnelActionStatus->personnel_action_id = $request->id;
@@ -518,7 +520,11 @@ class PersonnelActionController extends Controller
                     'status' => $value['status'] == "No Corregida" ? 0 : 1,
                 ]);
             }
+
+            return response()->json(["message" => "success"]);
         }
+
+        // if()
 
         return response()->json(["message" => "success"]);
     }
@@ -562,7 +568,7 @@ class PersonnelActionController extends Controller
      * @param  \App\Models\PersonnelAction  $personnelAction
      * @return \Illuminate\Http\Response
      */
-    public function totalRequested()
+    public function totalPersonnelAction(Request $request)
     {
         $totalRequested = count(PersonnelAction::select(
             'personnel_action.*',
@@ -572,14 +578,14 @@ class PersonnelActionController extends Controller
         )
             ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
             ->where('personnel_action.user_id', auth()->user()->id)
-            ->where('hpa.status_id', 2)
+            ->where('hpa.status_id', $request->status_name)
             ->where('hpa.active', 1)
             ->get());
 
         return response()->json([
             "status" => 200,
             "message" => "Registros obtenidos correctamente.",
-            "totalRequested" => $totalRequested,
+            "total" => $totalRequested,
             "success" => true,
         ]);
     }
@@ -616,7 +622,7 @@ class PersonnelActionController extends Controller
      * @param  \App\Models\PersonnelAction  $personnelAction
      * @return \Illuminate\Http\Response
      */
-    public function totalRejected()
+    public function totalRejected(Request $request)
     {
         $totalRejected = count(PersonnelAction::select(
             'personnel_action.*',
@@ -626,7 +632,7 @@ class PersonnelActionController extends Controller
         )
             ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
             ->where('personnel_action.user_id', auth()->user()->id)
-            ->where('hpa.status_id', 6)
+            ->where('hpa.status_name', $request->status_name)
             ->where('hpa.active', 1)
             ->get());
 

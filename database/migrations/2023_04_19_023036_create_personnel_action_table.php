@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('from_hour')->nullable();
             $table->string('to_hour')->nullable();
             $table->integer('total_hours')->nullable();
+            $table->string('period_by')->nullable();
             $table->date('effective_date')->nullable();
             $table->date('from_date')->nullable();
             $table->date('to_date')->nullable();

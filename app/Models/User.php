@@ -116,4 +116,9 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 
             ->count();
     }
+
+    public function hasUsersInCharge()
+    {
+        return User::where('inmediate_superior_id', auth()->user()->id)->count() > 0;
+    }
 }

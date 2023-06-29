@@ -39,11 +39,11 @@ Route::get('/api/web/personnelAction/latestPersonnelActions', [PersonnelActionCo
 // Personnel Actions By Justifications
 Route::get('/api/web/personnelAction/personnelActionsByJustifications', [PersonnelActionController::class, 'personnelActionsByJustifications']);
 // Total Requested
-Route::get('/api/web/personnelAction/totalRequested', [PersonnelActionController::class, 'totalRequested']);
-Route::get('/api/web/personnelAction/totalObserved', [PersonnelActionController::class, 'totalObserved']);
-Route::get('/api/web/personnelAction/totalRejected', [PersonnelActionController::class, 'totalRejected']);
-Route::get('/api/web/personnelAction/totalApproved', [PersonnelActionController::class, 'totalApproved']);
-Route::get('/api/web/personnelAction/totalProcessed', [PersonnelActionController::class, 'totalProcessed']);
+Route::get('/api/web/personnelAction/total', [PersonnelActionController::class, 'totalPersonnelAction']);
+// Route::get('/api/web/personnelAction/totalObserved', [PersonnelActionController::class, 'totalObserved']);
+// Route::get('/api/web/personnelAction/totalRejected', [PersonnelActionController::class, 'totalRejected']);
+// Route::get('/api/web/personnelAction/totalApproved', [PersonnelActionController::class, 'totalApproved']);
+// Route::get('/api/web/personnelAction/totalProcessed', [PersonnelActionController::class, 'totalProcessed']);
 //Justification list
 Route::get('/api/web/justificationType/justificationLettersColors', [JustificationTypeController::class, 'justificationLettersColors']);
 
@@ -116,31 +116,29 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::get('/processPersonnelActions', function () {
             return view('process_personnel_actions.index');
         });
-    });
 
-    Route::group(['middleware' => ['has.role:Administrador,Jefe,Coordinador,Empleado,RRHH']], function () {
-        //Apis
-        Route::resource('/api/web/justificationType', JustificationTypeController::class);
-        Route::resource('/api/web/personnelAction', PersonnelActionController::class);
-        // Set status
-        Route::post('/api/web/personnelAction/updateStatus', [PersonnelActionController::class, 'updateStatus']);
-        // Personnel Actions To Verify
-        Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
         // Actual User
         Route::post('/api/web/user/actualUser', [UserController::class, 'actualUser']);
-
-        // Views
         Route::get('/personnelAction', function () {
             return view('personnel_action.index');
         });
         Route::get('/userPersonnelActions', function () {
             return view('user_personnel_actions.index');
         });
+        //Apis
+        Route::resource('/api/web/justificationType', JustificationTypeController::class);
+        Route::resource('/api/web/personnelAction', PersonnelActionController::class);
+    });
+
+    Route::group(['middleware' => ['has.role:Administrador,Jefe,Coordinador,RRHH']], function () {
+        // Set status
+        Route::post('/api/web/personnelAction/updateStatus', [PersonnelActionController::class, 'updateStatus']);
+        // Personnel Actions To Verify
+        Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
+
+        // Views
         Route::get('/verifyPersonnelActions', function () {
             return view('verify_personnel_actions.index');
-        });
-        Route::get('/processPersonnelActions', function () {
-            return view('process_personnel_actions.index');
         });
     });
 
