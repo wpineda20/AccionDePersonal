@@ -1,13 +1,7 @@
 <template>
   <div data-app ref="top">
-    <alert
-      :text="textAlert"
-      :event="alertEvent"
-      :show="showAlert"
-      :time="time"
-      @show-alert="updateAlert($event)"
-      class="mb-4"
-    />
+    <alert :text="textAlert" :event="alertEvent" :show="showAlert" :time="time" @show-alert="updateAlert($event)"
+      class="mb-4" />
     <v-row>
       <!-- A.P by status -->
       <v-col cols="12" md="4" lg="4" sm="12" class="pt-0">
@@ -20,73 +14,13 @@
             <!-- Loader -->
             <loader v-if="loading" class="pt-5" style=""> </loader>
             <!-- /.Loader -->
-            <div class="body-content">
-              <div class="body-item" v-if="!loading">
-                <v-icon
-                  large
-                  class="color-primary"
-                  style="justify-content: left"
-                >
-                  mdi-file-clock
+            <div class="body-content" v-if="!loading">
+              <div class="body-item h-100" v-for="(item, index) in totals" :key="index">
+                <v-icon large class="color-primary" style="justify-content: left">
+                  {{ item.icon }}
                 </v-icon>
-                <span> {{ totalRequested }} </span>
-                <p class="mb-0">Solicitadas</p>
-              </div>
-
-              <div class="body-item" v-if="!loading">
-                <v-icon
-                  large
-                  class="color-primary"
-                  style="justify-content: left"
-                >
-                  mdi-file-edit
-                </v-icon>
-                <span> {{ totalObserved }} </span>
-                <p class="mb-0">Observadas</p>
-              </div>
-              <div class="body-item" v-if="!loading">
-                <v-icon
-                  large
-                  class="color-primary"
-                  style="justify-content: left"
-                >
-                  mdi-file-check
-                </v-icon>
-                <span> {{ totalApproved }} </span>
-                <p class="mb-0">Autorizadas</p>
-              </div>
-              <div class="body-item" v-if="!loading">
-                <v-icon
-                  large
-                  class="color-primary"
-                  style="justify-content: left"
-                >
-                  mdi-file-remove
-                </v-icon>
-                <span> {{ totalRejected }} </span>
-                <p class="mb-0">Rechazadas</p>
-              </div>
-              <div class="body-item" v-if="!loading">
-                <v-icon
-                  large
-                  class="color-primary"
-                  style="justify-content: left"
-                >
-                  mdi-file-star
-                </v-icon>
-                <span> {{ totalProcessed }} </span>
-                <p class="mb-0">Finalizadas</p>
-              </div>
-              <div class="body-item" v-if="!loading">
-                <v-icon
-                  large
-                  class="color-primary"
-                  style="justify-content: left"
-                >
-                  mdi-file-multiple
-                </v-icon>
-                <span> {{ totalPersonnelActions }} </span>
-                <p class="mb-0">Total</p>
+                <span> {{ item.total }} </span>
+                <p class="mb-0">{{ item.title }}</p>
               </div>
             </div>
           </div>
@@ -103,11 +37,7 @@
           </div>
           <div class="top-justifications-body">
             <!-- Item 1 -->
-            <div
-              v-for="(item, index) in this.records"
-              :key="index"
-              class="top-justification-item"
-            >
+            <div v-for="(item, index) in this.records" :key="index" class="top-justification-item">
               <div class="top-justification-item-left">
                 <div class="item-left-icon">
                   <v-icon large class="orange-text">
@@ -162,11 +92,7 @@
           <div class="top-justifications-header">
             <h2>Tipos de justificación.</h2>
           </div>
-          <div
-            class="justifications-colors"
-            v-for="(item, index) in this.justifications"
-            :key="index"
-          >
+          <div class="justifications-colors" v-for="(item, index) in this.justifications" :key="index">
             <div class="color">
               <div class="picker" :style="{ backgroundColor: item.color }">
                 {{ item.letter }}
@@ -210,11 +136,7 @@ export default {
     records: [],
     justifications: [],
     personnelActionsByJustifications: [],
-    totalRequested: 0,
-    totalObserved: 0,
-    totalRejected: 0,
-    totalApproved: 0,
-    totalProcessed: 0,
+    totals: {},
     totalPersonnelActions: 0,
   }),
 
@@ -228,14 +150,9 @@ export default {
       this.records = [];
 
       let requests = [
-        personnelActionApi.get(`/latestPersonnelActions`),
-        personnelActionApi.get(`/totalRequested`),
-        personnelActionApi.get(`/totalObserved`),
-        personnelActionApi.get(`/totalRejected`),
-        personnelActionApi.get(`/totalApproved`),
-        personnelActionApi.get(`/totalProcessed`),
-        justificationTypeApi.get(`/justificationLettersColors`),
-        personnelActionApi.get(`/personnelActionsByJustifications`),
+        personnelActionApi.get(`/latest`),
+        personnelActionApi.get(`/total`),
+        justificationTypeApi.get(`/colors`),
       ];
 
       const responses = await Promise.all(requests).catch((error) => {
@@ -252,7 +169,7 @@ export default {
       });
 
       if (responses) {
-        this.records = responses[0].data.records;
+        this.records = responses[0].data.data;
         moment.locale("es");
         this.records.forEach((record) => {
           record.date_request_created = moment(
@@ -260,13 +177,9 @@ export default {
           ).format("L");
         });
 
-        this.totalRequested = responses[1].data.totalRequested;
-        this.totalObserved = responses[2].data.totalObserved;
-        this.totalRejected = responses[3].data.totalRejected;
-        this.totalApproved = responses[4].data.totalApproved;
-        this.totalProcessed = responses[5].data.totalProcessed;
-        this.justifications = responses[6].data.records;
-        this.personnelActionsByJustifications = responses[7].data.records;
+        this.totals = responses[1].data.data;
+        this.justifications = responses[2].data.records;
+        // this.personnelActionsByJustifications = responses[7].data.records;
 
         //total
         this.totalPersonnelActions =

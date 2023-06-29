@@ -2,7 +2,7 @@ import axios from "axios";
 // import { interceptorRequest, interceptorReponse } from "./interceptor";
 
 const personnelActionApi = axios.create({
-    baseURL: "/api/web/personnelAction",
+    baseURL: "/web/personnelAction",
 });
 
 // personnelActionApi.interceptors.request.use(interceptorRequest);

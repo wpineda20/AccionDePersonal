@@ -24,6 +24,10 @@ class HasRole
             }
         }
 
+        if (auth()->user()->hasUsersInCharge()) {
+            return $next($request);
+        }
+
         App::abort(403);
     }
 }
