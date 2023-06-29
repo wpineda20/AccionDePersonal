@@ -26,126 +26,67 @@ use App\Http\Controllers\LoginSvController;
 |
 */
 
-Route::get('/', function () {
-    return view('auth.login');
-});
-
-Auth::routes(['verify' => true, 'remember_me' => false]);
-
-//Api User Logged In
-Route::get('/api/web/user/infoUserLoggedIn', [UserController::class, 'infoUserLoggedIn']);
-// Latest Personnel Actions
-Route::get('/api/web/personnelAction/latestPersonnelActions', [PersonnelActionController::class, 'latestPersonnelActions']);
-// Personnel Actions By Justifications
-Route::get('/api/web/personnelAction/personnelActionsByJustifications', [PersonnelActionController::class, 'personnelActionsByJustifications']);
-// Total Requested
-Route::get('/api/web/personnelAction/total', [PersonnelActionController::class, 'totalPersonnelAction']);
-// Route::get('/api/web/personnelAction/totalObserved', [PersonnelActionController::class, 'totalObserved']);
-// Route::get('/api/web/personnelAction/totalRejected', [PersonnelActionController::class, 'totalRejected']);
-// Route::get('/api/web/personnelAction/totalApproved', [PersonnelActionController::class, 'totalApproved']);
-// Route::get('/api/web/personnelAction/totalProcessed', [PersonnelActionController::class, 'totalProcessed']);
-//Justification list
-Route::get('/api/web/justificationType/justificationLettersColors', [JustificationTypeController::class, 'justificationLettersColors']);
-
 
 Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], function () {
+    Route::get('/web/user/actualUser', [UserController::class, 'actualUser']);
+    Route::get('/web/personnelAction/latest', [PersonnelActionController::class, 'latestPersonnelActions']);
+    Route::get('/web/personnelAction/byJustifications', [PersonnelActionController::class, 'personnelActionsByJustifications']);
+    Route::get('/web/personnelAction/total', [PersonnelActionController::class, 'totalPersonnelActionByStatus']);
+    Route::get('/web/justificationType/colors', [JustificationTypeController::class, 'justificationLettersColors']);
+
     Route::group(['middleware' => ['has.role:Administrador']], function () {
         // Apis
-        Route::resource('/api/web/department', DepartmentController::class);
-        Route::resource('/api/web/municipality', MunicipalityController::class);
-        Route::resource('/api/web/user', UserController::class);
-        Route::resource('/api/web/role', RoleController::class);
-        Route::resource('/api/web/justificationType', JustificationTypeController::class);
-        Route::delete('/api/web/justificationType', [JustificationTypeController::class, 'destroy']);
-        Route::resource('/api/web/dependency', DependencyController::class);
-        Route::delete('/api/web/dependency', [DependencyController::class, 'destroy']);
-        Route::resource('/api/web/status', StatusController::class);
-        Route::delete('/api/web/status', [StatusController::class, 'destroy']);
-        Route::resource('/api/web/remark', RemarkController::class);
-        Route::delete('/api/web/remark', [RemarkController::class, 'destroy']);
-        Route::resource('/api/web/personnelAction', PersonnelActionController::class);
+        Route::resource('/web/department', DepartmentController::class);
+        Route::resource('/web/municipality', MunicipalityController::class);
+        Route::resource('/web/user', UserController::class);
+        Route::resource('/web/role', RoleController::class);
+        Route::resource('/web/justificationType', JustificationTypeController::class);
+        Route::delete('/web/justificationType', [JustificationTypeController::class, 'destroy']);
+        Route::resource('/web/dependency', DependencyController::class);
+        Route::delete('/web/dependency', [DependencyController::class, 'destroy']);
+        Route::resource('/web/status', StatusController::class);
+        Route::delete('/web/status', [StatusController::class, 'destroy']);
+        Route::resource('/web/remark', RemarkController::class);
+        Route::delete('/web/remark', [RemarkController::class, 'destroy']);
+        // Route::resource('/web/personnelAction', PersonnelActionController::class);
 
-        // Set status
-        Route::post('/api/web/personnelAction/updateStatus', [PersonnelActionController::class, 'updateStatus']);
-        // Cahnge market status
-        Route::post('/api/web/remark/verifyRemark', [RemarkController::class, 'verifyRemark']);
-        // Users by Dependency
-        Route::post('/api/web/user/usersByDependency', [UserController::class, 'usersByDependency']);
-        // User Personnel Actions
-        Route::get('api/personnelAction/userPersonnelActions', [PersonnelActionController::class, 'userPersonnelActions']);
-        // Personnel Actions To Verify
-        Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
+        Route::post('/web/personnelAction/updateStatus', [PersonnelActionController::class, 'updateStatus']);
+        Route::post('/web/remark/verifyRemark', [RemarkController::class, 'verifyRemark']);
+        Route::post('/web/user/usersByDependency', [UserController::class, 'usersByDependency']);
+        Route::get('personnelAction/userPersonnelActions', [PersonnelActionController::class, 'userPersonnelActions']);
+        Route::post('/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
 
         // Views
-        Route::get('/departments', function () {
-            return view('department.index');
-        });
-
-        Route::get('/municipalities', function () {
-            return view('municipality.index');
-        });
-
-        Route::get('/users', function () {
-            return view('user.index');
-        });
-
-        Route::get('/justificationTypes', function () {
-            return view('justification_type.index');
-        });
-
-        Route::get('/dependencies', function () {
-            return view('dependency.index');
-        });
-
-        Route::get('/status', function () {
-            return view('status.index');
-        });
-
-        Route::get('/personnelAction', function () {
-            return view('personnel_action.index');
-        });
-
-        Route::get('/userPersonnelActions', function () {
-            return view('user_personnel_actions.index');
-        });
-
-        Route::get('/verifyPersonnelActions', function () {
-            return view('verify_personnel_actions.index');
-        });
-
-        Route::get('/processPersonnelActions', function () {
-            return view('process_personnel_actions.index');
-        });
-
-        // Actual User
-        Route::post('/api/web/user/actualUser', [UserController::class, 'actualUser']);
-        Route::get('/personnelAction', function () {
-            return view('personnel_action.index');
-        });
-        Route::get('/userPersonnelActions', function () {
-            return view('user_personnel_actions.index');
-        });
-        //Apis
-        Route::resource('/api/web/justificationType', JustificationTypeController::class);
-        Route::resource('/api/web/personnelAction', PersonnelActionController::class);
+        Route::get('/departments', fn () => view('department.index'));
+        Route::get('/municipalities', fn () => view('municipality.index'));
+        Route::get('/users', fn () => view('user.index'));
+        Route::get('/justificationTypes', fn () => view('justification_type.index'));
+        Route::get('/dependencies', fn () => view('dependency.index'));
+        Route::get('/status', fn () => view('status.index'));
+        Route::get('/userPersonnelActions', fn () => view('user_personnel_actions.index'));
+        Route::get('/verifyPersonnelActions', fn () => view('verify_personnel_actions.index'));
+        Route::get('/processPersonnelActions', fn () => view('process_personnel_actions.index'));
     });
 
     Route::group(['middleware' => ['has.role:Administrador,Jefe,Coordinador,RRHH']], function () {
-        // Set status
-        Route::post('/api/web/personnelAction/updateStatus', [PersonnelActionController::class, 'updateStatus']);
-        // Personnel Actions To Verify
-        Route::post('/api/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
+        Route::post('/web/personnelAction/updateStatus', [PersonnelActionController::class, 'updateStatus']);
+        Route::post('/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
 
         // Views
-        Route::get('/verifyPersonnelActions', function () {
-            return view('verify_personnel_actions.index');
-        });
+        Route::get('/verifyPersonnelActions', fn () => view('verify_personnel_actions.index'));
+        // Route::resource('/web/personnelAction', PersonnelActionController::class);
     });
 
+    Route::get('/', fn () => view('home'));
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/web/justificationType', [JustificationTypeController::class, 'index']);
+    Route::post('/web/personnelAction', [PersonnelActionController::class, 'store']);
+    Route::get('/web/personnelAction', [PersonnelActionController::class, 'index']);
+    Route::put('/web/personnelAction/{id}', [PersonnelActionController::class, 'update']);
+    Route::get('/personnelAction', fn () => view('personnel_action.index'));
+    Route::get('/userPersonnelActions', fn () => view('user_personnel_actions.index'));
 });
 
-Auth::routes(['verify' => true, 'login' => true, 'reset' => true, 'register' => true]);
-
+Auth::routes(['verify' => true, 'login' => true, 'reset' => true, 'register' => true, 'remember_me' => false]);
 Route::get('/redirectToProvider', [LoginSvController::class, 'redirectToProvider']);
 Route::get('/callback', [LoginSvController::class, 'handleProviderCallback']);

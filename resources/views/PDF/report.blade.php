@@ -86,8 +86,7 @@
                 </td>
                 <td style="padding: 0px; margin:0px">
                     <p style="border-bottom: 1px solid black; margin:0px 20px 0px 0px; padding:0px;"
-                        class="fs-11 uppercase">{{
-                        $request->employee_name }}
+                        class="fs-11 uppercase">{{ $request->employee_name }}
                     </p>
                 </td>
             </tr>
@@ -97,8 +96,7 @@
                 </td>
                 <td style="padding: 0px; margin:0px">
                     <p style="border-bottom: 1px solid black; margin:0px 20px 0px 0px; padding:0px;"
-                        class="fs-11 uppercase">{{
-                        $request->position_signature }}
+                        class="fs-11 uppercase">{{ $request->position_signature }}
                     </p>
                 </td>
             </tr>
@@ -108,8 +106,7 @@
                 </td>
                 <td style="padding: 0px; margin:0px">
                     <p style="border-bottom: 1px solid black; margin:0px 20px 0px 0px; padding:0px;"
-                        class="fs-11 uppercase">{{
-                        $request->dependency_name }}</p>
+                        class="fs-11 uppercase">{{ $request->dependency_name }}</p>
                 </td>
             </tr>
         </table>
@@ -131,7 +128,7 @@
                 </td>
             </tr>
         </table> -->
-        <p class="fs-11 uppercase" style="">{{$request->justification_name }}</p>
+        <p class="fs-11 uppercase" style="">{{ $request->justification_name }}</p>
         <!-- II- NATURALEZA DE LA LICENCIA POR -->
 
         <!-- III- PERIODO POR -->
@@ -145,22 +142,21 @@
                     <div class="text-center" style="padding: 0px; margin:0px">
                         <p style="padding: 0px; margin:2px; display: inline;" class="fs-10 ">
                             De las <span style="border-bottom: 1px solid black; padding: 0px 25px;">
-                                {{$request->from_hour }} </span>
+                                {{ $request->from_hour }} </span>
                         </p>
                         <p style="padding: 0px; margin:2px; display: inline;" class="fs-10 ">
                             horas a las: <span style="border-bottom: 1px solid black; padding: 0px 25px;">
-                                {{$request->to_hour }} </span>
+                                {{ $request->to_hour }} </span>
                         </p>
                     </div>
                     <p style="padding: 0px; margin:4px 0px" class="fs-10 text-center">
                         Total de horas: <span
-                            style="border-bottom: 1px solid black; padding: 0px 25px;">{{$request->total_hours
-                            }} </span>
+                            style="border-bottom: 1px solid black; padding: 0px 25px;">{{ $request->total_hours }}
+                        </span>
                     </p>
                     <p style="padding: 0px; margin:4px 0px" class="fs-10 text-center">
                         EFECTIVA PARA FECHA:<span
-                            style="border-bottom: 1px solid black; padding: 0px 25px;">{{$request->effective_date
-                            }}
+                            style="border-bottom: 1px solid black; padding: 0px 25px;">{{ $request->effective_date }}
                         </span>
                     </p>
                 </td>
@@ -171,21 +167,19 @@
 
                     <p style="padding: 0px; margin: 4px 0px;" class="fs-10  text-center">
                         Del <span style="border-bottom: 1px solid black; padding: 0px 35px;">
-                            {{$request->from_date }}</span>
+                            {{ $request->from_date }}</span>
                         <strong>(dd/mm/aaaa)</strong>
                     </p>
                     <p style="padding: 0px; margin:4px 0px;" class="fs-10  text-center">
                         Al <span style="border-bottom: 1px solid black; padding: 0px 35px;">
-                            {{$request->to_date
-                            }}
+                            {{ $request->to_date }}
                         </span>
                         <strong>(dd/mm/aaaa)</strong>
                     </p>
 
                     <p style="padding: 0px; margin:4px 0px;" class="fs-10  text-center">
                         Total de días <span
-                            style="border-bottom: 1px solid black; padding: 0px 40px 0px 65px;">{{$request->total_days
-                            }}
+                            style="border-bottom: 1px solid black; padding: 0px 40px 0px 65px;">{{ $request->total_days }}
                         </span>
                     </p>
                 </td>
@@ -199,7 +193,7 @@
         <table>
             <tr>
                 <td height="10">
-                    <p class="fs-11 uppercase" style="">{{$request->justification }}</p>
+                    <p class="fs-11 uppercase" style="">{{ $request->justification }}</p>
                 </td>
             </tr>
         </table>
@@ -212,23 +206,22 @@
             generó:
         </p>
         <p class="fs-10" style="padding: 0px 80px 0px 0px; margin:0px; display: inline;">
-            Trabajo extraordinario en día descanso, vacación o asueto {{$request->extraordinary_work }}
+            Trabajo extraordinario en día descanso, vacación o asueto {{ $request->extraordinary_work }}
 
         </p>
         <p class="fs-10" style="padding: 0px; margin:0px; display: inline;">
-            Capacitación en día descanso, vacación o asueto {{$request->training }}
+            Capacitación en día descanso, vacación o asueto {{ $request->training }}
         </p>
         <p class="fw-bold fs-10">Detalle de la actividad realizada:</p>
 
         <div>
             <p style="padding: 0px 30px 0px 0px; margin: 4px 0px; display: inline;" class="fs-10">
                 Lugar de ejecución: <span style="border-bottom: 1px solid black; padding: 0px 150px; 0px 35px">
-                    {{$request->execution_site }}</span>
+                    {{ $request->execution_site }}</span>
             </p>
             <p style="padding: 0px; margin:4px 0px; display: inline;" class="fs-10">
                 Fecha de ejecución: <span style="border-bottom: 1px solid black; padding: 0px 40px;">
-                    {{$request->execution_date
-                    }}
+                    {{ $request->execution_date }}
                 </span>
             </p>
         </div>
@@ -236,20 +229,17 @@
         <div>
             <p style="padding: 0px 30px 0px 0px; margin:4px 0px; display: inline;" class="fs-10">
                 Horario de ejecución: <span style="border-bottom: 1px solid black; padding: 0px 50px;">
-                    {{$request->execution_schedule
-                    }}
+                    {{ $request->execution_schedule }}
                 </span>
             </p>
             <p style="padding: 0px 30px 0px 0px; margin:4px 0px; display: inline;" class="fs-10">
                 Cantidad de horas: <span style="border-bottom: 1px solid black; padding: 0px 40px;">
-                    {{$request->execution_number_hours
-                    }}
+                    {{ $request->execution_number_hours }}
                 </span>
             </p>
             <p style="padding: 0px; margin:4px 0px; display: inline;" class="fs-10">
                 Asignada por: <span style="border-bottom: 1px solid black; padding: 0px 65px;">
-                    {{$request->assigned_by
-                    }}
+                    {{ $request->assigned_by }}
                 </span>
             </p>
         </div>
@@ -257,26 +247,22 @@
         <div>
             <p style="padding: 0px; margin:4px 0px; display: inline;" class="fs-10">
                 Cantidad de días solicitados: <span style="border-bottom: 1px solid black; padding: 0px 40px;">
-                    {{$request->number_days_requested
-                    }}
+                    {{ $request->number_days_requested }}
                 </span>
             </p>
             <p style="padding: 0px; margin:4px 0px; display: inline;" class="fs-10">
                 Fecha que se hará efectivo: <span style="border-bottom: 1px solid black; padding: 0px 40px;">
-                    {{$request->execution_effective_date
-                    }}
+                    {{ $request->execution_effective_date }}
                 </span>
             </p>
             <p style="padding: 0px; margin:4px 0px; display: inline;" class="fs-10">
                 Desde: <span style="border-bottom: 1px solid black; padding: 0px 40px;">
-                    {{$request->execution_from
-                    }}
+                    {{ $request->execution_from }}
                 </span>
             </p>
             <p style="padding: 0px; margin:4px 0px; display: inline;" class="fs-10">
                 Hasta: <span style="border-bottom: 1px solid black; padding: 0px 40px;">
-                    {{$request->execution_to
-                    }}
+                    {{ $request->execution_to }}
                 </span>
             </p>
         </div>
@@ -323,7 +309,8 @@
             </table>
         </div>
         <div>
-            <p class="fw-bold fs-10" style="padding: 1px; margin:0px; border-top: 1px solid black;">Este formulario debe
+            <p class="fw-bold fs-10" style="padding: 1px; margin:0px; border-top: 1px solid black;">Este formulario
+                debe
                 ser presentado por el empleado solicitante a
                 la Unidad de Talento
                 Humano, a los

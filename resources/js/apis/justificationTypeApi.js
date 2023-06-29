@@ -2,7 +2,7 @@ import axios from "axios";
 // import { interceptorRequest, interceptorReponse } from "./interceptor";
 
 const justificationTypeApi = axios.create({
-    baseURL: "/api/web/justificationType",
+    baseURL: "/web/justificationType",
 });
 
 // justificationTypeApi.interceptors.request.use(interceptorRequest);

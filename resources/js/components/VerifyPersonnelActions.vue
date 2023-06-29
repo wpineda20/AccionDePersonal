@@ -41,7 +41,7 @@
     </v-card>
 
     <!-- Dialog -->
-    <v-dialog v-model="dialogActions" max-width="800px">
+    <v-dialog v-model="dialogActions" max-width="90%">
       <v-card class="h-100">
         <v-container>
           <h2 class="black-secondary text-center mt-3 mb-3">
@@ -116,17 +116,19 @@
             <v-col align="center">
               <v-btn v-if="actualUser.role == 'Jefe' || actualUser.hasUsersInCharge"
                 color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded @click="updateStatus('Autorizada')"
-                :disabled="validateDisableAction('Observada')">
+                :disabled="validateDisableAction('Observada') || validateDisableAction('No Corregida')">
                 Autorizar
               </v-btn>
               <v-btn v-if="actualUser.role == 'Coordinador' ||
                 actualUser.role == 'Administrador' || actualUser.hasUsersInCharge
                 " color="btn-normal-close no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
-                @click="updateStatus('Observada')" :disabled="validateDisableAction('Observada', true)">
+                @click="updateStatus('Observada')"
+                :disabled="validateDisableAction('Observada') || !validateDisableAction('No Corregida')">
                 Observar
               </v-btn>
               <v-btn color="btn-normal-red no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
-                @click="updateStatus('Rechazada')" :disabled="validateDisableAction('Observada')">
+                @click="updateStatus('Rechazada')"
+                :disabled="validateDisableAction('Observada') || validateDisableAction('No Corregida')">
                 Rechazar
               </v-btn>
               <v-btn v-if="actualUser.role == 'RRHH' || actualUser.role == 'Administrador'" color=" btn-normal-green
@@ -335,7 +337,7 @@ export default {
         justificationTypeApi.get(null, {
           params: { itemsPerPage: -1 },
         }),
-        userApi.post(`/actualUser`),
+        userApi.get(`/actualUser`),
       ];
 
       const responses = await Promise.all(requests).catch((error) => {
@@ -613,6 +615,7 @@ export default {
         return this.editedItem.remarks.filter(el => el.status == status).length == 0
       }
 
+      // console.log(this.editedItem.remarks)
       return this.editedItem.remarks.filter(el => el.status == status).length > 0
     }
   },

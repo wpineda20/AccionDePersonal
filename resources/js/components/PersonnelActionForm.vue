@@ -481,7 +481,7 @@ export default {
       this.loading = true;
 
       let requests = [
-        userApi.get(`/infoUserLoggedIn`),
+        userApi.get(`/actualUser`),
         justificationTypeApi.get(null, {
           params: { itemsPerPage: -1 },
         }),
@@ -497,7 +497,7 @@ export default {
       });
 
       if (responses) {
-        this.user = responses[0].data.userInfoLogged;
+        this.user = responses[0].data.user;
         this.justifications = responses[1].data.records;
 
         this.editedItem.employee_name = this.user.name;

@@ -182,29 +182,13 @@ class UserController extends Controller
         $role = auth()->user()->getRoleNames()[0];
         $user->role = $role;
         $user->hasUsersInCharge = auth()->user()->hasUsersInCharge();
+        $user->dependency = Dependency::where('id', $user->dependency_id)->first();
 
         return response()->json([
             "status" => "success",
             "message" => "Registro obtenido correctamente.",
             "user" => $user
         ]);
-    }
-
-    /**
-     * Gets info user logged
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function infoUserLoggedIn(Request $request)
-    {
-        $user = auth()->user();
-
-        $user->dependency = Dependency::where('id', $user->dependency_id)
-            ->first();
-        $user->hasUsersInCharge = auth()->user()->hasUsersInCharge();
-
-        return response()->json(['message' => 'success', 'userInfoLogged' => $user]);
     }
 
     /**

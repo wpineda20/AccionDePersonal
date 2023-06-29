@@ -1,12 +1,6 @@
 <template>
   <div data-app>
-    <alert
-      :text="textAlert"
-      :event="alertEvent"
-      :show="showAlert"
-      @show-alert="updateAlert($event)"
-      class="mb-2"
-    />
+    <alert :text="textAlert" :event="alertEvent" :show="showAlert" @show-alert="updateAlert($event)" class="mb-2" />
 
     <v-card class="p-3">
       <v-row>
@@ -15,13 +9,7 @@
         </v-col>
         <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end"> </v-col>
         <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
-          <v-text-field
-            dense
-            outlined
-            label="Buscar"
-            type="text"
-            v-model="options.search"
-          ></v-text-field>
+          <v-text-field dense outlined label="Buscar" type="text" v-model="options.search"></v-text-field>
         </v-col>
       </v-row>
 
@@ -40,26 +28,12 @@
       <!-- filters -->
 
       <!-- datatable -->
-      <v-data-table
-        :search="options.search"
-        :headers="headers"
-        :items="recordsFiltered"
-        :options.sync="options"
-        :loading="loading"
-        item-key="id"
-        sort-by="id"
-        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
-      >
+      <v-data-table :search="options.search" :headers="headers" :items="recordsFiltered" :options.sync="options"
+        :loading="loading" item-key="id" sort-by="id" :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }">
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                small
-                class="mr-2"
-                @click="editItem(item)"
-                v-bind="attrs"
-                v-on="on"
-              >
+              <v-icon small class="mr-2" @click="editItem(item)" v-bind="attrs" v-on="on">
                 mdi-eye
               </v-icon>
             </template>
@@ -68,44 +42,31 @@
         </template>
 
         <template v-slot:no-data>
-          <a
-            href="#"
-            class="btn btn-normal-secondary no-decoration"
-            @click="initialize"
-          >
+          <a href="#" class="btn btn-normal-secondary no-decoration" @click="initialize">
             Reiniciar
           </a>
         </template>
       </v-data-table>
       <!-- datatable -->
     </v-card>
-    <v-dialog v-model="dialogShowPersonnelAction" max-width="700px">
+    <v-dialog v-model="dialogShowPersonnelAction" max-width="70%">
       <v-card color="h-100">
         <v-container>
           <h2 class="black-secondary text-center mt-3 mb-3">
             Acción de Personal
           </h2>
           <v-container>
-            <show-personnel-action-form
-              :editedItem="$v.editedItem"
-              :justifications="justifications"
-              :enableInputs="editedItem.status_name == 'Observada'"
-              :showUpdateBtn="editedItem.status_name == 'Observada'"
-              @update-form="updateForm()"
-              @close-form="closeFormActions()"
-              @file-size-exceeded="
+            <show-personnel-action-form :editedItem="$v.editedItem" :justifications="justifications"
+              :enableInputs="editedItem.status_name == 'Observada'" :showUpdateBtn="editedItem.status_name == 'Observada'"
+              @update-form="updateForm()" @close-form="closeFormActions()" @file-size-exceeded="
                 updateAlert(
                   true,
                   'El archivo no debe superar los 5 MB.',
                   'fail'
                 )
-              "
-            />
+                " />
             <!-- Remarks -->
-            <h5
-              class="fw-bold pt-3 pb-2 mb-2"
-              style="border-bottom: 1px solid lightgray"
-            >
+            <h5 class="fw-bold pt-3 pb-2 mb-2" style="border-bottom: 1px solid lightgray">
               OBSERVACIONES
             </h5>
             <v-simple-table class="mt-2">
@@ -146,12 +107,8 @@
             <!-- buttons -->
             <v-row>
               <v-col align="center" cols="12" sm="12" md="12">
-                <v-btn
-                  v-if="editedItem.status_name == 'Observada'"
-                  color="btn-normal no-uppercase"
-                  rounded
-                  @click="updateForm()"
-                >
+                <v-btn v-if="editedItem.status_name == 'Observada'" color="btn-normal no-uppercase" rounded
+                  @click="updateForm()">
                   Actualizar
                 </v-btn>
               </v-col>
@@ -448,6 +405,7 @@ export default {
 .v-tabs-slider {
   background: #2d52a8 !important;
 }
+
 .theme--light.v-label--is-disabled {
   color: grey !important;
 }

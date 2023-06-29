@@ -2,7 +2,7 @@ import axios from "axios";
 // import { interceptorRequest, interceptorReponse } from "./interceptor";
 
 const dependencyApi = axios.create({
-    baseURL: "/api/web/dependency",
+    baseURL: "/web/dependency",
 });
 
 // dependencyApi.interceptors.request.use(interceptorRequest);
