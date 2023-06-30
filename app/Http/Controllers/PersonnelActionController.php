@@ -409,7 +409,7 @@ class PersonnelActionController extends Controller
                     'total' => $authorized,
                 ],
                 [
-                    'title' => 'Procesadas',
+                    'title' => 'Remitidas a UTH',
                     'icon' => 'mdi-file-check',
                     'total' => $processed,
                 ],
