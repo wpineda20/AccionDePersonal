@@ -23,7 +23,7 @@ class HistoryPersonnelActionRepository
         ]);
     }
 
-    public function advanceAp(PersonnelAction $personnelAction, $statusId, $fullUrl = null): void
+    public function advanceAp(PersonnelAction $personnelAction, $statusId, $createdFile): void
     {
         // Deactivate the current history action
         HistoryPersonnelAction::where([
@@ -39,7 +39,7 @@ class HistoryPersonnelActionRepository
             'personnel_action_id' => $personnelAction->id,
             'status_id' => $statusId,
             'active' => 1,
-            'url_file' => $fullUrl,
+            'url_file' => $createdFile,
         ]);
     }
 
