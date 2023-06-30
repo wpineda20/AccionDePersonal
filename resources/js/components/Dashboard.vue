@@ -1,10 +1,16 @@
 <template>
   <div data-app ref="top">
-    <alert :text="textAlert" :event="alertEvent" :show="showAlert" :time="time" @show-alert="updateAlert($event)"
-      class="mb-4" />
+    <alert
+      :text="textAlert"
+      :event="alertEvent"
+      :show="showAlert"
+      :time="time"
+      @show-alert="updateAlert($event)"
+      class="mb-4"
+    />
     <v-row>
       <!-- A.P by status -->
-      <v-col cols="12" md="4" lg="4" sm="12" class="pt-0">
+      <v-col cols="12" md="12" lg="4" sm="12" class="pt-0">
         <div class="dashboard-card">
           <div class="dashboard-card-header">
             <h2>A.P. por estados</h2>
@@ -15,8 +21,16 @@
             <loader v-if="loading" class="pt-5" style=""> </loader>
             <!-- /.Loader -->
             <div class="body-content" v-if="!loading">
-              <div class="body-item h-100" v-for="(item, index) in totals" :key="index">
-                <v-icon large class="color-primary" style="justify-content: left">
+              <div
+                class="body-item h-100"
+                v-for="(item, index) in totals"
+                :key="index"
+              >
+                <v-icon
+                  large
+                  class="color-primary"
+                  style="justify-content: left"
+                >
                   {{ item.icon }}
                 </v-icon>
                 <span> {{ item.total }} </span>
@@ -29,15 +43,28 @@
       <!-- A.P by status -->
 
       <!-- Latest justifications -->
-      <v-col cols="12" md="8" lg="8" sm="12" class="pt-0">
+      <v-col cols="12" md="12" lg="8" sm="12" class="pt-0">
         <div class="top-justifications-card mb-3">
           <div class="top-justifications-header">
-            <h2>Últimas acciones de personal</h2>
-            <p class="pb-3">Últimas 5 acciones de personal generadas.</p>
+            <div class="header-content">
+              <div class="header-content-item">
+                <h2>Últimas acciones de personal</h2>
+                <p class="pb-0">Últimas 5 acciones de personal generadas.</p>
+              </div>
+              <div class="header-content-item">
+                <v-btn href="/personnelAction" class="mb-2 btn-normal" rounded>
+                  <v-icon left> mdi-plus </v-icon> Crear solicitud
+                </v-btn>
+              </div>
+            </div>
           </div>
           <div class="top-justifications-body">
             <!-- Item 1 -->
-            <div v-for="(item, index) in this.records" :key="index" class="top-justification-item">
+            <div
+              v-for="(item, index) in this.records"
+              :key="index"
+              class="top-justification-item"
+            >
               <div class="top-justification-item-left">
                 <div class="item-left-icon">
                   <v-icon large class="orange-text">
@@ -59,7 +86,7 @@
             <!-- No Item -->
             <div v-if="records.length == 0 && !loading" class="">
               <h4 class="fw-bold text-center">
-                Aún no se registrado ninguna acción de personal!
+                Aún no se registrado ninguna acción de personal.
               </h4>
             </div>
             <!-- No Item -->
@@ -92,7 +119,11 @@
           <div class="top-justifications-header">
             <h2>Tipos de justificación.</h2>
           </div>
-          <div class="justifications-colors" v-for="(item, index) in this.justifications" :key="index">
+          <div
+            class="justifications-colors"
+            v-for="(item, index) in this.justifications"
+            :key="index"
+          >
             <div class="color">
               <div class="picker" :style="{ backgroundColor: item.color }">
                 {{ item.letter }}

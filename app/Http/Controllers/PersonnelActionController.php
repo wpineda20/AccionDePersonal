@@ -99,13 +99,13 @@ class PersonnelActionController extends Controller
         //Create first record with status requested
         $this->historyPersonnelActionRepository->create($personnelAction, 1);
 
-        $this->historyPersonnelActionRepository->createFile($request);
+        $createdFile = $this->historyPersonnelActionRepository->createFile($request);
 
         //Send PDF information to login
         $this->historyPersonnelActionRepository->signFile();
 
         //Create second record with status pending authorization and signed pdf
-        $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $fullUrl);
+        $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $createdFile);
 
         return response()->json([
             'success' => true,
