@@ -99,13 +99,20 @@ class PersonnelActionController extends Controller
         //Create first record with status requested
         $this->historyPersonnelActionRepository->create($personnelAction, 1);
 
-        $createdFile = $this->historyPersonnelActionRepository->createFile($request);
+        $createdFile = $this->historyPersonnelActionRepository->createFile($request, $personnelAction->id);
 
         //Send PDF information to login
-        $this->historyPersonnelActionRepository->signFile();
+        $signedFile = $this->historyPersonnelActionRepository->signFile(
+            $createdFile['content'],
+            $createdFile['name'],
+            auth()->user()->email,
+            'true',
+            20,
+            20
+        );
 
         //Create second record with status pending authorization and signed pdf
-        $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $createdFile);
+        $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $signedFile['url']);
 
         return response()->json([
             'success' => true,
@@ -268,19 +275,13 @@ class PersonnelActionController extends Controller
                     'hpa.personnel_action_id',
                     'hpa.active',
                 )
-                    ->join(
-                        'users as u',
-                        'personnel_action.user_id',
-                        '=',
-                        'u.id'
-                    )
+                    ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
                     ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
                     ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
                     ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
                     ->join('status as s', 'hpa.status_id', '=', 's.id')
                     ->where('hpa.status_id', 5)
                     ->where('hpa.active', 1)
-
                     ->orderBy("personnel_action.date_request_created")
                     ->get();
             }
