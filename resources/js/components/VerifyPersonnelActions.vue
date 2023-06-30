@@ -4,23 +4,26 @@
     <alert :text="textAlert" :event="alertEvent" :show="showAlert" @show-alert="updateAlert($event)" class="mb-2" />
     <v-card class="p-3">
       <v-row>
-        <v-col cols="12" sm="12" md="4" lg="4" xl="4">
-          <h2 style="margin-left: 15px">Verificación de A.P</h2>
+        <v-col cols="12" sm="12" md="8" lg="8" xl="8">
+          <h2 style="margin-left: 15px">Verificación de acciones de personal</h2>
         </v-col>
-        <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
-          <!-- <v-btn
-            rounded
-            @click="addRecord()"
-            class="mb-2 btn-normal no-uppercase"
-            title="Agregar"
-          >
-            Agregar
-          </v-btn> -->
-        </v-col>
-        <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
-          <v-text-field class="" dense outlined label="Buscar" type="text" v-model="options.search"></v-text-field>
+        <v-col cols="12" sm="12" md="4" lg="4" xl="4" class="pl-0 pb-0 pr-0">
+          <v-text-field dense outlined label="Buscar" type="text" v-model="options.search"></v-text-field>
         </v-col>
       </v-row>
+
+      <!-- filters -->
+      <div class="container-fluid pb-4 pt-4">
+        <v-row>
+          <v-tabs grow background-color="transparent">
+            <v-tab @click="filter = 'Pediente autorización'">Pendiente de autorización</v-tab>
+            <v-tab @click="filter = 'Procesada'">Procesadas</v-tab>
+            <v-tab @click="filter = 'Rechazada'">Rechazadas</v-tab>
+          </v-tabs>
+        </v-row>
+      </div>
+      <!-- filters -->
+
       <v-data-table v-model="selected" :single-select="false" :search="options.search" :headers="headers"
         :items="recordsFiltered" :options.sync="options" :loading="loading" item-key="id" sort-by="id"
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }">
@@ -116,22 +119,29 @@
             <v-col align="center">
               <v-btn v-if="actualUser.role == 'Jefe' || actualUser.hasUsersInCharge"
                 color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded @click="updateStatus('Autorizada')"
-                :disabled="validateDisableAction('Observada') || validateDisableAction('No Corregida')">
+                :disabled="validateDisableAction('Observada') ||
+                  validateDisableAction('No Corregida')
+                  ">
                 Autorizar
               </v-btn>
               <v-btn v-if="actualUser.role == 'Coordinador' ||
-                actualUser.role == 'Administrador' || actualUser.hasUsersInCharge
+                actualUser.role == 'Administrador' ||
+                actualUser.hasUsersInCharge
                 " color="btn-normal-close no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
-                @click="updateStatus('Observada')"
-                :disabled="validateDisableAction('Observada') || !validateDisableAction('No Corregida')">
+                @click="updateStatus('Observada')" :disabled="validateDisableAction('Observada') ||
+                  !validateDisableAction('No Corregida')
+                  ">
                 Observar
               </v-btn>
               <v-btn color="btn-normal-red no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
-                @click="updateStatus('Rechazada')"
-                :disabled="validateDisableAction('Observada') || validateDisableAction('No Corregida')">
+                @click="updateStatus('Rechazada')" :disabled="validateDisableAction('Observada') ||
+                  validateDisableAction('No Corregida')
+                  ">
                 Rechazar
               </v-btn>
-              <v-btn v-if="actualUser.role == 'RRHH' || actualUser.role == 'Administrador'" color=" btn-normal-green
+              <v-btn v-if="actualUser.role == 'RRHH' ||
+                actualUser.role == 'Administrador'
+                " color=" btn-normal-green
               no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded @click="updateStatus('Finalizada')">
                 Finalizar
               </v-btn>
@@ -612,12 +622,22 @@ export default {
 
     validateDisableAction(status, equal = false) {
       if (equal) {
-        return this.editedItem.remarks.filter(el => el.status == status).length == 0
+        return (
+          this.editedItem.remarks.filter((el) => el.status == status).length ==
+          0
+        );
       }
 
       // console.log(this.editedItem.remarks)
-      return this.editedItem.remarks.filter(el => el.status == status).length > 0
-    }
+      return (
+        this.editedItem.remarks.filter((el) => el.status == status).length > 0
+      );
+    },
   },
 };
 </script>
+<style scoped>
+.v-tabs-slider {
+  background: #2d52a8 !important;
+}
+</style>

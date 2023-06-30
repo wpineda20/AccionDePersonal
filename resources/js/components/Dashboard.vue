@@ -1,13 +1,7 @@
 <template>
   <div data-app ref="top">
-    <alert
-      :text="textAlert"
-      :event="alertEvent"
-      :show="showAlert"
-      :time="time"
-      @show-alert="updateAlert($event)"
-      class="mb-4"
-    />
+    <alert :text="textAlert" :event="alertEvent" :show="showAlert" :time="time" @show-alert="updateAlert($event)"
+      class="mb-4" />
     <v-row>
       <!-- A.P by status -->
       <v-col cols="12" md="12" lg="4" sm="12" class="pt-0">
@@ -21,16 +15,8 @@
             <loader v-if="loading" class="pt-5" style=""> </loader>
             <!-- /.Loader -->
             <div class="body-content" v-if="!loading">
-              <div
-                class="body-item h-100"
-                v-for="(item, index) in totals"
-                :key="index"
-              >
-                <v-icon
-                  large
-                  class="color-primary"
-                  style="justify-content: left"
-                >
+              <div class="body-item h-100" v-for="(item, index) in totals" :key="index">
+                <v-icon large class="color-primary" style="justify-content: left">
                   {{ item.icon }}
                 </v-icon>
                 <span> {{ item.total }} </span>
@@ -60,11 +46,7 @@
           </div>
           <div class="top-justifications-body">
             <!-- Item 1 -->
-            <div
-              v-for="(item, index) in this.records"
-              :key="index"
-              class="top-justification-item"
-            >
+            <div v-for="(item, index) in this.records" :key="index" class="top-justification-item">
               <div class="top-justification-item-left">
                 <div class="item-left-icon">
                   <v-icon large class="orange-text">
@@ -119,17 +101,12 @@
           <div class="top-justifications-header">
             <h2>Tipos de justificación.</h2>
           </div>
-          <div
-            class="justifications-colors"
-            v-for="(item, index) in this.justifications"
-            :key="index"
-          >
+          <div class="justifications-colors" v-for="(item, index) in this.justifications" :key="index">
             <div class="color">
               <div class="picker" :style="{ backgroundColor: item.color }">
                 {{ item.letter }}
               </div>
             </div>
-            <!-- <div class="letter">{{ item.letter }}</div> -->
             <div class="justification-type">
               {{ item.justification_name }}
             </div>
@@ -166,14 +143,10 @@ export default {
     loading: false,
     records: [],
     justifications: [],
-    personnelActionsByJustifications: [],
+    byJustifications: [],
     totals: {},
     totalPersonnelActions: 0,
   }),
-
-  created() {
-    this.initialize();
-  },
 
   methods: {
     async initialize() {
@@ -184,6 +157,7 @@ export default {
         personnelActionApi.get(`/latest`),
         personnelActionApi.get(`/total`),
         justificationTypeApi.get(`/colors`),
+        personnelActionApi.get(`/byJustifications`),
       ];
 
       const responses = await Promise.all(requests).catch((error) => {
@@ -210,15 +184,8 @@ export default {
 
         this.totals = responses[1].data.data;
         this.justifications = responses[2].data.records;
-        // this.personnelActionsByJustifications = responses[7].data.records;
-
-        //total
-        this.totalPersonnelActions =
-          this.totalRequested +
-          this.totalObserved +
-          this.totalRejected +
-          this.totalApproved +
-          this.totalProcessed;
+        this.byJustifications = responses[3].data.data;
+        this.createGraphic(this.byJustifications);
       }
 
       this.loading = false;
@@ -231,15 +198,7 @@ export default {
       });
     },
 
-    updateAlert(show = false, text = "Alerta", event = "success") {
-      this.textAlert = text;
-      this.alertEvent = event;
-      this.showAlert = show;
-    },
-  },
-
-  mounted() {
-    am5.ready(function () {
+    createGraphic(data) {
       // Create root element
       // https://www.amcharts.com/docs/v5/getting-started/#Root_element
       let root = am5.Root.new("chartdiv");
@@ -326,65 +285,6 @@ export default {
         return chart.get("colors").getIndex(series.columns.indexOf(target));
       });
 
-      // Set data
-      // console.log("hola");
-      // console.log(this.personnelActionsByJustifications);
-      // let data = this.personnelActionsByJustifications;
-      let data = [
-        {
-          letter: "A",
-          value: 20,
-        },
-        {
-          letter: "B",
-          value: 10,
-        },
-        {
-          letter: "C",
-          value: 18,
-        },
-        {
-          letter: "D",
-          value: 13,
-        },
-        {
-          letter: "E",
-          value: 21,
-        },
-        {
-          letter: "F",
-          value: 11,
-        },
-        {
-          letter: "G",
-          value: 40,
-        },
-        {
-          letter: "H",
-          value: 7,
-        },
-        {
-          letter: "I",
-          value: 16,
-        },
-        {
-          letter: "J",
-          value: 24,
-        },
-        {
-          letter: "K",
-          value: 4,
-        },
-        {
-          letter: "L",
-          value: 30,
-        },
-        {
-          letter: "M",
-          value: 14,
-        },
-      ];
-
       xAxis.data.setAll(data);
       series.data.setAll(data);
 
@@ -392,7 +292,17 @@ export default {
       // https://www.amcharts.com/docs/v5/concepts/animations/
       series.appear(1000);
       chart.appear(1000, 100);
-    }); // end am5.ready()
+    },
+
+    updateAlert(show = false, text = "Alerta", event = "success") {
+      this.textAlert = text;
+      this.alertEvent = event;
+      this.showAlert = show;
+    },
+  },
+
+  async mounted() {
+    await this.initialize();
   },
 };
 </script>

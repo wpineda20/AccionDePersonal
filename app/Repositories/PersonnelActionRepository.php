@@ -76,7 +76,14 @@ class PersonnelActionRepository
         if ($data['from_date'] > $data['to_date'] && $data['period_by'] == 'days') {
             $validation['message'] = "La fecha de inicio no puede ser mayor a la fecha fin.";
             $validation['total'] = 1;
-            // dd("Hola");
+
+            return $validation;
+        }
+
+        //Validate if has an immediate superior
+        if (empty(auth()->user()->inmediate_superior_id)) {
+            $validation['message'] = "No puedes solicitar una acción de personal sin tener asignado un jefe.";
+            $validation['total'] = 1;
 
             return $validation;
         }
@@ -104,7 +111,7 @@ class PersonnelActionRepository
             ->get();
     }
 
-    public function countByStatus(int $userId, String $statusId)
+    public function countByStatus(int $userId, int $statusId)
     {
         return PersonnelAction::select(
             'personnel_action.*',
@@ -118,6 +125,13 @@ class PersonnelActionRepository
             ->where('personnel_action.user_id', $userId)
             ->where('hpa.status_id', $statusId)
             ->where('hpa.active', 1)
+            ->count();
+    }
+
+    public function countByJustification(int $userId, int $justificationId)
+    {
+        return PersonnelAction::where('personnel_action.user_id', $userId)
+            ->where('personnel_action.justification_type_id', $justificationId)
             ->count();
     }
 }

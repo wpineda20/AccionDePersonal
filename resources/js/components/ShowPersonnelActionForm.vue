@@ -62,10 +62,10 @@
 
       <!-- hours col -->
       <v-col cols="12" sm="12" md="12">
-        <h6 class="text-center fw-bold" v-if="editedItem.from_hour">HORAS:</h6>
+        <h6 class="text-center fw-bold">HORAS:</h6>
         <v-row style="display: flex; justify-content: center">
           <!-- from_hour -->
-          <v-col cols="12" sm="6" md="6" class="" v-if="editedItem.from_hour">
+          <v-col cols="12" sm="6" md="6" class="">
             <base-input
               label="De las"
               v-model="editedItem.from_hour.$model"
@@ -77,7 +77,7 @@
           </v-col>
           <!-- from_hour -->
           <!-- from_hour -->
-          <v-col cols="12" sm="6" md="6" class="" v-if="editedItem.to_hour">
+          <v-col cols="12" sm="6" md="6" class="">
             <base-input
               label="horas a las"
               v-model="editedItem.to_hour.$model"
@@ -89,13 +89,7 @@
           </v-col>
           <!-- from_hour -->
           <!-- total_hours -->
-          <v-col
-            cols="12"
-            sm="12"
-            md="12"
-            class="m-0 pb-3"
-            v-if="editedItem.total_hours"
-          >
+          <v-col cols="12" sm="12" md="12" class="m-0 pb-3">
             <base-input
               label="Total de horas"
               v-model="editedItem.total_hours.$model"
@@ -130,12 +124,10 @@
 
       <!-- dates col -->
       <v-col cols="12" sm="12" md="12">
-        <h6 class="text-center fw-bold" v-if="editedItem.from_date">
-          DÍA(S) COMPLETO(S):
-        </h6>
+        <h6 class="text-center fw-bold">DÍA(S) COMPLETO(S):</h6>
         <v-row style="display: flex; justify-content: center">
           <!-- from_date -->
-          <v-col cols="12" sm="12" md="6" class="" v-if="editedItem.from_date">
+          <v-col cols="12" sm="12" md="6" class="">
             <base-input
               label="Del"
               v-model="editedItem.from_date.$model"
@@ -147,7 +139,7 @@
           </v-col>
           <!-- from_date -->
           <!-- from_date -->
-          <v-col cols="12" sm="12" md="6" class="" v-if="editedItem.to_date">
+          <v-col cols="12" sm="12" md="6" class="">
             <base-input
               label="Al"
               v-model="editedItem.to_date.$model"
@@ -159,13 +151,7 @@
           </v-col>
           <!-- from_date -->
           <!-- total_days -->
-          <v-col
-            cols="12"
-            sm="12"
-            md="12"
-            class="m-0 pb-3"
-            v-if="editedItem.total_days"
-          >
+          <v-col cols="12" sm="12" md="12" class="m-0 pb-3">
             <base-input
               label="Total de días"
               v-model="editedItem.total_days.$model"
@@ -188,7 +174,7 @@
       </h5>
 
       <!-- justification -->
-      <v-col cols="12" sm="12" md="12" v-if="editedItem.justification">
+      <v-col cols="12" sm="12" md="12">
         <base-text-area
           label="Justificación"
           v-model="editedItem.justification.$model"
