@@ -33,9 +33,11 @@ footer {
 .color-primary {
     color: $blue-primary !important;
 }
+
 .color-primary-light {
     color: $blue-secondary;
 }
+
 .color-secondary {
     color: $grey-primary !important;
 }
@@ -48,6 +50,7 @@ footer {
     max-width: 90px;
     max-height: 90px;
 }
+
 /**
  * Header
  *
@@ -154,9 +157,10 @@ footer {
     color: $blue-primary;
 }
 
-.v-text-field--outlined >>> fieldset {
+.v-text-field--outlined>>>fieldset {
     border-color: rgba(192, 0, 250, 0.986);
 }
+
 /**
  * Footer
  *
@@ -165,7 +169,7 @@ footer {
 
 footer {
     min-height: 10vh;
-    background-color: $footer-bg;
+    // background-color: $footer-bg;
 }
 
 .logo-footer {
@@ -184,8 +188,7 @@ footer {
 }
 
 .color-logo {
-    filter: invert(54%) sepia(0) saturate(5748%) hue-rotate(177deg)
-        brightness(126%) contrast(66%);
+    filter: invert(54%) sepia(0) saturate(5748%) hue-rotate(177deg) brightness(126%) contrast(66%);
 }
 
 /**
@@ -217,6 +220,7 @@ footer {
     background-color: $alert-fail-hover !important;
     color: $light-secondary !important;
 }
+
 .btn-normal-close {
     background-color: $alert-fail-dark !important;
     color: $light-secondary !important;
@@ -228,6 +232,7 @@ footer {
     color: $light-secondary !important;
     border-radius: 50px;
 }
+
 .btn-normal-red:hover {
     background-color: $red-hover !important;
     color: $light-secondary !important;
@@ -238,6 +243,7 @@ footer {
     color: $light-secondary !important;
     border-radius: 50px;
 }
+
 .btn-normal-green:hover {
     background-color: $green-hover !important;
     color: $light-secondary !important;
@@ -258,6 +264,7 @@ footer {
         width: 66.66%;
     }
 }
+
 @media screen and (max-width: 550px) {
     .col-md-5 {
         width: 80.66%;
@@ -440,7 +447,7 @@ footer {
     transform: translateY(-50%);
 }
 
-.sidebar.close ~ .home-section {
+.sidebar.close~.home-section {
     left: 0px;
     width: calc(100% - 0px);
 }
@@ -528,8 +535,7 @@ footer {
     padding-right: 0.6rem;
 }
 
-.v-textarea.v-text-field--enclosed.v-text-field--outlined:not(.v-input--dense)
-    .v-label {
+.v-textarea.v-text-field--enclosed.v-text-field--outlined:not(.v-input--dense) .v-label {
     top: 10px !important;
 }
 
@@ -547,10 +553,7 @@ select:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px $white inset !important;
 }
 
-.theme--light.v-text-field--outlined
-    > .v-input__control
-    > .v-input__slot
-    fieldset {
+.theme--light.v-text-field--outlined>.v-input__control>.v-input__slot fieldset {
     border-color: $blue-primary !important;
 }
 
@@ -566,79 +569,83 @@ select:-webkit-autofill {
  * -------------------------------------------------------------------
  */
 
- .dashboard-card{
+.dashboard-card {
     background-color: $white;
     border-radius: 0.625rem;
     box-shadow: 0px 0px 20px 0px rgba(76, 87, 125, 0.02);
 }
 
-.dashboard-card-header{
+.dashboard-card-header {
     // background-color: $grey-primary;
     background-color: $blue-primary;
     border-radius: 0.625rem;
     padding: 2rem 1.5rem 3rem 1.5rem;
- }
+}
 
- .dashboard-card .dashboard-card-header h2{
+.dashboard-card .dashboard-card-header h2 {
     font-weight: bold;
     font-size: 26px;
     color: $white;
- }
- .dashboard-card .dashboard-card-header p{
+}
+
+.dashboard-card .dashboard-card-header p {
     font-size: 16px;
     color: $white;
     line-height: 18px
- }
+}
 
- .dashboard-card-body{
+.dashboard-card-body {
     padding: 2rem 1.5rem;
     margin-top: -70px;
- }
+}
 
- .body-content{
+.body-content {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
- }
+}
 
- .body-item{
+.body-item {
     background-color: $light-primary;
     border-radius: 0.475rem;
     padding: 1rem;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     justify-content: left;
- }
-.body-item span{
+}
+
+.body-item span {
     color: $black;
     font-weight: bold;
     font-size: 30px;
     // font-family: Arial, Helvetica, sans-serif;
 }
-.body-item p{
+
+.body-item p {
     color: #5e6278;
     font-weight: bold;
 }
 
 /* TOP JUSTIFICATIONS */
 
-.top-justifications-card{
+.top-justifications-card {
     background-color: $white;
     border-radius: 0.625rem;
     box-shadow: 0px 0px 20px 0px rgba(76, 87, 125, 0.02);
     padding: 2rem 1.5rem;
 }
 
-.top-justifications-card .top-justifications-header h2{
+.top-justifications-card .top-justifications-header h2 {
     font-weight: bold;
     font-size: 26px;
 }
-.top-justifications-card .top-justifications-header p{
+
+.top-justifications-card .top-justifications-header p {
     font-size: 16px;
     color: $grey-primary-light;
 }
 
-.top-justification-item{
+.top-justification-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -651,28 +658,31 @@ select:-webkit-autofill {
     border-bottom-color: $grey-primary-light;
     padding-bottom: 12px;
 }
-.top-justification-item-left{
+
+.top-justification-item-left {
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
-.item-left-text h4{
+.item-left-text h4 {
     margin-bottom: 0;
     font-weight: bold;
     font-size: 16px;
 }
-.item-left-text p{
+
+.item-left-text p {
     font-size: 16px;
     margin-bottom: 0;
 }
-.item-right-text p{
+
+.item-right-text p {
     font-size: 16px;
     color: $grey-primary-light;
     margin-bottom: 0;
 }
 
-.separator{
+.separator {
     margin: 1rem 0;
     border-bottom: 1px solid;
     height: 0;
@@ -680,14 +690,16 @@ select:-webkit-autofill {
     border-bottom-style: dashed;
     border-bottom-color: $grey-primary-light;
 }
-.justifications-colors{
+
+.justifications-colors {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     column-gap: 15px;
     padding: 6px;
 }
-.picker{
+
+.picker {
     height: 20px;
     width: 20px;
     border-radius: 5px;
@@ -696,7 +708,8 @@ select:-webkit-autofill {
     justify-content: center;
     align-items: center;
 }
-.header-content{
+
+.header-content {
     display: flex;
     justify-content: space-between;
 }

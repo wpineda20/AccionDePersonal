@@ -6,6 +6,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 use App\Models\HistoryPersonnelAction;
 use App\Models\PersonnelAction;
+use Http;
 use Illuminate\Http\Request;
 use Storage;
 use Str;
@@ -43,10 +44,10 @@ class HistoryPersonnelActionRepository
         ]);
     }
 
-    public function createFile(Request $request): String
+    public function createFile(Request $request, $apId): array
     {
         //Generate pdf
-        $fileName = 'accion-de-personal-' . Str::random(5) . '.pdf';
+        $fileName = "ap-$apId.pdf";
 
         $path = 'public/personnel_actions/' . $fileName;
 
@@ -54,29 +55,31 @@ class HistoryPersonnelActionRepository
 
         $content = $pdf->download()->getOriginalContent();
 
-        Storage::put($path, $content);
-
-        $url = Storage::url($path);
-
-        return asset($url);
+        return [
+            'name' => $fileName,
+            'content' => $content,
+        ];
     }
 
-    public function signFile()
+    public function signFile($fileContent, $fileName, $email, $visibleSign, $positionX, $positionY)
     {
-        // try {
-        //     $response = Http::dd()->post(
-        //         "https://apilogin",
-        //         [
-        //             'file' => $content,
-        //             'user_id' => $personnelAction->user_id,
-        //             'coordinatesX' => '',
-        //             'coordinatesY' => '',
-        //         ]
-        //     )->throw()->json();
 
-        //     return $response;
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+        try {
+            $response = Http::attach(
+                'document',
+                $fileContent,
+                $fileName
+            )
+                ->post('https://dev.login.cultura.gob.sv/api/sign/document', [
+                    'email' => $email,
+                    'visibleSign' => $visibleSign,
+                    'positionX' => $positionX,
+                    'positionY' => $positionY,
+                ]);
+
+            return $response->json();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
