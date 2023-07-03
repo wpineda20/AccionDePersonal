@@ -20,7 +20,7 @@
                   {{ item.icon }}
                 </v-icon>
                 <span> {{ item.total }} </span>
-                <p class="mb-0">{{ item.title }}</p>
+                <p class="mb-0" >{{ item.title }}</p>
               </div>
             </div>
           </div>

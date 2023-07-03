@@ -14,13 +14,13 @@
 
       <!-- filters -->
       <div class="container-fluid pb-4 pt-4">
-        <!-- <v-row>
+        <v-row>
           <v-tabs grow background-color="transparent">
-            <v-tab @click="filter = 'Pediente autorización'">Pendiente de autorización</v-tab>
+            <v-tab @click="filter = 'Pediente autorización'">Pendiente autorización</v-tab>
             <v-tab @click="filter = 'Procesada'">Procesadas</v-tab>
             <v-tab @click="filter = 'Rechazada'">Rechazadas</v-tab>
           </v-tabs>
-        </v-row> -->
+        </v-row>
       </div>
       <!-- filters -->
 
@@ -187,6 +187,7 @@ export default {
       editedIndex: -1,
       title: "",
       totalItems: 0,
+      total: 0,
       maxRemark: false,
       options: {},
       editedItem: {
