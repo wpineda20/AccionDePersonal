@@ -23,5 +23,5 @@ class Remark extends Model
         'deleted_at',
     ];
 
-    public $timestamps = true;
+    public $timestamps = false;
 }

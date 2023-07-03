@@ -712,5 +712,16 @@ select:-webkit-autofill {
 .header-content {
     display: flex;
     justify-content: space-between;
+}
 
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .header-content {
+            display: flex;
+            flex-direction: column;
+        }
+    .header-content-item > .btn-normal{
+        width: 100%;
+    }
 }
