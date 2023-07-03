@@ -14,13 +14,13 @@
 
       <!-- filters -->
       <div class="container-fluid pb-4 pt-4">
-        <v-row>
+        <!-- <v-row>
           <v-tabs grow background-color="transparent">
             <v-tab @click="filter = 'Pediente autorización'">Pendiente de autorización</v-tab>
             <v-tab @click="filter = 'Procesada'">Procesadas</v-tab>
             <v-tab @click="filter = 'Rechazada'">Rechazadas</v-tab>
           </v-tabs>
-        </v-row>
+        </v-row> -->
       </div>
       <!-- filters -->
 
@@ -235,6 +235,7 @@ export default {
       redirectSessionFinished: false,
       alertTimeOut: 0,
       actualUser: {},
+      filter: "Pediente autorización",
     };
   },
 

@@ -157,18 +157,13 @@ class PersonnelActionController extends Controller
         $personnelAction->total_days = $request->total_days;
         $personnelAction->justification = $request->justification;
         $personnelAction->current_year = $request->current_year;
-        // $personnelAction->status_id = 1;
         $personnelAction->justification_file = $justification_file;
 
         $personnelAction->save();
 
-        //Create history personnel action status
-        HistoryPersonnelAction::insert([
-            'personnel_action_id' => $personnelAction->id,
-            'user_id' => auth()->user()->id,
-            'status_id' => 2, // New state as pending of authorization
-            'update_date' => now(),
-        ]);
+        $createdFile = $this->historyPersonnelActionRepository->createFile($request);
+
+        $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $createdFile);
 
         return response()->json([
             "status" => 200,
@@ -341,13 +336,14 @@ class PersonnelActionController extends Controller
         $personnelActionStatus->save();
 
         //create remark if exists
-        if (!empty($request->data)) {
+        if (!empty($request->data && $request->status == 'Observada')) {
+
             Remark::where('personnel_action_id', $request->id)->delete();
 
             foreach ($request->data as $value) {
 
                 Remark::insert([
-                    'observation' => $value['observation'] . ' - observada por: ' . auth()->user()->name,
+                    'observation' => 'Observada por ' . auth()->user()->name . ': ' . $value['observation'],
                     'personnel_action_id' => $request->id,
                     'status' => $value['status'] == "No Corregida" ? 0 : 1,
                 ]);

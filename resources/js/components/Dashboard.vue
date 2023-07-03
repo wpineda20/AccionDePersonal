@@ -38,7 +38,8 @@
                 <p class="pb-0">Últimas 5 acciones de personal generadas.</p>
               </div>
               <div class="header-content-item">
-                <v-btn href="/personnelAction" class="mb-2 btn-normal" rounded>
+                <v-btn href="/personnelAction" class="mb-2 btn-normal" style="background-color: #2d52a8 !important;"
+                  rounded>
                   <v-icon left> mdi-plus </v-icon> Crear solicitud
                 </v-btn>
               </div>
@@ -68,7 +69,7 @@
             <!-- No Item -->
             <div v-if="records.length == 0 && !loading" class="">
               <h4 class="fw-bold text-center">
-                Aún no se registrado ninguna acción de personal.
+                No se ha registrado ninguna acción de personal.
               </h4>
             </div>
             <!-- No Item -->
@@ -250,6 +251,8 @@ export default {
       let yAxis = chart.yAxes.push(
         am5xy.ValueAxis.new(root, {
           maxDeviation: 0.3,
+          maxPrecision: 0,
+          strictMinMax: true,
           renderer: am5xy.AxisRendererY.new(root, {
             strokeOpacity: 0.1,
           }),
@@ -277,6 +280,7 @@ export default {
         cornerRadiusTR: 5,
         strokeOpacity: 0,
       });
+
       series.columns.template.adapters.add("fill", function (fill, target) {
         return chart.get("colors").getIndex(series.columns.indexOf(target));
       });

@@ -40,6 +40,7 @@ return new class extends Migration
             $table->date('execution_effective_date')->nullable();
             $table->string('execution_from')->nullable();
             $table->string('execution_to')->nullable();
+            $table->string('note')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
