@@ -13,7 +13,7 @@ use Str;
 
 class HistoryPersonnelActionRepository
 {
-    public function create(PersonnelAction $personnelAction, $statusId): void
+    public function create(PersonnelAction $personnelAction, int $statusId): void
     {
         HistoryPersonnelAction::insert([
             'personnel_action_id' => $personnelAction->id,
@@ -24,7 +24,7 @@ class HistoryPersonnelActionRepository
         ]);
     }
 
-    public function advanceAp(PersonnelAction $personnelAction, $statusId, $createdFile): void
+    public function advanceAp(PersonnelAction $personnelAction, int $statusId, $createdFile = null): void
     {
         // Deactivate the current history action
         HistoryPersonnelAction::where([
@@ -44,7 +44,7 @@ class HistoryPersonnelActionRepository
         ]);
     }
 
-    public function createFile(Request $request, $apId): array
+    public function createFile(Request $request, int $apId): array
     {
         //Generate pdf
         $fileName = "ap-$apId.pdf";
@@ -61,7 +61,7 @@ class HistoryPersonnelActionRepository
         ];
     }
 
-    public function signFile($fileContent, $fileName, $email, $visibleSign, $positionX, $positionY)
+    public function signFile(String $fileContent, String $fileName, String $email, bool $visibleSign, int $positionX, int $positionY)
     {
 
         try {

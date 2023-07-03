@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 use App\Models\PersonnelAction;
 use App\Models\Remark;
 use App\Models\Status;
@@ -10,9 +12,6 @@ use App\Models\HistoryPersonnelAction;
 
 use App\Repositories\HistoryPersonnelActionRepository;
 use App\Repositories\PersonnelActionRepository;
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 use Str;
 use Encrypt;
@@ -86,11 +85,9 @@ class PersonnelActionController extends Controller
 
         if ($validation['total'] > 0) {
             return response()->json([
-                'success' => false,
-                'status' => 500,
                 'message' => $validation['message'],
                 'state' => 'fail',
-            ]);
+            ], 400);
         }
 
         //Create personnel action
@@ -133,7 +130,7 @@ class PersonnelActionController extends Controller
 
 
     /**
-     * Update the specified resource in storage.
+     * Updates the information of the AP.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\PersonnelAction  $personnelAction
@@ -168,7 +165,7 @@ class PersonnelActionController extends Controller
 
         $personnelAction->save();
 
-        $createdFile = $this->historyPersonnelActionRepository->createFile($request);
+        $createdFile = $this->historyPersonnelActionRepository->createFile($request, $personnelAction->id);
 
         $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $createdFile);
 
@@ -300,7 +297,7 @@ class PersonnelActionController extends Controller
 
 
     /**
-     * Set personnel action status.
+     * Only updates the status but no the information of the ap.
      *
      * @param  \App\Models\PersonnelAction  $personnelAction
      * @return \Illuminate\Http\Response
