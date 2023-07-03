@@ -71,17 +71,6 @@
       </div>
       <!-- radio group -->
 
-      <!-- radio alert -->
-      <!-- <div
-        v-if="period_by == ''"
-        style="display: flex; justify-content: center; align-items: center"
-      >
-        <p class="mt-2 text-center orange-text">
-          <i class="material-icons">error_outline</i> Campo requerido.
-        </p>
-      </div> -->
-      <!-- radio alert -->
-
       <!-- hours col -->
       <v-col cols="12" sm="12" md="12" v-show="editedItem.period_by == 'hours'">
         <h6 class="text-center fw-bold">HORAS:</h6>
@@ -339,7 +328,7 @@ export default {
       execution_effective_date: "",
       execution_from: "",
       execution_to: "",
-      period_by: "hours",
+      period_by: "",
     },
     defaultItem: {
       employee_name: "",
@@ -366,7 +355,7 @@ export default {
       execution_effective_date: "",
       execution_from: "",
       execution_to: "",
-      period_by: "hours",
+      period_by: "",
     },
   }),
 

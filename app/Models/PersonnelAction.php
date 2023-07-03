@@ -42,6 +42,7 @@ class PersonnelAction extends Model
         'execution_effective_date',
         'execution_from',
         'execution_to',
+        'note',
         'deleted_at',
         'created_at',
         'updated_at',

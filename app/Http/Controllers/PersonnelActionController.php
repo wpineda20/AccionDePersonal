@@ -157,18 +157,13 @@ class PersonnelActionController extends Controller
         $personnelAction->total_days = $request->total_days;
         $personnelAction->justification = $request->justification;
         $personnelAction->current_year = $request->current_year;
-        // $personnelAction->status_id = 1;
         $personnelAction->justification_file = $justification_file;
 
         $personnelAction->save();
 
-        //Create history personnel action status
-        HistoryPersonnelAction::insert([
-            'personnel_action_id' => $personnelAction->id,
-            'user_id' => auth()->user()->id,
-            'status_id' => 2, // New state as pending of authorization
-            'update_date' => now(),
-        ]);
+        $createdFile = $this->historyPersonnelActionRepository->createFile($request);
+
+        $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $createdFile);
 
         return response()->json([
             "status" => 200,
@@ -341,13 +336,14 @@ class PersonnelActionController extends Controller
         $personnelActionStatus->save();
 
         //create remark if exists
-        if (!empty($request->data)) {
+        if (!empty($request->data && $request->status == 'Observada')) {
+
             Remark::where('personnel_action_id', $request->id)->delete();
 
             foreach ($request->data as $value) {
 
                 Remark::insert([
-                    'observation' => $value['observation'] . ' - observada por: ' . auth()->user()->name,
+                    'observation' => 'Observada por ' . auth()->user()->name . ': ' . $value['observation'],
                     'personnel_action_id' => $request->id,
                     'status' => $value['status'] == "No Corregida" ? 0 : 1,
                 ]);
@@ -430,5 +426,88 @@ class PersonnelActionController extends Controller
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Total by Justifications. 
+     *
+     * @param  \App\Models\PersonnelAction  $personnelAction
+     * @return \Illuminate\Http\Response
+     */
+    public function personnelActionsByJustifications(Request $request)
+    {
+        $justificationA = $this->personnelActionRepository->countByJustification(auth()->user()->id, 1);
+        $justificationB = $this->personnelActionRepository->countByJustification(auth()->user()->id, 2);
+        $justificationC = $this->personnelActionRepository->countByJustification(auth()->user()->id, 3);
+        $justificationD = $this->personnelActionRepository->countByJustification(auth()->user()->id, 4);
+        $justificationE = $this->personnelActionRepository->countByJustification(auth()->user()->id, 5);
+        $justificationF = $this->personnelActionRepository->countByJustification(auth()->user()->id, 6);
+        $justificationG = $this->personnelActionRepository->countByJustification(auth()->user()->id, 7);
+        $justificationH = $this->personnelActionRepository->countByJustification(auth()->user()->id, 8);
+        $justificationI = $this->personnelActionRepository->countByJustification(auth()->user()->id, 9);
+        $justificationJ = $this->personnelActionRepository->countByJustification(auth()->user()->id, 10);
+        $justificationK = $this->personnelActionRepository->countByJustification(auth()->user()->id, 11);
+        $justificationL = $this->personnelActionRepository->countByJustification(auth()->user()->id, 12);
+        $justificationM = $this->personnelActionRepository->countByJustification(auth()->user()->id, 13);
+
+        return response()->json(
+            [
+                "message" => "Registros obtenidos correctamente.",
+                "data" => [
+                    [
+                        'letter' => 'A',
+                        'value' => $justificationA,
+                    ],
+                    [
+                        'letter' => 'B',
+                        'value' => $justificationB,
+                    ],
+                    [
+                        'letter' => 'C',
+                        'value' => $justificationC,
+                    ],
+                    [
+                        'letter' => 'D',
+                        'value' => $justificationD,
+                    ],
+                    [
+                        'letter' => 'E',
+                        'value' => $justificationE,
+                    ],
+                    [
+                        'letter' => 'F',
+                        'value' => $justificationF,
+                    ],
+                    [
+                        'letter' => 'G',
+                        'value' => $justificationG,
+                    ],
+                    [
+                        'letter' => 'H',
+                        'value' => $justificationH,
+                    ],
+                    [
+                        'letter' => 'I',
+                        'value' => $justificationI,
+                    ],
+                    [
+                        'letter' => 'J',
+                        'value' => $justificationJ,
+                    ],
+                    [
+                        'letter' => 'K',
+                        'value' => $justificationK,
+                    ],
+                    [
+                        'letter' => 'L',
+                        'value' => $justificationL,
+                    ],
+                    [
+                        'letter' => 'M',
+                        'value' => $justificationM,
+                    ],
+                ],
+            ]
+        );
     }
 }

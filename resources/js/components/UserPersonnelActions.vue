@@ -16,7 +16,7 @@
       <!-- filters -->
       <div class="container-fluid pb-4 pt-4">
         <v-row>
-          <v-tabs grow background-color="transparent">
+          <v-tabs show-arrows grow background-color="transparent">
             <v-tab @click="filter = 'Pediente autorización'">Solicitadas</v-tab>
             <v-tab @click="filter = 'Observada'">Observadas</v-tab>
             <v-tab @click="filter = 'Rechazada'">Rechazadas</v-tab>
