@@ -391,7 +391,7 @@ class PersonnelActionController extends Controller
             "message" => "Registros obtenidos correctamente.",
             "data" => [
                 [
-                    'title' => 'En autorización',
+                    'title' => 'Pediente autorización',
                     'icon' => 'mdi-file-clock',
                     'total' => $pendingAuthorization,
                 ],
@@ -402,7 +402,7 @@ class PersonnelActionController extends Controller
                 ],
                 [
                     'title' => 'Autorizadas',
-                    'icon' => 'mdi-file-edit',
+                    'icon' => 'mdi-file-eye',
                     'total' => $authorized,
                 ],
                 [

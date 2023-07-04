@@ -1,54 +1,24 @@
 <template>
   <div data-app>
-    <alert-time-out
-      :redirect="redirectSessionFinished"
-      @redirect="updateTimeOut($event)"
-    />
-    <alert
-      :text="textAlert"
-      :event="alertEvent"
-      :show="showAlert"
-      @show-alert="updateAlert($event)"
-      class="mb-2"
-    />
+    <alert-time-out :redirect="redirectSessionFinished" @redirect="updateTimeOut($event)" />
+    <alert :text="textAlert" :event="alertEvent" :show="showAlert" @show-alert="updateAlert($event)" class="mb-2" />
     <v-card class="p-3">
       <v-row>
         <v-col cols="12" sm="12" md="4" lg="4" xl="4">
           <h2 style="margin-left: 15px">Justificaciones</h2>
         </v-col>
         <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
-          <v-btn
-            rounded
-            @click="addRecord()"
-            class="mb-2 btn-normal no-uppercase"
-            title="Agregar"
-          >
+          <v-btn rounded @click="addRecord()" class="mb-2 btn-normal no-uppercase" title="Agregar">
             Agregar
           </v-btn>
         </v-col>
         <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
-          <v-text-field
-            class=""
-            dense
-            outlined
-            label="Buscar"
-            type="text"
-            v-model="options.search"
-          ></v-text-field>
+          <v-text-field class="" dense outlined label="Buscar" type="text" v-model="options.search"></v-text-field>
         </v-col>
       </v-row>
-      <v-data-table
-        v-model="selected"
-        :single-select="false"
-        :search="options.search"
-        :headers="headers"
-        :items="recordsFiltered"
-        :options.sync="options"
-        :loading="loading"
-        item-key="id"
-        sort-by="id"
-        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
-      >
+      <v-data-table v-model="selected" :single-select="false" :search="options.search" :headers="headers"
+        :items="recordsFiltered" :options.sync="options" :loading="loading" item-key="id" sort-by="id"
+        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }">
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">
             mdi-pencil
@@ -77,14 +47,8 @@
             <v-row class="pt-3">
               <!-- justification_name -->
               <v-col cols="12" sm="12" md="12">
-                <base-text-area
-                  label="Justificación"
-                  v-model="$v.editedItem.justification_name.$model"
-                  :validation="$v.editedItem.justification_name"
-                  validationTextType="none"
-                  :rows="6"
-                  counter
-                />
+                <base-text-area label="Justificación" v-model="$v.editedItem.justification_name.$model"
+                  :validation="$v.editedItem.justification_name" validationTextType="none" :rows="6" counter />
                 <div style="display: flex; justify-content: flex-end">
                   <span class="">(Máximo 500 caracteres)</span>
                 </div>
@@ -92,31 +56,18 @@
               <!-- justification_name -->
               <!-- valid_days -->
               <v-col cols="12" sm="12" md="12">
-                <base-input
-                  label="Días de validez (Opcional)"
-                  v-model="$v.editedItem.valid_days.$model"
-                  :validation="$v.editedItem.valid_days"
-                  validationTextType="none"
-                  type="number"
-                />
+                <base-input label="Días de validez (Opcional)" v-model="$v.editedItem.valid_days.$model"
+                  :validation="$v.editedItem.valid_days" validationTextType="none" type="number" />
               </v-col>
               <!-- valid_days -->
             </v-row>
             <!-- Form -->
             <v-row>
               <v-col align="center">
-                <v-btn
-                  color="btn-normal no-uppercase mt-3"
-                  rounded
-                  @click="save"
-                >
+                <v-btn color="btn-normal no-uppercase mt-3" rounded @click="save">
                   Guardar
                 </v-btn>
-                <v-btn
-                  color="btn-normal-close no-uppercase mt-3"
-                  rounded
-                  @click="close"
-                >
+                <v-btn color="btn-normal-close no-uppercase mt-3" rounded @click="close">
                   Cancelar
                 </v-btn>
               </v-col>
@@ -136,17 +87,9 @@
           </h1>
           <v-row>
             <v-col align="center">
-              <v-btn
-                color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
-                rounded
-                @click="deleteItemConfirm"
-                >Confirmar</v-btn
-              >
-              <v-btn
-                color="btn-normal-close no-uppercase mt-3 mb-3"
-                rounded
-                @click="closeDelete"
-              >
+              <v-btn color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
+                @click="deleteItemConfirm">Confirmar</v-btn>
+              <v-btn color="btn-normal-close no-uppercase mt-3 mb-3" rounded @click="closeDelete">
                 Cancelar
               </v-btn>
             </v-col>

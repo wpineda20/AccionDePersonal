@@ -1,54 +1,24 @@
 <template>
   <div data-app>
-    <alert-time-out
-      :redirect="redirectSessionFinished"
-      @redirect="updateTimeOut($event)"
-    />
-    <alert
-      :text="textAlert"
-      :event="alertEvent"
-      :show="showAlert"
-      @show-alert="updateAlert($event)"
-      class="mb-2"
-    />
+    <alert-time-out :redirect="redirectSessionFinished" @redirect="updateTimeOut($event)" />
+    <alert :text="textAlert" :event="alertEvent" :show="showAlert" @show-alert="updateAlert($event)" class="mb-2" />
     <v-card class="p-3">
       <v-row>
         <v-col cols="12" sm="12" md="4" lg="4" xl="4">
           <h2 style="margin-left: 15px">Dependencias</h2>
         </v-col>
         <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
-          <v-btn
-            rounded
-            @click="addRecord()"
-            class="mb-2 btn-normal no-uppercase"
-            title="Agregar"
-          >
+          <v-btn rounded @click="addRecord()" class="mb-2 btn-normal no-uppercase" title="Agregar">
             Agregar
           </v-btn>
         </v-col>
         <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
-          <v-text-field
-            class=""
-            dense
-            outlined
-            label="Buscar"
-            type="text"
-            v-model="options.search"
-          ></v-text-field>
+          <v-text-field class="" dense outlined label="Buscar" type="text" v-model="options.search"></v-text-field>
         </v-col>
       </v-row>
-      <v-data-table
-        v-model="selected"
-        :single-select="false"
-        :search="options.search"
-        :headers="headers"
-        :items="recordsFiltered"
-        :options.sync="options"
-        :loading="loading"
-        item-key="id"
-        sort-by="id"
-        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
-      >
+      <v-data-table v-model="selected" :single-select="false" :search="options.search" :headers="headers"
+        :items="recordsFiltered" :options.sync="options" :loading="loading" item-key="id" sort-by="id"
+        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }">
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">
             mdi-pencil
@@ -77,36 +47,22 @@
             <v-row class="pt-3">
               <!-- dependency_name -->
               <v-col cols="12" sm="12" md="12">
-                <base-input
-                  label="Dependencia"
-                  v-model="$v.editedItem.dependency_name.$model"
-                  :validation="$v.editedItem.dependency_name"
-                  validationTextType="none"
-                />
+                <base-input label="Dependencia" v-model="$v.editedItem.dependency_name.$model"
+                  :validation="$v.editedItem.dependency_name" validationTextType="none" />
               </v-col>
               <!-- dependency_name -->
 
               <!-- superior_dependency -->
               <v-col cols="12" sm="12" md="12">
-                <base-input
-                  label="Jefe"
-                  v-model="$v.editedItem.superior_dependency.$model"
-                  :validation="$v.editedItem.superior_dependency"
-                  validationTextType="none"
-                />
+                <base-input label="Jefe" v-model="$v.editedItem.superior_dependency.$model"
+                  :validation="$v.editedItem.superior_dependency" validationTextType="none" />
               </v-col>
               <!-- superior_dependency -->
 
               <!-- address -->
               <v-col cols="12" sm="12" md="12">
-                <base-text-area
-                  label="Dirección"
-                  v-model="$v.editedItem.address.$model"
-                  :validation="$v.editedItem.address"
-                  validationTextType="none"
-                  :rows="5"
-                  counter
-                />
+                <base-text-area label="Dirección" v-model="$v.editedItem.address.$model"
+                  :validation="$v.editedItem.address" validationTextType="none" :rows="5" counter />
                 <div style="display: flex; justify-content: flex-end">
                   <span class="">(Máximo 500 caracteres)</span>
                 </div>
@@ -116,18 +72,10 @@
             <!-- Form -->
             <v-row>
               <v-col align="center">
-                <v-btn
-                  color="btn-normal no-uppercase mt-3"
-                  rounded
-                  @click="save"
-                >
+                <v-btn color="btn-normal no-uppercase mt-3" rounded @click="save">
                   Guardar
                 </v-btn>
-                <v-btn
-                  color="btn-normal-close no-uppercase mt-3"
-                  rounded
-                  @click="close"
-                >
+                <v-btn color="btn-normal-close no-uppercase mt-3" rounded @click="close">
                   Cancelar
                 </v-btn>
               </v-col>
@@ -147,17 +95,9 @@
           </h1>
           <v-row>
             <v-col align="center">
-              <v-btn
-                color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
-                rounded
-                @click="deleteItemConfirm"
-                >Confirmar</v-btn
-              >
-              <v-btn
-                color="btn-normal-close no-uppercase mt-3 mb-3"
-                rounded
-                @click="closeDelete"
-              >
+              <v-btn color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
+                @click="deleteItemConfirm">Confirmar</v-btn>
+              <v-btn color="btn-normal-close no-uppercase mt-3 mb-3" rounded @click="closeDelete">
                 Cancelar
               </v-btn>
             </v-col>
@@ -182,7 +122,6 @@ export default {
       dialogDelete: false,
       headers: [
         { text: "DEPENDENCIA", value: "dependency_name" },
-        { text: "JEFE", value: "superior_dependency" },
         { text: "DIRECCIÓN", value: "address" },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
