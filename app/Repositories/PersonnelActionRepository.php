@@ -134,4 +134,13 @@ class PersonnelActionRepository
             ->where('personnel_action.justification_type_id', $justificationId)
             ->count();
     }
+
+    public function getInfo(int $apId)
+    {
+        return PersonnelAction::select('personnel_action.*', 'u.*', 'jt.*', 'personnel_action.id as id', 'u.name as name')
+            ->where('personnel_action.id', $apId)
+            ->join('users as u', 'personnel_action.user_id', 'u.id')
+            ->join('justification_type as jt', 'personnel_action.justification_type_id', 'jt.id')
+            ->first();
+    }
 }

@@ -29,7 +29,7 @@ return [
     | The user URI to be used for the login.
     |
     */
-    'user_url' => 'https://login.cultura.gob.sv/api/user',
+    'user_url' => 'https://login.cultura.gob.sv/api/userInfo',
 
 
 ];

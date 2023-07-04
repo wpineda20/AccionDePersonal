@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('last_name')->nullable();
             $table->string('position_signature')->nullable();
             $table->string('email')->unique();
-            $table->foreignId('dependency_id')->constrained('dependency');
+            $table->string('dependency_name');
             $table->foreignId('inmediate_superior_id')->nullable()->constrained('users');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();

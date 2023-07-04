@@ -1,22 +1,58 @@
 <template>
   <div data-app>
-    <alert :text="textAlert" :event="alertEvent" :show="showAlert" @show-alert="updateAlert($event)" class="mb-2" />
+    <alert
+      :text="textAlert"
+      :event="alertEvent"
+      :show="showAlert"
+      @show-alert="updateAlert($event)"
+      class="mb-2"
+    />
 
     <v-card class="p-3">
       <v-row>
-        <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+        <v-col
+          cols="12"
+          sm="12"
+          md="4"
+          lg="4"
+          xl="4"
+        >
           <h2 style="margin-left: 15px">Acciones de Personal</h2>
         </v-col>
-        <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end"> </v-col>
-        <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
-          <v-text-field dense outlined label="Buscar" type="text" v-model="options.search"></v-text-field>
+        <v-col
+          cols="4"
+          sm="12"
+          md="4"
+          lg="4"
+          xl="4"
+          align="end"
+        > </v-col>
+        <v-col
+          cols="12"
+          sm="12"
+          md="12"
+          lg="4"
+          xl="4"
+          class="pl-0 pb-0 pr-0"
+        >
+          <v-text-field
+            dense
+            outlined
+            label="Buscar"
+            type="text"
+            v-model="options.search"
+          ></v-text-field>
         </v-col>
       </v-row>
 
       <!-- filters -->
       <div class="container-fluid pb-4 pt-4">
         <v-row>
-          <v-tabs show-arrows grow background-color="transparent">
+          <v-tabs
+            show-arrows
+            grow
+            background-color="transparent"
+          >
             <v-tab @click="filter = 'Pediente autorización'">Solicitadas</v-tab>
             <v-tab @click="filter = 'Observada'">Observadas</v-tab>
             <v-tab @click="filter = 'Rechazada'">Rechazadas</v-tab>
@@ -28,12 +64,27 @@
       <!-- filters -->
 
       <!-- datatable -->
-      <v-data-table :search="options.search" :headers="headers" :items="recordsFiltered" :options.sync="options"
-        :loading="loading" item-key="id" sort-by="id" :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }">
+      <v-data-table
+        :search="options.search"
+        :headers="headers"
+        :items="recordsFiltered"
+        :options.sync="options"
+        :loading="loading"
+        :server-items-length="total"
+        item-key="id"
+        sort-by="id"
+        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
+      >
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon small class="mr-2" @click="editItem(item)" v-bind="attrs" v-on="on">
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(item)"
+                v-bind="attrs"
+                v-on="on"
+              >
                 mdi-eye
               </v-icon>
             </template>
@@ -42,14 +93,21 @@
         </template>
 
         <template v-slot:no-data>
-          <a href="#" class="btn btn-normal-secondary no-decoration" @click="initialize">
+          <a
+            href="#"
+            class="btn btn-normal-secondary no-decoration"
+            @click="initialize"
+          >
             Reiniciar
           </a>
         </template>
       </v-data-table>
       <!-- datatable -->
     </v-card>
-    <v-dialog v-model="dialogShowPersonnelAction" max-width="70%">
+    <v-dialog
+      v-model="dialogShowPersonnelAction"
+      max-width="70%"
+    >
       <v-card color="h-100">
         <v-container>
           <div class="header-dialog">
@@ -62,17 +120,26 @@
             </v-icon>
           </div>
           <v-container>
-            <show-personnel-action-form :editedItem="$v.editedItem" :justifications="justifications"
-              :enableInputs="editedItem.status_name == 'Observada'" :showUpdateBtn="editedItem.status_name == 'Observada'"
-              @update-form="updateForm()" @close-form="closeFormActions()" @file-size-exceeded="
+            <show-personnel-action-form
+              :editedItem="$v.editedItem"
+              :justifications="justifications"
+              :enableInputs="editedItem.status_name == 'Observada'"
+              :showUpdateBtn="editedItem.status_name == 'Observada'"
+              @update-form="updateForm()"
+              @close-form="closeFormActions()"
+              @file-size-exceeded="
                 updateAlert(
                   true,
                   'El archivo no debe superar los 5 MB.',
                   'fail'
                 )
-                " />
+                "
+            />
             <!-- Remarks -->
-            <h5 class="fw-bold pt-3 pb-2 mb-2" style="border-bottom: 1px solid lightgray">
+            <h5
+              class="fw-bold pt-3 pb-2 mb-2"
+              style="border-bottom: 1px solid lightgray"
+            >
               OBSERVACIONES
             </h5>
             <v-simple-table class="mt-2">
@@ -84,7 +151,10 @@
                 </tr>
               </thead>
               <tbody v-if="editedItem.remarks.length > 0">
-                <tr v-for="(remark, index) in editedItem.remarks" :key="index">
+                <tr
+                  v-for="(remark, index) in editedItem.remarks"
+                  :key="index"
+                >
                   <td>{{ remark.observation }}</td>
                   <td>{{ remark.status }}</td>
                   <!-- <td>
@@ -112,9 +182,18 @@
             <!-- Remarks -->
             <!-- buttons -->
             <v-row>
-              <v-col align="center" cols="12" sm="12" md="12">
-                <v-btn v-if="editedItem.status_name == 'Observada'" color="btn-normal no-uppercase" rounded
-                  @click="updateForm()">
+              <v-col
+                align="center"
+                cols="12"
+                sm="12"
+                md="12"
+              >
+                <v-btn
+                  v-if="editedItem.status_name == 'Observada'"
+                  color="btn-normal no-uppercase"
+                  rounded
+                  @click="updateForm()"
+                >
                   Actualizar
                 </v-btn>
               </v-col>
@@ -164,7 +243,7 @@ export default {
     debounce: 0,
     totalItems: 0,
     editedItem: {
-      employee_name: "",
+      name: "",
       position_signature: "",
       dependency_name: "",
       justification_name: "",
@@ -180,7 +259,7 @@ export default {
       remarks: [],
     },
     defaultItem: {
-      employee_name: "",
+      name: "",
       position_signature: "",
       dependency_name: "",
       justification_name: "",
@@ -225,7 +304,7 @@ export default {
 
   validations: {
     editedItem: {
-      employee_name: {
+      name: {
         required,
         minLength: minLength(1),
         maxLength: maxLength(500),

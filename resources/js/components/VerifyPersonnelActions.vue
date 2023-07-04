@@ -1,14 +1,42 @@
 <template>
   <div data-app>
-    <alert-time-out :redirect="redirectSessionFinished" @redirect="updateTimeOut($event)" />
-    <alert :text="textAlert" :event="alertEvent" :show="showAlert" @show-alert="updateAlert($event)" class="mb-2" />
+    <alert-time-out
+      :redirect="redirectSessionFinished"
+      @redirect="updateTimeOut($event)"
+    />
+    <alert
+      :text="textAlert"
+      :event="alertEvent"
+      :show="showAlert"
+      @show-alert="updateAlert($event)"
+      class="mb-2"
+    />
     <v-card class="p-3">
       <v-row>
-        <v-col cols="12" sm="12" md="8" lg="8" xl="8">
+        <v-col
+          cols="12"
+          sm="12"
+          md="8"
+          lg="8"
+          xl="8"
+        >
           <h2 style="margin-left: 15px">Verificación de acciones de personal</h2>
         </v-col>
-        <v-col cols="12" sm="12" md="4" lg="4" xl="4" class="pl-0 pb-0 pr-0">
-          <v-text-field dense outlined label="Buscar" type="text" v-model="options.search"></v-text-field>
+        <v-col
+          cols="12"
+          sm="12"
+          md="4"
+          lg="4"
+          xl="4"
+          class="pl-0 pb-0 pr-0"
+        >
+          <v-text-field
+            dense
+            outlined
+            label="Buscar"
+            type="text"
+            v-model="options.search"
+          ></v-text-field>
         </v-col>
       </v-row>
 
@@ -24,13 +52,28 @@
       </div> -->
       <!-- filters -->
 
-      <v-data-table v-model="selected" :single-select="false" :search="options.search" :headers="headers"
-        :items="recordsFiltered" :options.sync="options" :loading="loading" item-key="id" sort-by="id"
-        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }">
+      <v-data-table
+        v-model="selected"
+        :single-select="false"
+        :search="options.search"
+        :headers="headers"
+        :items="recordsFiltered"
+        :options.sync="options"
+        :loading="loading"
+        item-key="id"
+        sort-by="id"
+        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
+      >
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon small class="mr-2" @click="verifyPersonnelAction(item)" v-bind="attrs" v-on="on">
+              <v-icon
+                small
+                class="mr-2"
+                @click="verifyPersonnelAction(item)"
+                v-bind="attrs"
+                v-on="on"
+              >
                 pending_actions
               </v-icon>
             </template>
@@ -38,13 +81,20 @@
           </v-tooltip>
         </template>
         <template v-slot:no-data>
-          <v-icon small class="mr-2" @click="initialize"> mdi-refresh </v-icon>
+          <v-icon
+            small
+            class="mr-2"
+            @click="initialize"
+          > mdi-refresh </v-icon>
         </template>
       </v-data-table>
     </v-card>
 
     <!-- Dialog -->
-    <v-dialog v-model="dialogActions" max-width="90%">
+    <v-dialog
+      v-model="dialogActions"
+      max-width="90%"
+    >
       <v-card class="h-100">
         <v-container>
           <div class="header-dialog">
@@ -59,8 +109,11 @@
 
           <!-- form -->
           <v-container>
-            <show-personnel-action-form :editedItem="$v.editedItem" :showObservations="true"
-              :justifications="justifications" />
+            <show-personnel-action-form
+              :editedItem="$v.editedItem"
+              :showObservations="true"
+              :justifications="justifications"
+            />
           </v-container>
           <!-- form -->
 
@@ -76,7 +129,11 @@
               :validation="$v.remark.observation" validationTextType="none" :rows="3"
               :disabled="editedItem.remarks.length > 0" />
             <!-- max remark alert -->
-            <div v-if="maxRemark" class="orange-text" style="display: flex; align-items: center">
+            <div
+              v-if="maxRemark"
+              class="orange-text"
+              style="display: flex; align-items: center"
+            >
               <i class="material-icons">error_outline</i>
               <span>El máximo de observaciones registradas es de 3.</span>
             </div>
@@ -96,14 +153,24 @@
               </tr>
             </thead>
             <tbody v-if="editedItem.remarks.length > 0">
-              <tr v-for="(remark, index) in editedItem.remarks" :key="index">
+              <tr
+                v-for="(remark, index) in editedItem.remarks"
+                :key="index"
+              >
                 <td>{{ remark.observation }}</td>
                 <td>{{ remark.status }}</td>
                 <td>
-                  <v-tooltip top v-if="remark.id">
+                  <v-tooltip
+                    top
+                    v-if="remark.id"
+                  >
                     <template v-slot:activator="{ on, attrs }">
-                      <v-icon @click="verifyRemark(remark)" :disabled="remark.status == 'Corregida'" v-on="on"
-                        v-bind="attrs">
+                      <v-icon
+                        @click="verifyRemark(remark)"
+                        :disabled="remark.status == 'Corregida'"
+                        v-on="on"
+                        v-bind="attrs"
+                      >
                         mdi-checkbox-marked-circle
                       </v-icon>
                     </template>
@@ -123,32 +190,50 @@
           <!-- Approve / Observe / Reject / Approve / Process -->
           <v-row>
             <v-col align="center">
-              <v-btn v-if="actualUser.role == 'Jefe' || actualUser.hasUsersInCharge"
-                color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded @click="updateStatus('Autorizada')"
+              <v-btn
+                v-if="actualUser.role == 'Jefe' || actualUser.hasUsersInCharge"
+                color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="updateStatus('Autorizada')"
                 :disabled="validateDisableAction('Observada') ||
                   validateDisableAction('No Corregida')
-                  ">
+                  "
+              >
                 Autorizar
               </v-btn>
-              <v-btn v-if="actualUser.role == 'Coordinador' ||
-                actualUser.role == 'Administrador' ||
-                actualUser.hasUsersInCharge
-                " color="btn-normal-close no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
-                @click="updateStatus('Observada')" :disabled="validateDisableAction('Observada') ||
+              <v-btn
+                v-if="actualUser.role == 'Coordinador' ||
+                  actualUser.role == 'Administrador' ||
+                  actualUser.hasUsersInCharge
+                  "
+                color="btn-normal-close no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="updateStatus('Observada')"
+                :disabled="validateDisableAction('Observada') ||
                   !validateDisableAction('No Corregida')
-                  ">
+                  "
+              >
                 Observar
               </v-btn>
-              <v-btn color="btn-normal-red no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded
-                @click="updateStatus('Rechazada')" :disabled="validateDisableAction('Observada') ||
+              <v-btn
+                color="btn-normal-red no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="updateStatus('Rechazada')"
+                :disabled="validateDisableAction('Observada') ||
                   validateDisableAction('No Corregida')
-                  ">
+                  "
+              >
                 Rechazar
               </v-btn>
-              <v-btn v-if="actualUser.role == 'RRHH' ||
-                actualUser.role == 'Administrador'
-                " color=" btn-normal-green
-              no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto" rounded @click="updateStatus('Finalizada')">
+              <v-btn
+                v-if="actualUser.role == 'RRHH' ||
+                  actualUser.role == 'Administrador'
+                  "
+                color=" btn-normal-green
+              no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="updateStatus('Finalizada')"
+              >
                 Finalizar
               </v-btn>
             </v-col>
@@ -183,7 +268,7 @@ export default {
       dialogDelete: false,
       headers: [
         { text: "FECHA DE SOLICITUD", value: "date_request_created" },
-        { text: "EMPLEADO", value: "employee_name" },
+        { text: "EMPLEADO", value: "name" },
         { text: "JUSTIFICACIÓN", value: "justification_name" },
         { text: "ESTADO", value: "status_name" },
         { text: "ACCIONES", value: "actions", sortable: false },
@@ -197,7 +282,7 @@ export default {
       maxRemark: false,
       options: {},
       editedItem: {
-        employee_name: "",
+        name: "",
         position_signature: "",
         dependency_name: "",
         justification_name: "",
@@ -213,7 +298,7 @@ export default {
         remarks: [],
       },
       defaultItem: {
-        employee_name: "",
+        name: "",
         position_signature: "",
         dependency_name: "",
         justification_name: "",
@@ -249,7 +334,7 @@ export default {
   // Validations
   validations: {
     editedItem: {
-      employee_name: {
+      name: {
         required,
         minLength: minLength(1),
         maxLength: maxLength(500),
@@ -644,8 +729,7 @@ export default {
   },
 };
 </script>
-<style scoped>
-.v-tabs-slider {
+<style scoped>.v-tabs-slider {
   background: #2d52a8 !important;
 }
 
