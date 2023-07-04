@@ -60,7 +60,7 @@ class PersonnelAction extends Model
     {
         return PersonnelAction::select(
             'personnel_action.*',
-            'u.name as employee_name',
+            'u.name as name',
             'u.position_signature',
             'd.dependency_name',
             'jt.justification_name',
@@ -88,7 +88,7 @@ class PersonnelAction extends Model
     {
         return PersonnelAction::select(
             'personnel_action.*',
-            'u.name as employee_name',
+            'u.name as name',
             'u.position_signature',
             'd.dependency_name',
             'jt.justification_name',

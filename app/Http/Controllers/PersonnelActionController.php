@@ -96,7 +96,8 @@ class PersonnelActionController extends Controller
         //Create first record with status requested
         $this->historyPersonnelActionRepository->create($personnelAction, 1);
 
-        $createdFile = $this->historyPersonnelActionRepository->createFile($request, $personnelAction->id);
+        $infoAp = $this->personnelActionRepository->getInfo($personnelAction->id);
+        $createdFile = $this->historyPersonnelActionRepository->createFile($infoAp, $personnelAction->id);
 
         //Send PDF information to login
         $signedFile = $this->historyPersonnelActionRepository->signFile(
@@ -104,12 +105,12 @@ class PersonnelActionController extends Controller
             $createdFile['name'],
             auth()->user()->email,
             'true',
-            20,
-            20
+            15,
+            27
         );
 
         //Create second record with status pending authorization and signed pdf
-        $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $signedFile['url']);
+        $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $signedFile['url'], auth()->user()->inmediate_superior_id);
 
         return response()->json([
             'success' => true,
@@ -167,7 +168,7 @@ class PersonnelActionController extends Controller
 
         $createdFile = $this->historyPersonnelActionRepository->createFile($request, $personnelAction->id);
 
-        $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $createdFile);
+        $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $createdFile, auth()->user()->id);
 
         return response()->json([
             "status" => 200,
@@ -206,7 +207,7 @@ class PersonnelActionController extends Controller
 
                 $registeredRecords =  PersonnelAction::select(
                     'personnel_action.*',
-                    'u.name as employee_name',
+                    'u.name as name',
                     'u.position_signature',
                     'u.inmediate_superior_id',
                     'd.dependency_name',
@@ -231,7 +232,7 @@ class PersonnelActionController extends Controller
 
                 $registeredRecords =  PersonnelAction::select(
                     'personnel_action.*',
-                    'u.name as employee_name',
+                    'u.name as name',
                     'u.position_signature',
                     'u.inmediate_superior_id',
                     'd.dependency_name',
@@ -258,7 +259,7 @@ class PersonnelActionController extends Controller
 
                 $registeredRecords =  PersonnelAction::select(
                     'personnel_action.*',
-                    'u.name as employee_name',
+                    'u.name as name',
                     'u.position_signature',
                     'u.inmediate_superior_id',
                     'd.dependency_name',
@@ -305,33 +306,42 @@ class PersonnelActionController extends Controller
 
     public function updateStatus(Request $request)
     {
-        //Update the lastest record on the history
-        $personnelActionActive = HistoryPersonnelAction::where([
-            'personnel_action_id' => $request->id,
-            'active' => 1,
-        ])->first();
+        $personnelAction = PersonnelAction::find($request->id);
 
-        $personnelActionActive->active = 0;
-        $personnelActionActive->save();
-
-        //create new record on the history record
-        $personnelActionStatus = new HistoryPersonnelAction();
-        $personnelActionStatus->personnel_action_id = $request->id;
-        $personnelActionStatus->user_id = auth()->user()->id;
+        $positions = $this->historyPersonnelActionRepository->calculatePositionOfSign($request->id);
+        // dd($positions);
 
         // When the user logged in can sen the ap to rrhh and the status
         if (auth()->user()->send_to_rrhh == 1 && $request->status == 'Autorizada') {
-            $personnelActionStatus->status_id = 5;
+            $statusId = 5;
+            $userId = auth()->user()->id;
+
+            //Send PDF information to login
+            $signedFile = $this->historyPersonnelActionRepository->updateSign(
+                $positions['url_file'],
+                auth()->user()->email,
+                'true',
+                $positions['positionX'],
+                $positions['positionY'],
+            );
         } else if ($request->status == 'Autorizada') {
-            $personnelActionStatus->user_id = auth()->user()->inmediate_superior_id;
-            $personnelActionStatus->status_id = 2;
+            $statusId = 2;
+            $userId = auth()->user()->inmediate_superior_id;
+
+            $signedFile = $this->historyPersonnelActionRepository->updateSign(
+                $positions['url_file'],
+                auth()->user()->email,
+                'true',
+                $positions['positionX'],
+                $positions['positionY'],
+            );
         } else {
-            $personnelActionStatus->status_id = Status::where('status_name', $request->status)->first()->id;
+            $userId = auth()->user()->id;
+            $statusId = Status::where('status_name', $request->status)->first()->id;
         }
 
-        $personnelActionStatus->active = 1;
-        $personnelActionStatus->url_file = $personnelActionActive->url_file;
-        $personnelActionStatus->save();
+        // Advance history
+        $this->historyPersonnelActionRepository->advanceAp($personnelAction, $statusId, $signedFile['url'],  $userId);
 
         //create remark if exists
         if (!empty($request->data && $request->status == 'Observada')) {
