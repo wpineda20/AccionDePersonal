@@ -183,11 +183,20 @@
             />
           </v-col>
           <!-- from_hour -->
-          
+
           <!-- total_hours -->
-          <v-col cols="12" sm="12" md="8" class="m-0 pb-3">
-            <base-input label="Total de horas" v-model="$v.editedItem.total_hours.$model"
-              :validation="$v.editedItem.total_hours" validationTextType="none" />
+          <v-col
+            cols="12"
+            sm="12"
+            md="8"
+            class="m-0 pb-3"
+          >
+            <base-input
+              label="Total de horas"
+              v-model="$v.editedItem.total_hours.$model"
+              :validation="$v.editedItem.total_hours"
+              validationTextType="none"
+            />
           </v-col>
           <!-- total_hours -->
           <!-- effective_date -->
@@ -252,9 +261,18 @@
           </v-col>
           <!-- from_date -->
           <!-- total_days -->
-          <v-col cols="12" sm="12" md="8" class="m-0 pb-3">
-            <base-input label="Total de días" v-model="$v.editedItem.total_days.$model"
-              :validation="$v.editedItem.total_days" validationTextType="none" />
+          <v-col
+            cols="12"
+            sm="12"
+            md="8"
+            class="m-0 pb-3"
+          >
+            <base-input
+              label="Total de días"
+              v-model="$v.editedItem.total_days.$model"
+              :validation="$v.editedItem.total_days"
+              validationTextType="none"
+            />
           </v-col>
           <!-- total_days -->
         </v-row>
@@ -282,9 +300,9 @@
           :rows="6"
           counter
         />
-        <p class="text-right">{{ $v.editedItem.justification.$model.length }} / 400</p>
+
         <div style="display: flex; justify-content: flex-end">
-          <span class="">(Máximo 400 caracteres)</span>
+          <p class="text-right">{{ $v.editedItem.justification.$model.length }} / 400</p>
         </div>
       </v-col>
       <!-- justification -->
@@ -524,8 +542,19 @@
 
       <!-- buttons -->
       <v-row>
-        <v-col align="center" cols="12" sm="12" md="12" class="">
-          <v-btn color="btn-normal no-uppercase" :disabled="loading" rounded @click="save()">
+        <v-col
+          align="center"
+          cols="12"
+          sm="12"
+          md="12"
+          class=""
+        >
+          <v-btn
+            color="btn-normal no-uppercase"
+            :disabled="loading"
+            rounded
+            @click="save()"
+          >
             Solicitar
           </v-btn>
 

@@ -1,26 +1,53 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr">
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    dir="ltr"
+>
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
 
     <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta
+        name="csrf-token"
+        content="{{ csrf_token() }}"
+    >
 
     <title>{{ config('app.name', 'Base') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ mix('js/manifest.js') }}" defer></script>
-    <script src="{{ mix('js/vendor.js') }}" defer></script>
-    <script src="{{ mix('js/app.js') }}" defer></script>
-    <script src="{{ asset('js/sidebar.js') }}" defer></script>
+    <script
+        src="{{ mix('js/manifest.js') }}"
+        defer
+    ></script>
+    <script
+        src="{{ mix('js/vendor.js') }}"
+        defer
+    ></script>
+    <script
+        src="{{ mix('js/app.js') }}"
+        defer
+    ></script>
+    <script
+        src="{{ asset('js/sidebar.js') }}"
+        defer
+    ></script>
 
     <!-- Styles -->
-    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <link
+        href="{{ mix('css/app.css') }}"
+        rel="stylesheet"
+    >
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('img/Favicon.png') }}">
+    <link
+        rel="icon"
+        href="{{ asset('img/Favicon.png') }}"
+    >
     @yield('css')
 
     @yield('header')
@@ -38,7 +65,10 @@
                 @auth
                 <!-- Home -->
                 <li class="text-center pb-1">
-                    <a href="{{ url('/home') }}" class="text-center">
+                    <a
+                        href="{{ url('/home') }}"
+                        class="text-center"
+                    >
                         <i class="material-icons md-18 mx-auto">dashboard</i>
                     </a>
                     <a href="{{ url('/home') }}">
@@ -48,7 +78,10 @@
                 <!-- Home -->
                 <!-- A.P -->
                 <li class="text-center pb-1">
-                    <a href="{{ url('/personnelAction') }}" class="text-center">
+                    <a
+                        href="{{ url('/personnelAction') }}"
+                        class="text-center"
+                    >
                         <i class="material-icons md-18 mx-auto">fact_check</i>
                     </a>
                     <a href="{{ url('/personnelAction') }}">
@@ -59,7 +92,10 @@
 
                 <!-- Mis A.P -->
                 <li class="text-center pb-1">
-                    <a href="{{ url('/userPersonnelActions') }}" class="text-center">
+                    <a
+                        href="{{ url('/userPersonnelActions') }}"
+                        class="text-center"
+                    >
                         <i class="material-icons md-18 mx-auto">assignment_ind</i>
                     </a>
                     <a href="{{ url('/userPersonnelActions') }}">
@@ -72,7 +108,10 @@
                 @if (auth()->user()->hasRole(['Administrador', 'Jefe', 'Coordinador', 'RRHH']) ||
                 auth()->user()->hasUsersInCharge())
                 <li class="text-center pb-1">
-                    <a href="{{ url('/verifyPersonnelActions') }}" class="text-center">
+                    <a
+                        href="{{ url('/verifyPersonnelActions') }}"
+                        class="text-center"
+                    >
                         <i class="material-icons md-18 mx-auto">verified_user</i>
                     </a>
                     <a href="{{ url('/verifyPersonnelActions') }}">
@@ -87,10 +126,16 @@
                 @if (auth()->user()->hasRole('Administrador') == 'Administrador')
                 <li>
                     <div class="icon-link pb-1">
-                        <a href="#" class="arrow text-center">
+                        <a
+                            href="#"
+                            class="arrow text-center"
+                        >
                             <i class="material-icons md-18 mx-auto">settings</i>
                         </a>
-                        <p class="link" style="margin-left:5px">Administración</p>
+                        <p
+                            class="link"
+                            style="margin-left:5px"
+                        >Administración</p>
                     </div>
                     <ul class="sub-menu">
                         <li><a href="{{ url('/justificationTypes') }}">Tipos justificación</a></li>
@@ -107,7 +152,10 @@
                 <!-- Login/Logout -->
                 @guest
                 <li class="text-center pb-1">
-                    <a href="{{ url('/login') }}" class="text-center">
+                    <a
+                        href="{{ url('/login') }}"
+                        class="text-center"
+                    >
                         <i class="material-icons md-18 mx-auto">login</i>
                     </a>
                     <a href="{{ url('/login') }}">
@@ -142,9 +190,12 @@
                             @endguest
 
                             <!-- Institution Name -->
-                            <div class=" col-sm-4 col-md-6 d-none d-md-block d-lg-block d-xl-block">
+                            <div class=" col-sm-4 col-md-4 d-none d-md-block d-lg-block d-xl-block">
                                 <div class="col-4 col-sm-12">
-                                    <a class="navbar-brand" href="{{ url('/home') }}">
+                                    <a
+                                        class="navbar-brand"
+                                        href="{{ url('/home') }}"
+                                    >
                                         <h3 class="pt-4 fw-bold color-secondary mb-0">Sistema de acciones
                                             de personal
                                         </h3>
@@ -156,8 +207,15 @@
                             <!-- Logo Brand -->
                             {{-- <div class=" col-sm-4 col-md-6 d-none d-md-block d-lg-block d-xl-block">
                                 <div class="col-4 col-sm-12 mb-2">
-                                    <a class="navbar-brand" href="{{ url('/') }}">
-                                        <img class="" src="/logos/Logo_GOES_horizontal_D.svg" style="max-width: 60%" />
+                                    <a
+                                        class="navbar-brand"
+                                        href="{{ url('/') }}"
+                                    >
+                                        <img
+                                            class=""
+                                            src="/logos/Logo_GOES_horizontal_D.svg"
+                                            style="max-width: 60%"
+                                        />
                                     </a>
                                 </div>
                             </div> --}}
@@ -165,25 +223,41 @@
 
                             @auth
                             <!-- Logout/UserName -->
-                            <div class="col-8 col-md-4 col-sm-6 col-lg-5"
-                                style="display: flex; justify-content: center; align-items:center">
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-md-12 p-0 text-end"
-                                        style="display: flex; justify-content: flex-end; align-items:start">
-                                        <span class="color-secondary" style="font-size: 16px;">
+                            <div
+                                class="col-6 col-md-7 col-sm-6 d-none d-md-block d-lg-block d-xl-block"
+                                style="display: flex; justify-content: center; align-items:center"
+                            >
+                                <div class="row pt-4">
+                                    <div
+                                        class="col-12 col-sm-12 col-md-12 p-0 text-end"
+                                        style="display: flex; justify-content: flex-end; align-items:start"
+                                    >
+                                        <span
+                                            class="color-secondary"
+                                            style="font-size: 16px;"
+                                        >
                                             {{ auth()->user()->name }}
                                         </span>
-                                        <span class="color-primary mx-1"><i class="material-icons"
-                                                style="text-align:center">person</i></span>
+                                        <span class="color-primary mx-1"><i
+                                                class="material-icons"
+                                                style="text-align:center"
+                                            >person</i></span>
                                     </div>
 
                                     <div class="col-12 col-sm-12 col-md-12 pb-0 pt-0 text-end">
-                                        <a href="{{ route('logout') }}" class="btn-logout"
-                                            onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                                        <a
+                                            href="{{ route('logout') }}"
+                                            class="btn-logout"
+                                            onclick="event.preventDefault();document.getElementById('logout-form').submit();"
+                                        >
                                             {{ __('Logout') }}
                                         </a>
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                            class="d-none">
+                                        <form
+                                            id="logout-form"
+                                            action="{{ route('logout') }}"
+                                            method="POST"
+                                            class="d-none"
+                                        >
                                             @csrf
                                         </form>
                                     </div>
