@@ -8,7 +8,6 @@ use App\Models\PersonnelAction;
 use App\Models\Remark;
 use App\Models\Status;
 use App\Models\JustificationType;
-use App\Models\HistoryPersonnelAction;
 
 use App\Repositories\HistoryPersonnelActionRepository;
 use App\Repositories\PersonnelActionRepository;
@@ -196,94 +195,24 @@ class PersonnelActionController extends Controller
      */
     public function verifyPersonnelActions(Request $request)
     {
-        //Getting the role
         $roles = auth()->user()->getRoleNames();
-        //Getting user info
         $userLogged = auth()->user();
 
-        if (isset($roles[0])) {
-            //Administrador
-            if ($roles[0] == "Administrador") {
-
-                $registeredRecords =  PersonnelAction::select(
-                    'personnel_action.*',
-                    'u.name as name',
-                    'u.position_signature',
-                    'u.inmediate_superior_id',
-                    'u.dependency_name',
-                    'jt.justification_name',
-                    's.status_name',
-                    'hpa.personnel_action_id',
-                    'hpa.active',
-                )
-                    ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
-                    ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
-                    ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
-                    ->join('status as s', 'hpa.status_id', '=', 's.id')
-                    // ->where('hpa.status_id', 2)
-                    ->where('hpa.active', 1)
-
-                    ->orderBy("personnel_action.date_request_created")
-                    ->get();
-            }
-            //Jefe
-            else if ($roles[0] == "Jefe" || auth()->user()->hasUsersInCharge()) {
-
-                $registeredRecords =  PersonnelAction::select(
-                    'personnel_action.*',
-                    'u.name as name',
-                    'u.position_signature',
-                    'u.inmediate_superior_id',
-                    'u.dependency_name',
-                    'jt.justification_name',
-                    's.status_name',
-                    'hpa.personnel_action_id',
-                    'hpa.active',
-                )
-                    ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
-                    ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
-                    ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
-                    ->join('status as s', 'hpa.status_id', '=', 's.id')
-                    // ->where('hpa.status_id', 2)
-                    ->where('hpa.active', 1)
-                    ->where('hpa.user_id', $userLogged->id) //If the logged-in user is the immediate superior.
-                    // ->where('u.dependency_name', $userLogged->dependency_name) //If the logged-in user belongs to the same dependency.
-
-                    ->orderBy("personnel_action.date_request_created")
-                    ->get();
-            }
-            //RRHH
-            else if ($roles[0] == "RRHH") {
-
-                $registeredRecords =  PersonnelAction::select(
-                    'personnel_action.*',
-                    'u.name as name',
-                    'u.position_signature',
-                    'u.inmediate_superior_id',
-                    'u.dependency_name',
-                    'jt.justification_name',
-                    's.status_name',
-                    'hpa.personnel_action_id',
-                    'hpa.active',
-                )
-                    ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
-                    ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
-                    ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
-                    ->join('status as s', 'hpa.status_id', '=', 's.id')
-                    ->where('hpa.status_id', 5)
-                    ->where('hpa.active', 1)
-                    ->orderBy("personnel_action.date_request_created")
-                    ->get();
-            }
-
-            foreach ($registeredRecords as $key => $value) {
-                $value->remarks = Remark::where('personnel_action_id', $value->id)->get();
-
-                foreach ($value->remarks as $remark) {
-                    $remark->status = ($remark->status == 0) ? "No Corregida" : "Corregida";
-                }
-            }
+        if ($roles[0] == "Administrador") {
+            $filters = ['hpa.active' => 1];
+        } else if ($roles[0] == "Jefe" || auth()->user()->hasUsersInCharge()) {
+            $filters = [
+                'hpa.active' => 1,
+                'hpa.user_id' => $userLogged->id,
+            ];
+        } else if ($roles[0] == "RRHH") {
+            $filters = [
+                'hpa.status_id' => 5,
+                'hpa.active' => 1,
+            ];
         }
+
+        $registeredRecords = $this->personnelActionRepository->getRecords($filters);
 
         return response()->json([
             "status" => 200,

@@ -5,9 +5,43 @@ namespace App\Repositories;
 use App\Models\JustificationType;
 use App\Models\PersonnelAction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class PersonnelActionRepository
 {
+    public function getRecords(array $filters): Collection
+    {
+        $personnelActions =  PersonnelAction::select(
+            'personnel_action.*',
+            'u.name as name',
+            'u.position_signature',
+            'u.inmediate_superior_id',
+            'u.dependency_name',
+            'jt.justification_name',
+            's.status_name',
+            'hpa.personnel_action_id',
+            'hpa.active',
+        )
+            ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
+            ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
+            ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
+            ->join('status as s', 'hpa.status_id', '=', 's.id')
+            ->where($filters)
+
+            ->orderBy("personnel_action.date_request_created")
+            ->get();
+
+        foreach ($personnelActions as $key => $value) {
+            $value->remarks = Remark::where('personnel_action_id', $value->id)->get();
+
+            foreach ($value->remarks as $remark) {
+                $remark->status = ($remark->status == 0) ? "No Corregida" : "Corregida";
+            }
+        }
+
+        return $personnelActions;
+    }
+
     public function create(Request $request)
     {
         //Base64 to file convertion
