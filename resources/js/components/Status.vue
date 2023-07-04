@@ -8,7 +8,7 @@
           <h2 style="margin-left: 15px">Estados</h2>
         </v-col>
         <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
-          <v-btn rounded @click="addRecord()" class="mb-2 btn-normal no-uppercase" title="Agregar">
+          <v-btn disabled rounded @click="addRecord()" class="mb-2 btn-normal no-uppercase" title="Agregar">
             Agregar
           </v-btn>
         </v-col>
@@ -20,10 +20,10 @@
         :items="recordsFiltered" :options.sync="options" :loading="loading" item-key="id" sort-by="id"
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }">
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon small class="mr-2" @click="editItem(item)">
+          <v-icon small class="mr-2" @click="editItem(item)" disabled>
             mdi-pencil
           </v-icon>
-          <v-icon small class="mr-2" @click="deleteItem(item)">
+          <v-icon small class="mr-2" @click="deleteItem(item)" disabled>
             mdi-delete
           </v-icon>
         </template>

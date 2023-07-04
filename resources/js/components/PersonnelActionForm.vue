@@ -183,20 +183,11 @@
             />
           </v-col>
           <!-- from_hour -->
+          
           <!-- total_hours -->
-          <v-col
-            cols="12"
-            sm="12"
-            md="8"
-            class="m-0 pb-3"
-          >
-            <base-input
-              label="Total de horas"
-              v-model="$v.editedItem.total_hours.$model"
-              :validation="$v.editedItem.total_hours"
-              validationTextType="none"
-              type="number"
-            />
+          <v-col cols="12" sm="12" md="8" class="m-0 pb-3">
+            <base-input label="Total de horas" v-model="$v.editedItem.total_hours.$model"
+              :validation="$v.editedItem.total_hours" validationTextType="none" />
           </v-col>
           <!-- total_hours -->
           <!-- effective_date -->
@@ -261,19 +252,9 @@
           </v-col>
           <!-- from_date -->
           <!-- total_days -->
-          <v-col
-            cols="12"
-            sm="12"
-            md="8"
-            class="m-0 pb-3"
-          >
-            <base-input
-              label="Total de días"
-              v-model="$v.editedItem.total_days.$model"
-              :validation="$v.editedItem.total_days"
-              validationTextType="none"
-              type="number"
-            />
+          <v-col cols="12" sm="12" md="8" class="m-0 pb-3">
+            <base-input label="Total de días" v-model="$v.editedItem.total_days.$model"
+              :validation="$v.editedItem.total_days" validationTextType="none" />
           </v-col>
           <!-- total_days -->
         </v-row>
@@ -543,19 +524,8 @@
 
       <!-- buttons -->
       <v-row>
-        <v-col
-          align="center"
-          cols="12"
-          sm="12"
-          md="12"
-          class=""
-        >
-          <v-btn
-            color="btn-normal no-uppercase"
-            :disabled="loading != false"
-            rounded
-            @click="save()"
-          >
+        <v-col align="center" cols="12" sm="12" md="12" class="">
+          <v-btn color="btn-normal no-uppercase" :disabled="loading" rounded @click="save()">
             Solicitar
           </v-btn>
 
@@ -802,11 +772,10 @@ export default {
     },
 
     async save() {
-      // this.loading = true;
+      this.loading = true;
       this.$v.$touch();
 
       if (this.$v.editedItem.$invalid) {
-        // this.radioAlert = true;
         this.updateAlert(true, "Campos obligatorios.", "fail");
         return;
       }
@@ -830,24 +799,30 @@ export default {
       } else {
         this.updateAlert(true, data.message, data.state);
       }
-      // this.loading = false;
+      this.loading = false;
     },
 
     showHourForm() {
-      // this.radioAlert = false;
       this.showDayInputs = false;
       this.showHourInputs = true;
+      this.$v.$reset();
+      this.editedItem.from_hour = "";
+      this.editedItem.to_hour = "";
+      this.editedItem.total_hours = "";
+      this.editedItem.effective_date = "";
     },
 
     showDayForm() {
-      // this.radioAlert = false;
       this.showHourInputs = false;
       this.showDayInputs = true;
+      this.$v.$reset();
+      this.editedItem.from_date = "";
+      this.editedItem.to_date = "";
+      this.editedItem.total_days = "";
     },
 
     clearForm() {
       this.editedItem = Object.assign({}, this.defaultItem);
-      // this.editedperiod_by = "";
       this.showDayInputs = false;
       this.showHourInputs = false;
       this.$v.$reset();
