@@ -13,7 +13,7 @@
       </v-row>
 
       <!-- filters -->
-      <div class="container-fluid pb-4 pt-4">
+      <!-- <div class="container-fluid pb-4 pt-4">
         <v-row>
           <v-tabs grow background-color="transparent">
             <v-tab @click="filter = 'Pediente autorización'">Pendiente autorización</v-tab>
@@ -21,7 +21,7 @@
             <v-tab @click="filter = 'Rechazada'">Rechazadas</v-tab>
           </v-tabs>
         </v-row>
-      </div>
+      </div> -->
       <!-- filters -->
 
       <v-data-table v-model="selected" :single-select="false" :search="options.search" :headers="headers"
@@ -47,9 +47,15 @@
     <v-dialog v-model="dialogActions" max-width="90%">
       <v-card class="h-100">
         <v-container>
-          <h2 class="black-secondary text-center mt-3 mb-3">
-            Verificación de Acción de Personal
-          </h2>
+          <div class="header-dialog">
+            <div></div>
+            <h2 class="black-secondary text-center mt-3 mb-3">
+              Verificación de Acción de Personal
+            </h2>
+            <v-icon large class="mr-2 " @click="closeActions()">
+              mdi-close
+            </v-icon>
+          </div>
 
           <!-- form -->
           <v-container>
@@ -59,13 +65,13 @@
           <!-- form -->
 
           <!-- Remarks -->
-          <v-container>
-            <h5 class="fw-bold pt-3 pb-2 mb-2" style="border-bottom: 1px solid lightgray">
+          <v-container v-if="actualUser.role != 'RRHH'">
+            <h5 class=" fw-bold pt-3 pb-2 mb-2" style="border-bottom: 1px solid lightgray">
               OBSERVACIONES
             </h5>
           </v-container>
 
-          <v-col cols="12" sm="12" md="12">
+          <v-col cols="12" sm="12" md="12" v-if="actualUser.role != 'RRHH'">
             <base-text-area label="Observación" v-model.trim="$v.remark.observation.$model"
               :validation="$v.remark.observation" validationTextType="none" :rows="3"
               :disabled="editedItem.remarks.length > 0" />
@@ -76,12 +82,12 @@
             </div>
             <!-- max remark alert -->
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" v-if="actualUser.role != 'RRHH'">
             <v-btn color="btn-normal" :disabled="editedItem.remarks.length > 0" rounded @click="createRemark()">
               AGREGAR
             </v-btn>
           </v-col>
-          <v-simple-table class="mt-2">
+          <v-simple-table class="mt-2" v-if="actualUser.role != 'RRHH'">
             <thead>
               <tr>
                 <th class="fw-bold text-black">OBSERVACIÓN</th>
@@ -641,5 +647,11 @@ export default {
 <style scoped>
 .v-tabs-slider {
   background: #2d52a8 !important;
+}
+
+.header-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>

@@ -52,9 +52,15 @@
     <v-dialog v-model="dialogShowPersonnelAction" max-width="70%">
       <v-card color="h-100">
         <v-container>
-          <h2 class="black-secondary text-center mt-3 mb-3">
-            Acción de Personal
-          </h2>
+          <div class="header-dialog">
+            <div></div>
+            <h2 class="black-secondary text-center mt-3 mb-3">
+              Acción de Personal
+            </h2>
+            <v-icon large class="mr-2 " @click="closeFormActions()">
+              mdi-close
+            </v-icon>
+          </div>
           <v-container>
             <show-personnel-action-form :editedItem="$v.editedItem" :justifications="justifications"
               :enableInputs="editedItem.status_name == 'Observada'" :showUpdateBtn="editedItem.status_name == 'Observada'"
@@ -408,5 +414,11 @@ export default {
 
 .theme--light.v-label--is-disabled {
   color: grey !important;
+}
+
+.header-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>
