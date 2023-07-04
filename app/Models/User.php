@@ -23,7 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         'last_name',
         'position_signature',
         'email',
-        'dependency_id',
+        'dependency_name',
         'inmediate_superior_id',
         'password',
         'send_to_rrhh',
@@ -67,11 +67,6 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         return [];
     }
 
-    public function dependency()
-    {
-        return $this->belongsTo(Dependency::class);
-    }
-
     public function format($showPassword = true)
     {
         return [
@@ -84,7 +79,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
             'rol' => $this->getRoleNames()[0],
             'position_signature' => $this->position_signature,
             'inmediate_superior_id' => ($this->inmediate_superior_id != null) ? User::where('id', $this->inmediate_superior_id)->first('name')->name : null,
-            'dependency_name' => $this->dependency->dependency_name,
+            'dependency_name' => $this->dependency_name,
             'status' => ($this->status == 1) ? "Activo" : "Inactivo",
             'send_to_rrhh' => ($this->send_to_rrhh == 1) ? true : false,
             'email_verified_at' => $this->email_verified_at,

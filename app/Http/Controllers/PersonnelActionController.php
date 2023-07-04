@@ -210,14 +210,13 @@ class PersonnelActionController extends Controller
                     'u.name as name',
                     'u.position_signature',
                     'u.inmediate_superior_id',
-                    'd.dependency_name',
+                    'u.dependency_name',
                     'jt.justification_name',
                     's.status_name',
                     'hpa.personnel_action_id',
                     'hpa.active',
                 )
                     ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
-                    ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
                     ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
                     ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
                     ->join('status as s', 'hpa.status_id', '=', 's.id')
@@ -235,21 +234,20 @@ class PersonnelActionController extends Controller
                     'u.name as name',
                     'u.position_signature',
                     'u.inmediate_superior_id',
-                    'd.dependency_name',
+                    'u.dependency_name',
                     'jt.justification_name',
                     's.status_name',
                     'hpa.personnel_action_id',
                     'hpa.active',
                 )
                     ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
-                    ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
                     ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
                     ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
                     ->join('status as s', 'hpa.status_id', '=', 's.id')
                     // ->where('hpa.status_id', 2)
                     ->where('hpa.active', 1)
                     ->where('hpa.user_id', $userLogged->id) //If the logged-in user is the immediate superior.
-                    ->where('u.dependency_id', $userLogged->dependency_id) //If the logged-in user belongs to the same dependency.
+                    // ->where('u.dependency_name', $userLogged->dependency_name) //If the logged-in user belongs to the same dependency.
 
                     ->orderBy("personnel_action.date_request_created")
                     ->get();
@@ -262,14 +260,13 @@ class PersonnelActionController extends Controller
                     'u.name as name',
                     'u.position_signature',
                     'u.inmediate_superior_id',
-                    'd.dependency_name',
+                    'u.dependency_name',
                     'jt.justification_name',
                     's.status_name',
                     'hpa.personnel_action_id',
                     'hpa.active',
                 )
                     ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
-                    ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
                     ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
                     ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
                     ->join('status as s', 'hpa.status_id', '=', 's.id')
@@ -309,7 +306,6 @@ class PersonnelActionController extends Controller
         $personnelAction = PersonnelAction::find($request->id);
 
         $positions = $this->historyPersonnelActionRepository->calculatePositionOfSign($request->id);
-        // dd($positions);
 
         // When the user logged in can sen the ap to rrhh and the status
         if (auth()->user()->send_to_rrhh == 1 && $request->status == 'Autorizada') {
@@ -341,7 +337,7 @@ class PersonnelActionController extends Controller
         }
 
         // Advance history
-        $this->historyPersonnelActionRepository->advanceAp($personnelAction, $statusId, $signedFile['url'],  $userId);
+        $this->historyPersonnelActionRepository->advanceAp($personnelAction, $statusId, $signedFile['url'] ?? null,  $userId);
 
         //create remark if exists
         if (!empty($request->data && $request->status == 'Observada')) {

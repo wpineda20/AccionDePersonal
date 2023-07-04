@@ -592,7 +592,7 @@ import {
   maxLength,
   requiredIf,
 } from "vuelidate/lib/validators";
-
+import lib from "../libs/function";
 import userApi from "../apis/userApi";
 import justificationTypeApi from "../apis/justificationTypeApi";
 import personnelActionApi from "../apis/personnelActionApi";
@@ -795,7 +795,7 @@ export default {
 
         this.editedItem.name = this.user.name;
         this.editedItem.position_signature = this.user.position_signature;
-        this.editedItem.dependency_name = this.user.dependency.dependency_name;
+        this.editedItem.dependency_name = this.user.dependency_name;
       }
 
       this.loading = false;
@@ -811,10 +811,11 @@ export default {
         return;
       }
 
-      let { data } = await personnelActionApi
+      let { data, status } = await personnelActionApi
         .post(null, this.editedItem)
         .catch((error) => {
-          this.updateAlert(true, "No fue posible crear la solicitud.", "fail");
+          // console.log(error.response)
+          this.updateAlert(true, error.response.data.message, "fail");
 
           this.redirectSessionFinished = lib.verifySessionFinished(
             error.response.status,
@@ -822,7 +823,8 @@ export default {
           );
         });
 
-      if (data.success) {
+      console.log(status)
+      if (status == '200') {
         this.updateAlert(true, data.message, data.state, 10000);
         this.clearForm();
       } else {

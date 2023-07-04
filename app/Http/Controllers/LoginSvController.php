@@ -34,7 +34,6 @@ class LoginSvController extends Controller
             return $e;
         }
 
-        // dd($user);
         // check if the user exists
         $existingUser = User::where('email', $user->email)->first();
 
@@ -44,7 +43,7 @@ class LoginSvController extends Controller
                 $newUser->name =  $user["name"];
                 $newUser->email =  $user["email"];
                 $newUser->position_signature =  $user["position_signature"];
-                $newUser->dependency_id =  $user["dependency_id"];
+                $newUser->dependency_name =  $user["dependency_name"];
                 $newUser->email_verified_at =  now();
                 $newUser->last_name = '';
                 $newUser->password =  Hash::make(Str::random(8));
@@ -62,6 +61,12 @@ class LoginSvController extends Controller
 
             return redirect()->to('/home');
         } else {
+            $existingUser->name =  $user["name"];
+            $existingUser->email =  $user["email"];
+            $existingUser->position_signature =  $user["position_signature"];
+            $existingUser->dependency_name =  $user["dependency_name"];
+            $existingUser->save();
+
             auth()->login($existingUser, true);
         }
 

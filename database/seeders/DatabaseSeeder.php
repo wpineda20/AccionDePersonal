@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             DepartmentSeeder::class,
             MunicipalitiesSeeder::class,
-            DependencySeeder::class,
+            // DependencySeeder::class,
             // UserSeeder::class,
             JustificationTypeSeeder::class,
             StatusSeeder::class,

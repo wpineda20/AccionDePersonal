@@ -182,7 +182,6 @@ class UserController extends Controller
         $role = auth()->user()->getRoleNames()[0];
         $user->role = $role;
         $user->hasUsersInCharge = auth()->user()->hasUsersInCharge();
-        $user->dependency = Dependency::where('id', $user->dependency_id)->first();
 
         return response()->json([
             "status" => "success",
@@ -201,7 +200,7 @@ class UserController extends Controller
     {
         $userLogged = auth()->user();
 
-        $users = User::where('dependency_id', $userLogged->dependency_id)->get();
+        $users = User::where('dependency_name', $userLogged->dependency_name)->get();
 
         return response()->json([
             "success" => true,

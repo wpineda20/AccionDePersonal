@@ -62,14 +62,13 @@ class PersonnelAction extends Model
             'personnel_action.*',
             'u.name as name',
             'u.position_signature',
-            'd.dependency_name',
+            'u.dependency_name',
             'jt.justification_name',
             's.status_name',
             'hpa.personnel_action_id',
             'hpa.active',
         )
             ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
-            ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
             ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
             ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
             ->join('status as s', 'hpa.status_id', '=', 's.id')
@@ -97,7 +96,6 @@ class PersonnelAction extends Model
             'hpa.active',
         )
             ->join('users as u', 'personnel_action.user_id', '=', 'u.id')
-            ->join('dependency as d', 'u.dependency_id', '=', 'd.id')
             ->join('justification_type as jt', 'personnel_action.justification_type_id', '=', 'jt.id')
             ->join('history_personnel_action as hpa', 'hpa.personnel_action_id', '=', 'personnel_action.id')
             ->join('status as s', 'hpa.status_id', '=', 's.id')
