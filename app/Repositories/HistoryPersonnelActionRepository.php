@@ -98,6 +98,8 @@ class HistoryPersonnelActionRepository
                 'positionY' => $positionY,
             ]);
 
+            $response->throw();
+            // dd($response->status());
             return $response->json();
         } catch (\Throwable $th) {
             throw $th;
@@ -117,25 +119,34 @@ class HistoryPersonnelActionRepository
         if ($total == 0) {
             $positions = [
                 'positionX' => 15,
-                'positionY' => 27
+                'positionY' => 190
             ];
         } else if ($total == 1 && auth()->user()->send_to_rrhh == 1) { // When the boss can send to rrhh
             $positions = [
                 'positionX' => 70,
-                'positionY' => 65
+                'positionY' => 230
             ];
         } else if ($total == 1) {
             $positions = [
                 'positionX' => 112,
-                'positionY' => 27
+                'positionY' => 190
             ];
         } else {
             $positions = [
                 'positionX' => 70,
-                'positionY' => 65
+                'positionY' => 230
             ];
         }
 
         return array_merge($positions, ['url_file' => $records[$total - 1]->url_file]);
+    }
+
+    public function cleanSignHistory(int $apId)
+    {
+        $records = HistoryPersonnelAction::where([
+            'personnel_action_id' => $apId,
+        ])
+            ->where('url_file', '<>', null)
+            ->delete();
     }
 }

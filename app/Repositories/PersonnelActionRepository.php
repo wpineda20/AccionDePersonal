@@ -36,7 +36,7 @@ class PersonnelActionRepository
             $value->remarks = Remark::where('personnel_action_id', $value->id)->get();
 
             foreach ($value->remarks as $remark) {
-                $remark->status = ($remark->status == 0) ? "No Corregida" : "Corregida";
+                $remark->status = ($remark->status == 0) ? "Observada" : "Corregida";
             }
         }
 
