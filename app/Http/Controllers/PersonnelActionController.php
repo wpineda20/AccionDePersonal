@@ -260,9 +260,9 @@ class PersonnelActionController extends Controller
 
         $positions = $this->historyPersonnelActionRepository->calculatePositionOfSign($request->id);
 
-        // When the user logged in can sen the ap to rrhh and the status
+        // When the user logged in can send the ap to rrhh and the status
         if (auth()->user()->send_to_rrhh == 1 && $request->status == 'Autorizada') {
-            $statusId = 5;
+            $statusId = 5; // Pending status of rrhh
             $userId = auth()->user()->id;
 
             //Send PDF information to login
@@ -274,7 +274,7 @@ class PersonnelActionController extends Controller
                 $positions['positionY'],
             );
         } else if ($request->status == 'Autorizada') {
-            $statusId = 2;
+            $statusId = 2; // Pending of authorization of the inmediate boss
             $userId = auth()->user()->inmediate_superior_id;
 
             $signedFile = $this->historyPersonnelActionRepository->updateSign(

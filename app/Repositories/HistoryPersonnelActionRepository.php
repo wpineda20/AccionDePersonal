@@ -73,6 +73,7 @@ class HistoryPersonnelActionRepository
             )
                 ->post('https://dev.login.cultura.gob.sv/api/sign/document', [
                     'email' => $email,
+                    'folderName' => 'AP',
                     'visibleSign' => $visibleSign,
                     'positionX' => $positionX,
                     'positionY' => $positionY,
@@ -91,6 +92,7 @@ class HistoryPersonnelActionRepository
             $response = Http::post('https://dev.login.cultura.gob.sv/api/sign/document/update', [
                 'pathFile' => $pathFile,
                 'email' => $email,
+                'folderName' => 'AP',
                 'visibleSign' => $visibleSign,
                 'positionX' => $positionX,
                 'positionY' => $positionY,
