@@ -253,7 +253,7 @@
           :disabled="!enableInputs"
         />
         <div style="display: flex; justify-content: flex-end">
-          <span class="">(Máximo 800 caracteres)</span>
+          <span class="">(Máximo 400 caracteres)</span>
         </div>
       </v-col>
       <!-- justification -->
@@ -277,40 +277,41 @@
         xs="12"
         sm="12"
         md="6"
-      v-if="showUpdateBtn"
-    >
-      <h6 class="mb-0">
-        Documentación original para justificación de acción de personal (PDF).
-      </h6>
-      <span class="text-muted">(Opcional)</span>
-      <input-file
-        accept="application/pdf"
-        v-model="editedItem.justification_file.$model"
-        :validation="editedItem.justification_file"
-        @update-file="editedItem.justification_file = $event"
-        @file-size-exceeded="$emit('file-size-exceeded', true)"
-      />
-    </v-col>
-    <!-- justification_file -->
-    <!-- Document File -->
-    <v-col
-      cols="12"
-      xs="12"
-      sm="12"
-      md="6"
-    >
-      <a
-        :href="editedItem.justification_file.$model"
-        target="_blank"
-        v-if="editedItem.justification_file.$model"
+        v-if="showUpdateBtn"
       >
-        Visualizar documento anexo
-      </a>
-      <p v-else>No se adjunto ningún documento.</p>
-    </v-col>
-    <!-- Document File -->
-  </v-row>
-</div></template>
+        <h6 class="mb-0">
+          Documentación original para justificación de acción de personal (PDF).
+        </h6>
+        <span class="text-muted">(Opcional)</span>
+        <input-file
+          accept="application/pdf"
+          v-model="editedItem.justification_file.$model"
+          :validation="editedItem.justification_file"
+          @update-file="editedItem.justification_file = $event"
+          @file-size-exceeded="$emit('file-size-exceeded', true)"
+        />
+      </v-col>
+      <!-- justification_file -->
+      <!-- Document File -->
+      <v-col
+        cols="12"
+        xs="12"
+        sm="12"
+        md="6"
+      >
+        <a
+          :href="editedItem.justification_file.$model"
+          target="_blank"
+          v-if="editedItem.justification_file.$model"
+        >
+          Visualizar documento anexo
+        </a>
+        <p v-else>No se adjunto ningún documento.</p>
+      </v-col>
+      <!-- Document File -->
+    </v-row>
+  </div>
+</template>
 
 <script>
 export default {

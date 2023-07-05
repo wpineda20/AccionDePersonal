@@ -610,15 +610,15 @@ export default {
       name: "",
       position_signature: "",
       dependency_name: "",
-      justification_name: "",
+      justification_name: "Actividades Sindicales",
       from_hour: "",
       to_hour: "",
       total_hours: "",
       effective_date: "",
-      from_date: "",
-      to_date: "",
-      total_days: "",
-      justification: "",
+      from_date: "2023-07-01",
+      to_date: "2023-07-01",
+      total_days: "1",
+      justification: "test",
       justification_file: "",
       extraordinary_work: false,
       training: false,
@@ -631,7 +631,7 @@ export default {
       execution_effective_date: "",
       execution_from: "",
       execution_to: "",
-      period_by: "",
+      period_by: "days",
     },
     defaultItem: {
       name: "",
@@ -801,13 +801,13 @@ export default {
     },
 
     async save() {
-      this.loading = true;
       this.$v.$touch();
 
       if (this.$v.editedItem.$invalid) {
         this.updateAlert(true, "Campos obligatorios.", "fail");
         return;
       }
+      this.loading = true;
 
       let { data, status } = await personnelActionApi
         .post(null, this.editedItem)
@@ -821,7 +821,6 @@ export default {
           );
         });
 
-      console.log(status)
       if (status == '200') {
         this.updateAlert(true, data.message, data.state, 10000);
         this.clearForm();

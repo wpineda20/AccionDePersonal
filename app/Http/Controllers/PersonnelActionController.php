@@ -54,8 +54,9 @@ class PersonnelActionController extends Controller
         foreach ($personnelAction as $key => $value) {
             $value->remarks = Remark::where('personnel_action_id', $value->id)->get();
 
+            // dd("Hola");
             foreach ($value->remarks as $remark) {
-                $remark->status = ($remark->status == 0) ? "No Corregida" : "Corregida";
+                $remark->status = ($remark->status == 0) ? "Observada" : "Corregida";
             }
 
             $value->history = HistoryPersonnelAction::select(
@@ -117,7 +118,7 @@ class PersonnelActionController extends Controller
             auth()->user()->email,
             'true',
             15,
-            27
+            190
         );
 
         //Create second record with status pending authorization and signed pdf
@@ -154,7 +155,8 @@ class PersonnelActionController extends Controller
 
         $personnelAction = PersonnelAction::where('id', $data['id'])->first();
 
-        if (substr($request->justification_file, 0, 20) == "data:application/pdf") {
+        // dd($request->justification_file);
+        if (!is_null($request->justification_file) && substr($request->justification_file, 0, 20) == "data:application/pdf") {
 
             $request->justification_file = FileController::base64ToFile($request->justification_file, date('Y-m-d') . '-' . Str::random(4) . '-documentacion', 'documents');
 
@@ -179,7 +181,19 @@ class PersonnelActionController extends Controller
 
         $createdFile = $this->historyPersonnelActionRepository->createFile($request, $personnelAction->id);
 
-        $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $createdFile, auth()->user()->id);
+        $this->historyPersonnelActionRepository->cleanSignHistory($personnelAction->id);
+
+        //Send PDF information to login
+        $signedFile = $this->historyPersonnelActionRepository->signFile(
+            $createdFile['content'],
+            $createdFile['name'],
+            auth()->user()->email,
+            'true',
+            15,
+            190
+        );
+
+        $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $signedFile['url'] ?? null, auth()->user()->inmediate_superior_id);
 
         return response()->json([
             "status" => 200,
@@ -296,14 +310,21 @@ class PersonnelActionController extends Controller
         if (!empty($request->data && $request->status == 'Observada')) {
 
             Remark::where('personnel_action_id', $request->id)->delete();
-
+            // dd($value['status']);
             foreach ($request->data as $value) {
-
-                Remark::insert([
-                    'observation' => 'Observada por ' . auth()->user()->name . ': ' . $value['observation'],
-                    'personnel_action_id' => $request->id,
-                    'status' => $value['status'] == "No Corregida" ? 0 : 1,
-                ]);
+                if ($value['status'] != 'No Corregida') {
+                    Remark::insert([
+                        'observation' => $value['observation'],
+                        'personnel_action_id' => $request->id,
+                        'status' => $value['status'] == "No Corregida" ? 0 : 1,
+                    ]);
+                } else {
+                    Remark::insert([
+                        'observation' => 'Observada por ' . auth()->user()->name . ': ' . $value['observation'],
+                        'personnel_action_id' => $request->id,
+                        'status' => $value['status'] == "No Corregida" ? 0 : 1,
+                    ]);
+                }
             }
 
             return response()->json(["message" => "success"]);

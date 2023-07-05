@@ -163,7 +163,7 @@
               :validation="$v.remark.observation"
               validationTextType="none"
               :rows="3"
-              :disabled="editedItem.remarks.length > 0"
+              :disabled="validateDisableAction('Observada') || validateDisableAction('No Corregida')"
             />
             <!-- max remark alert -->
             <div
@@ -183,7 +183,7 @@
           >
             <v-btn
               color="btn-normal"
-              :disabled="editedItem.remarks.length > 0"
+              :disabled="validateDisableAction('No Corregida') || remark.observation.length == 0"
               rounded
               @click="createRemark()"
             >
@@ -216,7 +216,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-icon
                         @click="verifyRemark(remark)"
-                        :disabled="remark.status == 'Corregida'"
+                        v-show="remark.status != 'Corregida'"
                         v-on="on"
                         v-bind="attrs"
                       >
@@ -237,7 +237,7 @@
           <!-- Remarks -->
 
           <!-- Approve / Observe / Reject / Approve / Process -->
-          <v-row>
+          <v-row v-if="editedItem.status_name == 'Procesada' && actualUser.role == 'RRHH'">
             <v-col align="center">
               <v-btn
                 v-if="actualUser.role == 'Jefe' || actualUser.hasUsersInCharge"
@@ -258,8 +258,7 @@
                 color="btn-normal-close no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
                 rounded
                 @click="updateStatus('Observada')"
-                :disabled="validateDisableAction('Observada') ||
-                  !validateDisableAction('No Corregida')
+                :disabled="!validateDisableAction('No Corregida')
                   "
               >
                 Observar
@@ -378,6 +377,7 @@ export default {
       alertTimeOut: 0,
       actualUser: {},
       filter: "Pendiente autorización",
+      disableObservation: true,
     };
   },
 
@@ -504,7 +504,7 @@ export default {
 
         const search = (this.actualUser.role == 'RRHH') ? 'Procesada' : 'Pendiente autorización'
         this.editedItem.selectedTab = (this.actualUser.role == 'RRHH') ? 'Procesada' : 'Pendiente autorización'
-        console.log(this.editedItem.selectedTab);
+        console.log(this.editedItem);
 
         const { data, status } = await personnelActionApi.get(`/verifyPersonnelActions`, {
           params: {
@@ -706,6 +706,7 @@ export default {
 
       this.remark.observation = "";
       this.$v.remark.$reset();
+      this.disableObservation = true;
     },
 
     async verifyRemark(item) {
@@ -783,6 +784,8 @@ export default {
 
       if (response) {
         this.recordsFiltered = response.data.records;
+        console.log(this.recordsFiltered);
+
         this.recordsFiltered.forEach((item) => {
           item.date_request_created = format(
             new Date(item.date_request_created),
