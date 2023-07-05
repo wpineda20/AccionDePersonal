@@ -21,6 +21,7 @@ class HistoryPersonnelActionRepository
             'status_id' => $statusId,
             'url_file' => null,
             'active' => 1,
+            'created_at' => now(),
         ]);
     }
 

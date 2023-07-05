@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\JustificationType;
 use App\Models\PersonnelAction;
+use App\Models\Remark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 

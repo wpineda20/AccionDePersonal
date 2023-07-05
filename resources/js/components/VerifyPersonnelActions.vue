@@ -41,15 +41,35 @@
       </v-row>
 
       <!-- filters -->
-      <!-- <div class="container-fluid pb-4 pt-4">
+      <div class="container-fluid pb-4 pt-4">
         <v-row>
-          <v-tabs grow background-color="transparent">
-            <v-tab @click="filter = 'Pediente autorización'">Pendiente autorización</v-tab>
-            <v-tab @click="filter = 'Procesada'">Procesadas</v-tab>
-            <v-tab @click="filter = 'Rechazada'">Rechazadas</v-tab>
+          <v-tabs
+            grow
+            background-color="transparent"
+            v-model="editedItem.selectedTab"
+          >
+            <v-tab
+              value="Pendiente autorización"
+              @click="filterAp('Pendiente autorización')"
+              v-show="actualUser.role != 'RRHH'"
+            >Pendiente autorización</v-tab>
+            <v-tab
+              value="Rechazada"
+              @click="filterAp('Rechazada')"
+              v-show="actualUser.role != 'RRHH'"
+            >Rechazadas</v-tab>
+            <v-tab
+              value="Procesada"
+              @click="filterAp('Procesada')"
+            >En UTH</v-tab>
+            <v-tab
+              value="Finalizada"
+              v-show="actualUser.role == 'RRHH'"
+              @click="filterAp('Finalizada')"
+            >Finalizadas</v-tab>
           </v-tabs>
         </v-row>
-      </div> -->
+      </div>
       <!-- filters -->
 
       <v-data-table
@@ -102,7 +122,11 @@
             <h2 class="black-secondary text-center mt-3 mb-3">
               Verificación de Acción de Personal
             </h2>
-            <v-icon large class="mr-2 " @click="closeActions()">
+            <v-icon
+              large
+              class="mr-2 "
+              @click="closeActions()"
+            >
               mdi-close
             </v-icon>
           </div>
@@ -119,15 +143,28 @@
 
           <!-- Remarks -->
           <v-container v-if="actualUser.role != 'RRHH'">
-            <h5 class=" fw-bold pt-3 pb-2 mb-2" style="border-bottom: 1px solid lightgray">
+            <h5
+              class=" fw-bold pt-3 pb-2 mb-2"
+              style="border-bottom: 1px solid lightgray"
+            >
               OBSERVACIONES
             </h5>
           </v-container>
 
-          <v-col cols="12" sm="12" md="12" v-if="actualUser.role != 'RRHH'">
-            <base-text-area label="Observación" v-model.trim="$v.remark.observation.$model"
-              :validation="$v.remark.observation" validationTextType="none" :rows="3"
-              :disabled="editedItem.remarks.length > 0" />
+          <v-col
+            cols="12"
+            sm="12"
+            md="12"
+            v-if="actualUser.role != 'RRHH'"
+          >
+            <base-text-area
+              label="Observación"
+              v-model.trim="$v.remark.observation.$model"
+              :validation="$v.remark.observation"
+              validationTextType="none"
+              :rows="3"
+              :disabled="editedItem.remarks.length > 0"
+            />
             <!-- max remark alert -->
             <div
               v-if="maxRemark"
@@ -139,12 +176,24 @@
             </div>
             <!-- max remark alert -->
           </v-col>
-          <v-col cols="12" md="6" v-if="actualUser.role != 'RRHH'">
-            <v-btn color="btn-normal" :disabled="editedItem.remarks.length > 0" rounded @click="createRemark()">
+          <v-col
+            cols="12"
+            md="6"
+            v-if="actualUser.role != 'RRHH'"
+          >
+            <v-btn
+              color="btn-normal"
+              :disabled="editedItem.remarks.length > 0"
+              rounded
+              @click="createRemark()"
+            >
               AGREGAR
             </v-btn>
           </v-col>
-          <v-simple-table class="mt-2" v-if="actualUser.role != 'RRHH'">
+          <v-simple-table
+            class="mt-2"
+            v-if="actualUser.role != 'RRHH'"
+          >
             <thead>
               <tr>
                 <th class="fw-bold text-black">OBSERVACIÓN</th>
@@ -216,16 +265,6 @@
                 Observar
               </v-btn>
               <v-btn
-                color="btn-normal-red no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
-                rounded
-                @click="updateStatus('Rechazada')"
-                :disabled="validateDisableAction('Observada') ||
-                  validateDisableAction('No Corregida')
-                  "
-              >
-                Rechazar
-              </v-btn>
-              <v-btn
                 v-if="actualUser.role == 'RRHH' ||
                   actualUser.role == 'Administrador'
                   "
@@ -235,6 +274,16 @@
                 @click="updateStatus('Finalizada')"
               >
                 Finalizar
+              </v-btn>
+              <v-btn
+                color="btn-normal-red no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="updateStatus('Rechazada')"
+                :disabled="validateDisableAction('Observada') ||
+                  validateDisableAction('No Corregida')
+                  "
+              >
+                Rechazar
               </v-btn>
             </v-col>
           </v-row>
@@ -296,6 +345,7 @@ export default {
         justification: "",
         justification_file: "",
         remarks: [],
+        selectedTab: "Procesada"
       },
       defaultItem: {
         name: "",
@@ -327,7 +377,7 @@ export default {
       redirectSessionFinished: false,
       alertTimeOut: 0,
       actualUser: {},
-      filter: "Pediente autorización",
+      filter: "Pendiente autorización",
     };
   },
 
@@ -405,13 +455,11 @@ export default {
   },
 
   watch: {
-    // options: {
-    //   // handler() {
-    //   //   this.getDataFromApi();
-    //   // },
-    //   deep: false,
-    //   dirty: false,
-    // },
+    filter: {
+      handler() {
+        // this.getDataFromApi();
+      },
+    },
     dialog(val) {
       val || this.close();
     },
@@ -435,8 +483,6 @@ export default {
       this.recordsFiltered = [];
 
       let requests = [
-        // this.getDataFromApi(),
-        personnelActionApi.post(`/verifyPersonnelActions`),
         justificationTypeApi.get(null, {
           params: { itemsPerPage: -1 },
         }),
@@ -453,12 +499,22 @@ export default {
       });
 
       if (responses) {
-        this.recordsFiltered = responses[0].data.records;
-        this.justifications = responses[1].data.records;
-        this.actualUser = responses[2].data.user;
+        this.justifications = responses[0].data.records;
+        this.actualUser = responses[1].data.user;
 
+        const search = (this.actualUser.role == 'RRHH') ? 'Procesada' : 'Pendiente autorización'
+        this.editedItem.selectedTab = (this.actualUser.role == 'RRHH') ? 'Procesada' : 'Pendiente autorización'
+        console.log(this.editedItem.selectedTab);
+
+        const { data, status } = await personnelActionApi.get(`/verifyPersonnelActions`, {
+          params: {
+            filter: search,
+          }
+        });
+
+        // console.log(data);
+        this.recordsFiltered = data.records;
         this.recordsFiltered.forEach((item) => {
-          // console.log(item);
           item.date_request_created = format(
             new Date(item.date_request_created),
             "d/MM/y, hh:mm a",
@@ -600,19 +656,6 @@ export default {
     verifyPersonnelAction(item) {
       this.editedIndex = this.recordsFiltered.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      //Disable buttons if remark had status no corregida
-
-      // this.editedItem.forEach((element) => {
-      //   if (element.remarks.length) {
-      //     console.log("hay información en el array");
-      //     element.remarks.forEach((remark) => {
-      //       if (remark.status == "No Corregida") {
-      //         this.disableRemark = true;
-      //         // console.log("si hay una en no corregida");
-      //       }
-      //     });
-      //   }
-      // });
       this.dialogActions = true;
     },
 
@@ -660,8 +703,6 @@ export default {
         return;
       }
       this.editedItem.remarks.push({ ...this.remark });
-      // console.log(this.remark);
-      // console.log(this.editedItem.remarks.status);
 
       this.remark.observation = "";
       this.$v.remark.$reset();
@@ -690,11 +731,6 @@ export default {
       }
     },
 
-    // deleteRemarksCreated(index) {
-    //   this.remarksCreated.splice(index, 1);
-    //   this.remarks.observation = "";
-    //   this.remarks.status = "";
-    // },
 
     closeActions() {
       this.$nextTick(() => {
@@ -721,15 +757,50 @@ export default {
         );
       }
 
-      // console.log(this.editedItem.remarks)
       return (
         this.editedItem.remarks.filter((el) => el.status == status).length > 0
       );
     },
+
+    async filterAp(search) {
+      this.loading = true;
+      this.$v.$reset();
+      this.records = [];
+      this.recordsFiltered = [];
+
+      const response = await personnelActionApi.get(`/verifyPersonnelActions`, {
+        params: {
+          filter: search,
+        }
+      }).catch((error) => {
+        this.updateAlert(true, "No fue posible obtener el registro.", "fail");
+
+        this.redirectSessionFinished = lib.verifySessionFinished(
+          error.response.status,
+          419
+        );
+      });
+
+      if (response) {
+        this.recordsFiltered = response.data.records;
+        this.recordsFiltered.forEach((item) => {
+          item.date_request_created = format(
+            new Date(item.date_request_created),
+            "d/MM/y, hh:mm a",
+            {
+              locale: esEsLocale,
+            }
+          );
+        });
+      }
+
+      this.loading = false;
+    }
   },
 };
 </script>
-<style scoped>.v-tabs-slider {
+<style scoped>
+.v-tabs-slider-wrapper .v-tabs-slider {
   background: #2d52a8 !important;
 }
 

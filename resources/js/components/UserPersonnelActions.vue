@@ -53,7 +53,7 @@
             grow
             background-color="transparent"
           >
-            <v-tab @click="filter = 'Pediente autorización'">Solicitadas</v-tab>
+            <v-tab @click="filter = 'Pendiente autorización'">Solicitadas</v-tab>
             <v-tab @click="filter = 'Observada'">Observadas</v-tab>
             <v-tab @click="filter = 'Rechazada'">Rechazadas</v-tab>
             <v-tab @click="filter = 'Procesada'">Procesadas</v-tab>
@@ -88,7 +88,21 @@
                 mdi-eye
               </v-icon>
             </template>
-            <span>Ver Acción de Personal</span>
+            <span>Ver acción de personal</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="history(item)"
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-clipboard-list
+              </v-icon>
+            </template>
+            <span>Ver historico</span>
           </v-tooltip>
         </template>
 
@@ -115,7 +129,11 @@
             <h2 class="black-secondary text-center mt-3 mb-3">
               Acción de Personal
             </h2>
-            <v-icon large class="mr-2 " @click="closeFormActions()">
+            <v-icon
+              large
+              class="mr-2 "
+              @click="closeFormActions()"
+            >
               mdi-close
             </v-icon>
           </div>
@@ -157,20 +175,6 @@
                 >
                   <td>{{ remark.observation }}</td>
                   <td>{{ remark.status }}</td>
-                  <!-- <td>
-                    <v-tooltip top>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-icon
-                          @click="verifyRemark(item)"
-                          v-on="on"
-                          v-bind="attrs"
-                        >
-                          mdi-checkbox-marked-circle
-                        </v-icon>
-                      </template>
-                      <span>Validar observación</span>
-                    </v-tooltip>
-                  </td> -->
                 </tr>
               </tbody>
               <tbody v-else>
@@ -203,6 +207,59 @@
         </v-container>
       </v-card>
     </v-dialog>
+    <v-dialog
+      v-model="dialogHistory"
+      max-width="80%"
+    >
+      <v-card color="h-100">
+        <div class="header-dialog">
+          <div></div>
+          <h2 class="black-secondary text-center mt-3 mb-3">
+            Histórico de la acción personal
+          </h2>
+          <v-icon
+            large
+            class="mr-2 "
+            @click="closeHistory()"
+          >
+            mdi-close
+          </v-icon>
+        </div>
+        <v-container>
+          <p class="mb-0 fw-bold ">
+            Acción de personal:
+          </p>
+          <p class="black-secondary text-left mb-3">
+            {{ editedItem.justification_name }}
+          </p>
+          <!-- <hr> -->
+          <v-simple-table class="mt-2">
+            <thead>
+              <tr>
+                <th class="fw-bold text-black">FECHA</th>
+                <th class="fw-bold text-black">USUARIO</th>
+                <th class="fw-bold text-black">ESTADO</th>
+              </tr>
+            </thead>
+            <tbody v-if="editedItem.history.length > 0">
+              <tr
+                v-for="(item, index) in editedItem.history"
+                :key="index"
+              >
+                <td>{{ item.date }}</td>
+                <td>{{ item.user_name }}</td>
+                <td>{{ item.status_name }}</td>
+              </tr>
+            </tbody>
+            <tbody v-else>
+              <tr class="text-center">
+                <td colspan="3">No existe historico para esta acción de personal.</td>
+              </tr>
+            </tbody>
+          </v-simple-table>
+        </v-container>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -232,7 +289,8 @@ export default {
     alertEvent: "success",
     showAlert: false,
     dialogShowPersonnelAction: false,
-    filter: "Pediente autorización",
+    dialogHistory: false,
+    filter: "Pendiente autorización",
     records: [],
     recordsFiltered: [],
     total: 0,
@@ -257,6 +315,7 @@ export default {
       justification: "",
       justification_file: "",
       remarks: [],
+      history: [],
     },
     defaultItem: {
       name: "",
@@ -273,6 +332,7 @@ export default {
       justification: "",
       justification_file: "",
       remarks: [],
+      history: [],
     },
     remark: {
       observation: "",
@@ -429,11 +489,21 @@ export default {
         this.recordsFiltered.forEach((item) => {
           item.date_request_created = format(
             new Date(item.date_request_created),
-            "d/MM/y, hh:mm a",
+            "dd/MM/y, hh:mm a",
             {
               locale: esEsLocale,
             }
           );
+
+          item.history.forEach((val) => {
+            val.date = format(
+              new Date(val.date),
+              "dd/MM/y, hh:mm a",
+              {
+                locale: esEsLocale,
+              }
+            );
+          });
         });
 
         this.total = data.total;
@@ -447,6 +517,13 @@ export default {
       this.editedItem = Object.assign({}, item);
     },
 
+    history(item) {
+      this.dialogHistory = true;
+      console.log(item);
+      this.editedIndex = this.recordsFiltered.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+    },
+
     updateAlert(show = false, text = "Alerta", event = "success") {
       this.textAlert = text;
       this.alertEvent = event;
@@ -454,11 +531,10 @@ export default {
     },
 
     closeFormActions() {
-      // this.$nextTick(() => {
-      //   this.editedItem = this.defaultItem;
-      //   this.editedIndex = -1;
-      // });
       this.dialogShowPersonnelAction = false;
+    },
+    closeHistory() {
+      this.dialogHistory = false;
     },
 
     async updateForm() {
