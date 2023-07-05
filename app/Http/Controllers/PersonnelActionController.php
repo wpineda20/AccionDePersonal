@@ -8,6 +8,7 @@ use App\Models\PersonnelAction;
 use App\Models\Remark;
 use App\Models\Status;
 use App\Models\JustificationType;
+use App\Models\HistoryPersonnelAction;
 
 use App\Repositories\HistoryPersonnelActionRepository;
 use App\Repositories\PersonnelActionRepository;
@@ -56,6 +57,17 @@ class PersonnelActionController extends Controller
             foreach ($value->remarks as $remark) {
                 $remark->status = ($remark->status == 0) ? "No Corregida" : "Corregida";
             }
+
+            $value->history = HistoryPersonnelAction::select(
+                'history_personnel_action.*',
+                'history_personnel_action.created_at as date',
+                's.status_name',
+                'u.name as user_name',
+            )
+                ->join('users as u', 'history_personnel_action.user_id', 'u.id')
+                ->join('status as s', 'history_personnel_action.status_id', 's.id')
+                ->where('personnel_action_id', $value->id)
+                ->get();
         }
 
         $personnelAction = Encrypt::encryptObject($personnelAction, "id");
@@ -195,20 +207,32 @@ class PersonnelActionController extends Controller
      */
     public function verifyPersonnelActions(Request $request)
     {
+        // dd($request->filter);
         $roles = auth()->user()->getRoleNames();
         $userLogged = auth()->user();
 
         if ($roles[0] == "Administrador") {
-            $filters = ['hpa.active' => 1];
+            $filters = [
+                'hpa.active' => 1,
+                's.status_name' => $request->filter,
+            ];
         } else if ($roles[0] == "Jefe" || auth()->user()->hasUsersInCharge()) {
             $filters = [
                 'hpa.active' => 1,
                 'hpa.user_id' => $userLogged->id,
+                's.status_name' => $request->filter,
             ];
-        } else if ($roles[0] == "RRHH") {
+        } else if ($roles[0] == "RRHH" && $request->filter == 'Procesada') {
             $filters = [
                 'hpa.status_id' => 5,
                 'hpa.active' => 1,
+                's.status_name' => $request->filter,
+            ];
+        } else {
+            $filters = [
+                'hpa.status_id' => 7,
+                'hpa.active' => 1,
+                's.status_name' => $request->filter,
             ];
         }
 
@@ -323,7 +347,7 @@ class PersonnelActionController extends Controller
             "message" => "Registros obtenidos correctamente.",
             "data" => [
                 [
-                    'title' => 'Pediente autorización',
+                    'title' => 'Pendiente autorización',
                     'icon' => 'mdi-file-clock',
                     'total' => $pendingAuthorization,
                 ],

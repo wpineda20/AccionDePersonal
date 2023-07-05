@@ -112,7 +112,7 @@ class UserController extends Controller
             "name" => $request->name,
             "email" => $request->email,
             "position_signature" => $request->position_signature,
-            "dependency_name" => Dependency::where('dependency_name', $request->dependency_name)->first()->id,
+            "dependency_name" => $request->position_signature,
             "inmediate_superior_id" => User::where('name', $request->inmediate_superior_id)->first()->id ?? null,
             "send_to_rrhh" => ($request->send_to_rrhh == true) ? 1 : 0,
         ];

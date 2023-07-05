@@ -28,7 +28,11 @@
         <v-toolbar flat>
           <v-toolbar-title>Usuarios</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="800px" persistent>
+          <v-dialog
+            v-model="dialog"
+            max-width="800px"
+            persistent
+          >
             <template v-slot:activator="{ on, attrs }">
               <v-row>
                 <v-col align="right">
@@ -58,7 +62,10 @@
                 </v-col>
               </v-row>
             </template>
-            <v-card class="flexcard auth" height="100%">
+            <v-card
+              class="flexcard auth"
+              height="100%"
+            >
               <v-card-title>
                 <h1 class="mx-auto pt-3 mb-3 text-center black-secondary">
                   {{ formTitle }}
@@ -70,7 +77,11 @@
                   <!-- Form -->
                   <v-row>
                     <!-- name -->
-                    <v-col cols="12" sm="6" md="6">
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="6"
+                    >
                       <base-input
                         label="Nombre"
                         v-model="$v.editedItem.name.$model"
@@ -89,7 +100,11 @@
                     </v-col> -->
 
                     <!-- position_signature -->
-                    <v-col cols="12" sm="6" md="6">
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="6"
+                    >
                       <base-input
                         label="Cargo"
                         v-model="$v.editedItem.position_signature.$model"
@@ -100,7 +115,11 @@
                     <!-- position_signature -->
 
                     <!-- email -->
-                    <v-col cols="12" sm="6" md="6">
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="6"
+                    >
                       <base-input
                         label="Correo electrónico"
                         v-model="$v.editedItem.email.$model"
@@ -111,24 +130,30 @@
                     <!-- email -->
 
                     <!-- dependency_name  -->
-                    <v-col cols="12" sm="6" md="6">
-                      <base-select-search
-                        label="Dependencia"
-                        v-model.trim="$v.editedItem.dependency_name.$model"
-                        :items="dependencies"
-                        item="dependency_name"
-                        :validation="$v.editedItem.dependency_name"
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="6"
+                    >
+                      <base-input
+                        label="Cargo"
+                        v-model="$v.editedItem.dependency_name.$model"
+                        :validation.sync="$v.editedItem.dependency_name"
+                        validationTextType="default"
                       />
                     </v-col>
                     <!-- dependency_name  -->
 
                     <!-- inmediate_superior_id  -->
-                    <v-col cols="12" sm="6" md="6">
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="6"
+                    >
                       <base-select-search
                         label="Jefe inmediato (Opcional)"
-                        v-model.trim="
-                          $v.editedItem.inmediate_superior_id.$model
-                        "
+                        v-model.trim="$v.editedItem.inmediate_superior_id.$model
+                          "
                         :items="users"
                         item="name"
                         :validation="$v.editedItem.inmediate_superior_id"
@@ -137,7 +162,11 @@
                     <!-- inmediate_superior_id  -->
 
                     <!-- rol -->
-                    <v-col cols="12" sm="6" md="6">
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="6"
+                    >
                       <base-select-search
                         label="Rol"
                         v-model.trim="$v.editedItem.rol.$model"
@@ -148,7 +177,11 @@
                     <!-- rol -->
 
                     <!-- status -->
-                    <v-col cols="12" sm="12" md="12">
+                    <v-col
+                      cols="12"
+                      sm="12"
+                      md="12"
+                    >
                       <v-checkbox
                         label="Autorizante?"
                         v-model="$v.editedItem.send_to_rrhh.$model"
@@ -157,26 +190,6 @@
                     </v-col>
                     <!-- status -->
 
-                    <!-- password -->
-                    <!-- <v-col cols="12" sm="6" md="6">
-                      <base-input
-                        label="Contraseña"
-                        v-model="$v.editedItem.password.$model"
-                        :validation.sync="$v.editedItem.password"
-                        validationTextType="none"
-                        :type="typePassword"
-                        autocomplete="off"
-                        :validationsInput="{
-                          required: false,
-                          minLength: false,
-                          maxnLength: true,
-                          isValidPassword: true,
-                          showPassword: true,
-                        }"
-                        @update-password="showPassword($event)"
-                      />
-                    </v-col> -->
-                    <!-- password -->
                   </v-row>
                   <!-- Form -->
                   <v-row>
@@ -246,7 +259,10 @@
     </v-data-table>
 
     <!-- Dialog block user -->
-    <v-dialog v-model="dialogBlock" max-width="400px">
+    <v-dialog
+      v-model="dialogBlock"
+      max-width="400px"
+    >
       <v-card class="h-100">
         <v-container>
           <h1 class="black-secondary text-center mt-3 mb-3">
@@ -258,8 +274,7 @@
                 color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
                 rounded
                 @click="disableUser"
-                >Confirmar</v-btn
-              >
+              >Confirmar</v-btn>
               <v-btn
                 color="btn-normal-close no-uppercase mt-3 mb-3"
                 rounded
@@ -279,7 +294,6 @@
 <script>
 import roleApi from "../apis/roleApi";
 import userApi from "../apis/userApi";
-import dependencyApi from "../apis/dependencyApi";
 import lib from "../libs/function";
 
 import {
@@ -426,11 +440,6 @@ export default {
       let requests = [
         this.getDataFromApi(),
         roleApi.get(),
-        dependencyApi.get(null, {
-          params: {
-            itemsPerPage: -1,
-          },
-        }),
         userApi.post(`/usersByDependency`),
       ];
 
@@ -444,8 +453,8 @@ export default {
 
       if (responses) {
         this.roles = responses[1].data.roles;
-        this.dependencies = responses[2].data.records;
-        this.users = responses[3].data.users;
+        this.users = responses[2].data.users;
+        // this.dependencies = responses[2].data.records;
       }
     },
 

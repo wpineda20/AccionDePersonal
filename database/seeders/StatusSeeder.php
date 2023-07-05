@@ -24,7 +24,7 @@ class StatusSeeder extends Seeder
             ],
             [
                 "id" => 2,
-                "status_name" => "Pediente autorización",
+                "status_name" => "Pendiente autorización",
                 "order_id" => 2,
                 "created_at" => now(),
             ],

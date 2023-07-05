@@ -54,7 +54,7 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::post('/web/remark/verifyRemark', [RemarkController::class, 'verifyRemark']);
         Route::post('/web/user/usersByDependency', [UserController::class, 'usersByDependency']);
         Route::get('personnelAction/userPersonnelActions', [PersonnelActionController::class, 'userPersonnelActions']);
-        Route::post('/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
+        Route::get('/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
 
         // Views
         Route::get('/departments', fn () => view('department.index'));
@@ -68,9 +68,9 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
         Route::get('/processPersonnelActions', fn () => view('process_personnel_actions.index'));
     });
 
-    Route::group(['middleware' => ['has.role:Administrador,Jefe,Coordinador,RRHH']], function () {
+    Route::group(['middleware' => ['has.role:Administrador,Jefe,RRHH']], function () {
         Route::post('/web/personnelAction/updateStatus', [PersonnelActionController::class, 'updateStatus']);
-        Route::post('/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
+        Route::get('/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
 
         // Views
         Route::get('/verifyPersonnelActions', fn () => view('verify_personnel_actions.index'));

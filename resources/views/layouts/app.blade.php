@@ -115,7 +115,7 @@
                         <i class="material-icons md-18 mx-auto">verified_user</i>
                     </a>
                     <a href="{{ url('/verifyPersonnelActions') }}">
-                        <p class="link mx-auto">Autorización</p>
+                        <p class="link mx-auto">Verificación</p>
                     </a>
                 </li>
                 @endif
