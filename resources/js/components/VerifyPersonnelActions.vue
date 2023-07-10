@@ -237,7 +237,8 @@
           <!-- Remarks -->
 
           <!-- Approve / Observe / Reject / Approve / Process -->
-          <v-row v-if="editedItem.status_name == 'Procesada' && actualUser.role == 'RRHH'">
+          <!-- <v-row> -->
+          <v-row v-if="editedItem.status_name == 'Pendiente autorización' || editedItem.status_name == 'Procesada'">
             <v-col align="center">
               <v-btn
                 v-if="actualUser.role == 'Jefe' || actualUser.hasUsersInCharge"
@@ -245,7 +246,7 @@
                 rounded
                 @click="updateStatus('Autorizada')"
                 :disabled="validateDisableAction('Observada') ||
-                  validateDisableAction('No Corregida')
+                  validateDisableAction('No Corregida') || loading
                   "
               >
                 Autorizar
@@ -258,7 +259,7 @@
                 color="btn-normal-close no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
                 rounded
                 @click="updateStatus('Observada')"
-                :disabled="!validateDisableAction('No Corregida')
+                :disabled="!validateDisableAction('No Corregida') || loading
                   "
               >
                 Observar
@@ -271,6 +272,7 @@
               no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
                 rounded
                 @click="updateStatus('Finalizada')"
+                :disabled="loading"
               >
                 Finalizar
               </v-btn>
@@ -279,7 +281,7 @@
                 rounded
                 @click="updateStatus('Rechazada')"
                 :disabled="validateDisableAction('Observada') ||
-                  validateDisableAction('No Corregida')
+                  validateDisableAction('No Corregida') || loading
                   "
               >
                 Rechazar
@@ -378,6 +380,7 @@ export default {
       actualUser: {},
       filter: "Pendiente autorización",
       disableObservation: true,
+      // hideButtons: false,
     };
   },
 
@@ -504,7 +507,6 @@ export default {
 
         const search = (this.actualUser.role == 'RRHH') ? 'Procesada' : 'Pendiente autorización'
         this.editedItem.selectedTab = (this.actualUser.role == 'RRHH') ? 'Procesada' : 'Pendiente autorización'
-        console.log(this.editedItem);
 
         const { data, status } = await personnelActionApi.get(`/verifyPersonnelActions`, {
           params: {
@@ -512,7 +514,6 @@ export default {
           }
         });
 
-        // console.log(data);
         this.recordsFiltered = data.records;
         this.recordsFiltered.forEach((item) => {
           item.date_request_created = format(
@@ -523,6 +524,7 @@ export default {
             }
           );
         });
+
       }
 
       this.loading = false;
@@ -660,6 +662,7 @@ export default {
     },
 
     async updateStatus(status) {
+      this.loading = true;
       const response = await personnelActionApi
         .post(`/updateStatus`, {
           id: this.editedItem.id,
@@ -680,6 +683,7 @@ export default {
         this.initialize();
         this.closeActions();
       }
+      this.loading = false;
     },
 
     async createRemark() {
@@ -710,7 +714,6 @@ export default {
     },
 
     async verifyRemark(item) {
-      console.log(item);
       const response = await remarkApi
         .post(`/verifyRemark`, {
           data: item,
@@ -745,9 +748,6 @@ export default {
       this.textAlert = text;
       this.alertEvent = event;
       this.showAlert = show;
-      // if (show) {
-      //   this.$refs.top.scrollIntoView();
-      // }
     },
 
     validateDisableAction(status, equal = false) {
@@ -784,8 +784,6 @@ export default {
 
       if (response) {
         this.recordsFiltered = response.data.records;
-        console.log(this.recordsFiltered);
-
         this.recordsFiltered.forEach((item) => {
           item.date_request_created = format(
             new Date(item.date_request_created),

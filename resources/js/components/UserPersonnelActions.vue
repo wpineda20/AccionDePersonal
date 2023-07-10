@@ -226,10 +226,10 @@
           </v-icon>
         </div>
         <v-container>
-          <p class="mb-0 fw-bold ">
+          <p class="mb-0 fw-bold px-3">
             Acción de personal:
           </p>
-          <p class="black-secondary text-left mb-3">
+          <p class="black-secondary text-left mb-3 px-3">
             {{ editedItem.justification_name }}
           </p>
           <!-- <hr> -->

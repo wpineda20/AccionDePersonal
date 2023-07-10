@@ -119,22 +119,22 @@ class HistoryPersonnelActionRepository
         if ($total == 0) {
             $positions = [
                 'positionX' => 15,
-                'positionY' => 190
+                'positionY' => 180
             ];
         } else if ($total == 1 && auth()->user()->send_to_rrhh == 1) { // When the boss can send to rrhh
             $positions = [
                 'positionX' => 70,
-                'positionY' => 230
+                'positionY' => 220
             ];
         } else if ($total == 1) {
             $positions = [
                 'positionX' => 112,
-                'positionY' => 190
+                'positionY' => 180
             ];
         } else {
             $positions = [
                 'positionX' => 70,
-                'positionY' => 230
+                'positionY' => 220
             ];
         }
 

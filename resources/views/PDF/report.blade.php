@@ -384,31 +384,18 @@
 
         <!-- V- TIEMPO EXTRAORDINARIO / DESCANSO -->
 
-        <div style="padding: 5px 0 0 0">
-            <p
-                class="fw-bold fs-10"
-                style="padding: 1px; margin:0px; border-top: 1px solid black;"
-            >Este formulario
-                debe
-                ser presentado por el empleado solicitante a
-                la Unidad de Talento
-                Humano, a los
-                encargados o encargadas de asistencia de cada dependencia dentro de los primeros 3 días hábiles después
-                de haber gozado de licencia. El o La encargada de control de asistencia no es responsable por descuentos
-                sino se presenta oportunamente y llena correctamente este formulario.</p>
-        </div>
     </div>
-    {{-- <div style="page-break-after: always;"></div> --}}
+    <!-- VI. FIRMAS -->
     <h5
-        class="fw-bold fs-10 bg-border"
-        style="border-right: 1px solid black; border-left: 1px solid black; margin: 0; padding:0px;"
+        class="fw-bold fs-10"
+        style="margin: 0; padding:1px; background-color: #eee; border-right: 1px solid black; border-left: 1px solid black"
     >VI.
         FIRMAS</h5>
     <table style="width: 100% !important;  border: 1px solid; border-collapse: collapse;">
         <tr style="margin: 0; padding:0px; border: 1px solid;">
             <td style="width:
-                    50%
-                    !important">
+                50%
+                !important">
                 <h5
                     class="fw-bold fs-9 text-center"
                     style="margin: 0; padding:0px"
@@ -423,8 +410,8 @@
                 </h5>
             </td>
             <td style="width:
-                    50%
-                    !important">
+                50%
+                !important">
                 <h5
                     class="fw-bold fs-9 text-center"
                     style="margin: 0; padding:0px"
@@ -489,8 +476,18 @@
         </tr>
 
     </table>
-    </div>
-
+    <!-- VI. FIRMAS -->
+    <p
+        class="fw-bold fs-10"
+        style="padding: 1px; margin:0px; border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black;"
+    >Este formulario
+        debe
+        ser presentado por el empleado solicitante a
+        la Unidad de Talento
+        Humano, a los
+        encargados o encargadas de asistencia de cada dependencia dentro de los primeros 3 días hábiles después
+        de haber gozado de licencia. El o La encargada de control de asistencia no es responsable por descuentos
+        sino se presenta oportunamente y llena correctamente este formulario.</p>
 </body>
 
 </html>
