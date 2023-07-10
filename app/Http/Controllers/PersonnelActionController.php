@@ -118,7 +118,7 @@ class PersonnelActionController extends Controller
             auth()->user()->email,
             'true',
             15,
-            190
+            180
         );
 
         //Create second record with status pending authorization and signed pdf
