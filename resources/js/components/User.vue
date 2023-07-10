@@ -440,7 +440,7 @@ export default {
       let requests = [
         this.getDataFromApi(),
         roleApi.get(),
-        userApi.post(`/usersByDependency`),
+        userApi.get(`/usersList`),
       ];
 
       const responses = await Promise.all(requests).catch((error) => {
@@ -452,6 +452,7 @@ export default {
       });
 
       if (responses) {
+        console.log(responses);
         this.roles = responses[1].data.roles;
         this.users = responses[2].data.users;
         // this.dependencies = responses[2].data.records;

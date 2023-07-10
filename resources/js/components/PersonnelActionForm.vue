@@ -812,13 +812,13 @@ export default {
       let { data, status } = await personnelActionApi
         .post(null, this.editedItem)
         .catch((error) => {
-          // console.log(error.response)
           this.updateAlert(true, error.response.data.message, "fail");
 
           this.redirectSessionFinished = lib.verifySessionFinished(
             error.response.status,
             401
           );
+          this.clearForm();
         });
 
       if (status == '200') {

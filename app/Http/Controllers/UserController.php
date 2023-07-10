@@ -196,11 +196,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function usersByDependency(Request $request)
+    public function usersList(Request $request)
     {
-        $userLogged = auth()->user();
-
-        $users = User::where('dependency_name', $userLogged->dependency_name)->get();
+        $users = User::all();
 
         return response()->json([
             "success" => true,

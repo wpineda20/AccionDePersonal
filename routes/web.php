@@ -33,6 +33,7 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
     Route::get('/web/personnelAction/byJustifications', [PersonnelActionController::class, 'personnelActionsByJustifications']);
     Route::get('/web/personnelAction/total', [PersonnelActionController::class, 'totalPersonnelActionByStatus']);
     Route::get('/web/justificationType/colors', [JustificationTypeController::class, 'justificationLettersColors']);
+    Route::get('/web/user/usersList', [UserController::class, 'usersList']);
 
     Route::group(['middleware' => ['has.role:Administrador']], function () {
         // Apis
@@ -52,7 +53,6 @@ Route::group(['middleware' => ['auth', 'verified', 'log', 'throttle:web']], func
 
         Route::post('/web/personnelAction/updateStatus', [PersonnelActionController::class, 'updateStatus']);
         Route::post('/web/remark/verifyRemark', [RemarkController::class, 'verifyRemark']);
-        Route::post('/web/user/usersByDependency', [UserController::class, 'usersByDependency']);
         Route::get('personnelAction/userPersonnelActions', [PersonnelActionController::class, 'userPersonnelActions']);
         Route::get('/web/personnelAction/verifyPersonnelActions', [PersonnelActionController::class, 'verifyPersonnelActions']);
 
