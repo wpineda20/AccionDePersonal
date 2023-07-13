@@ -1,5 +1,8 @@
 <template>
-  <div ref="top">
+  <div
+    ref="top"
+    v-if="!loading"
+  >
     <!-- disclaimer -->
     <disclaimer-register />
     <!-- disclaimer -->
@@ -106,7 +109,7 @@
         class="fw-bold pb-2 mb-4"
         style="border-bottom: 1px solid lightgray"
       >
-        III.- PERIODO POR:
+        III- PERIODO POR:
       </h5>
       <!-- radio group -->
       <div style="display: flex; justify-content: center">
@@ -311,7 +314,7 @@
         class="fw-bold pb-2 mb-4"
         style="border-bottom: 1px solid lightgray"
       >
-        V. TIEMPO EXTRAORDINARIO / DESCANSO
+        V- TIEMPO EXTRAORDINARIO / DESCANSO
       </h5>
 
       <h6 class="fw-bold mb-0">
@@ -516,7 +519,7 @@
         class="fw-bold pt-3 pb-2 mb-0"
         style="border-bottom: 1px solid lightgray"
       >
-        VI. ANEXAR DOCUMENTOS
+        VI- ANEXAR DOCUMENTOS
       </h5>
 
       <!-- justification_file -->
@@ -524,12 +527,12 @@
         cols="12"
         xs="12"
         sm="12"
-        md="6"
+        md="12"
       >
         <h6 class="mb-0 fw-bold">
-          Documentación original para justificación de acción de personal (PDF).
+          Anexar documentos originales que justifiquen la acción de personal (cuando aplique)
         </h6>
-        <span class="text-muted">(Cuando sea requerido)</span>
+        <span class="text-muted">(Archivo PDF)</span>
         <input-file
           accept="application/pdf"
           v-model="$v.editedItem.justification_file.$model"
@@ -578,16 +581,17 @@
     </v-row>
     <!-- row -->
 
-    <!-- loader -->
+  </div>
+  <!-- loader -->
+  <div v-else>
     <v-row
-      v-show="loading"
       style="background-color: #fff; border-radius: 10px"
       class="p-4 shadow"
     >
-      <loader v-show="loading" />
+      <loader />
     </v-row>
-    <!-- loader -->
   </div>
+  <!-- loader -->
 </template>
 
 <script>
@@ -814,26 +818,29 @@ export default {
         this.updateAlert(true, "Campos obligatorios.", "fail");
         return;
       }
+
       this.loading = true;
 
       let { data, status } = await personnelActionApi
         .post(null, this.editedItem)
         .catch((error) => {
-          this.updateAlert(true, error.response.data.message, "fail");
 
+          this.loading = false;
+          this.updateAlert(true, error.response.data.message, "fail", 10000);
           this.redirectSessionFinished = lib.verifySessionFinished(
             error.response.status,
             401
           );
-          this.clearForm();
         });
 
       if (status == '200') {
-        this.updateAlert(true, data.message, data.state, 10000);
+        this.loading = false;
+        this.updateAlert(true, data.message, data.state, 20000);
         this.clearForm();
       } else {
-        this.updateAlert(true, data.message, data.state);
+        this.updateAlert(true, data.message, data.state, 30000);
       }
+
       this.loading = false;
     },
 
@@ -868,8 +875,12 @@ export default {
       this.textAlert = text;
       this.alertEvent = event;
       this.showAlert = show;
-      if (show) {
-        this.$refs.top.scrollIntoView();
+      if (this.showAlert) {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
       }
     },
   },

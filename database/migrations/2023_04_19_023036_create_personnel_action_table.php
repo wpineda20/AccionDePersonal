@@ -27,7 +27,6 @@ return new class extends Migration
             $table->date('to_date')->nullable();
             $table->integer('total_days')->nullable();
             $table->text('justification');
-            $table->integer('current_year');
             $table->text('justification_file')->nullable();
             $table->boolean('extraordinary_work')->nullable();
             $table->boolean('training')->nullable();
@@ -41,6 +40,8 @@ return new class extends Migration
             $table->string('execution_from')->nullable();
             $table->string('execution_to')->nullable();
             $table->string('note')->nullable();
+            $table->string('dependency_name')->nullable();
+            $table->integer('current_year');
             $table->softDeletes();
             $table->timestamps();
         });

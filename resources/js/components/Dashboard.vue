@@ -17,6 +17,81 @@
       @update-dialog="showBannerInmediate = false"
     />
 
+    <!-- Welcome -->
+    <v-row>
+      <v-col
+        cols="12"
+        sm="12"
+        md="12"
+        lg="12"
+      >
+        <div class="welcome-card p-3 mb-2">
+          <h3>Bienvenido <b>William Pineda</b></h3>
+          <v-btn
+            class="btn-normal"
+            rounded
+            @click="filterDialog = true"
+          >
+            <v-icon left> mdi-filter </v-icon> Filtrar
+          </v-btn>
+          <v-dialog
+            v-model="filterDialog"
+            max-width="400px"
+          >
+            <v-card class="h-100 filter-card">
+              <v-container>
+                <h3 class="black-secondary text-center mt-3 mb-3">Filtros</h3>
+                <v-row>
+                  <v-container>
+                    <!-- Start date -->
+                    <v-col
+                      cols="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <base-input
+                        label="Fecha de inicio"
+                        type="date"
+                      />
+                    </v-col>
+                    <!-- Start date -->
+
+                    <!-- End date -->
+                    <v-col
+                      cols="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <base-input
+                        label="Fecha de fin"
+                        type="date"
+                      />
+                    </v-col>
+                    <!-- End date -->
+                  </v-container>
+
+                  <v-col align="center">
+                    <v-btn
+                      class="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                      rounded
+                    >Filtrar</v-btn>
+                    <v-btn
+                      class="btn-normal-close no-uppercase mt-3 mb-3"
+                      rounded
+                      @click="filterDialog = false"
+                    >
+                      Cancelar
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+          </v-dialog>
+        </div>
+      </v-col>
+    </v-row>
+    <!-- Welcome -->
+
     <v-row>
       <!-- A.P by status -->
       <v-col
@@ -83,7 +158,6 @@
                 <v-btn
                   href="/personnelAction"
                   class="mb-2 btn-normal"
-                  style="background-color: #2d52a8 !important;"
                   rounded
                 >
                   <v-icon left> mdi-plus </v-icon> Crear solicitud
@@ -219,6 +293,7 @@ export default {
     textAlert: "",
     alertEvent: "success",
     showAlert: false,
+    filterDialog: false,
     time: 5000,
     loading: false,
     records: [],

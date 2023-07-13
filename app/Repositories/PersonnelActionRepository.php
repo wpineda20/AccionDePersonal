@@ -5,10 +5,16 @@ namespace App\Repositories;
 use App\Models\JustificationType;
 use App\Models\PersonnelAction;
 use App\Models\Remark;
+
+use App\Http\Controllers\FileController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Controllers\FileController;
 use Str;
+
+use Str;
+
 
 class PersonnelActionRepository
 {
@@ -82,6 +88,7 @@ class PersonnelActionRepository
             'execution_effective_date' => $request->execution_effective_date,
             'execution_from' => $request->execution_from,
             'execution_to' => $request->execution_to,
+            'dependency_name' => $request->dependency_name,
         ]);
     }
 

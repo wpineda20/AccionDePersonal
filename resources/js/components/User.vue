@@ -183,7 +183,7 @@
                       md="12"
                     >
                       <v-checkbox
-                        label="Autorizante?"
+                        label="Autorizante"
                         v-model="$v.editedItem.send_to_rrhh.$model"
                         class="ml-6"
                       />
