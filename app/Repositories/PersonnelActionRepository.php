@@ -86,6 +86,7 @@ class PersonnelActionRepository
             'execution_effective_date' => $request->execution_effective_date,
             'execution_from' => $request->execution_from,
             'execution_to' => $request->execution_to,
+            'dependency_name' => $request->dependency_name,
         ]);
     }
 
