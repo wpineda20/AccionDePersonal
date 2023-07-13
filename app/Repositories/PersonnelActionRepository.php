@@ -5,8 +5,14 @@ namespace App\Repositories;
 use App\Models\JustificationType;
 use App\Models\PersonnelAction;
 use App\Models\Remark;
+
+use App\Http\Controllers\FileController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+
+use Str;
+
 
 class PersonnelActionRepository
 {

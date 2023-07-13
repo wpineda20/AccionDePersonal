@@ -125,8 +125,8 @@ class PersonnelActionController extends Controller
         $this->historyPersonnelActionRepository->advanceAp($personnelAction, 2, $signedFile['url'], auth()->user()->inmediate_superior_id);
 
         return response()->json([
-            'success' => true,
             'message' => "Tu solicitud ha sido enviada exitosamente.",
+            'state' => 'success',
         ]);
     }
 
