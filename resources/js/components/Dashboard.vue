@@ -1,10 +1,99 @@
 <template>
-  <div data-app ref="top">
-    <alert :text="textAlert" :event="alertEvent" :show="showAlert" :time="time" @show-alert="updateAlert($event)"
-      class="mb-4" />
+  <div
+    data-app
+    ref="top"
+  >
+    <alert
+      :text="textAlert"
+      :event="alertEvent"
+      :show="showAlert"
+      :time="time"
+      @show-alert="updateAlert($event)"
+      class="mb-4"
+    />
+    <!-- Welcome -->
+    <v-row>
+      <v-col
+        cols="12"
+        sm="12"
+        md="12"
+        lg="12"
+      >
+        <div class="welcome-card p-3 mb-2">
+          <h3>Bienvenido <b>William Pineda</b></h3>
+          <v-btn
+            class="btn-normal"
+            rounded
+            @click="filterDialog = true"
+          >
+            <v-icon left> mdi-filter </v-icon> Filtrar
+          </v-btn>
+          <v-dialog
+            v-model="filterDialog"
+            max-width="400px"
+          >
+            <v-card class="h-100 filter-card">
+              <v-container>
+                <h3 class="black-secondary text-center mt-3 mb-3">Filtros</h3>
+                <v-row>
+                  <v-container>
+                    <!-- Start date -->
+                    <v-col
+                      cols="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <base-input
+                        label="Fecha de inicio"
+                        type="date"
+                      />
+                    </v-col>
+                    <!-- Start date -->
+
+                    <!-- End date -->
+                    <v-col
+                      cols="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <base-input
+                        label="Fecha de fin"
+                        type="date"
+                      />
+                    </v-col>
+                    <!-- End date -->
+                  </v-container>
+
+                  <v-col align="center">
+                    <v-btn
+                      class="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                      rounded
+                    >Filtrar</v-btn>
+                    <v-btn
+                      class="btn-normal-close no-uppercase mt-3 mb-3"
+                      rounded
+                      @click="filterDialog = false"
+                    >
+                      Cancelar
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+          </v-dialog>
+        </div>
+      </v-col>
+    </v-row>
+    <!-- Welcome -->
     <v-row>
       <!-- A.P by status -->
-      <v-col cols="12" md="12" lg="4" sm="12" class="pt-0">
+      <v-col
+        cols="12"
+        md="12"
+        lg="4"
+        sm="12"
+        class="pt-0"
+      >
         <div class="dashboard-card">
           <div class="dashboard-card-header">
             <h2>A.P. por estados</h2>
@@ -12,15 +101,30 @@
           </div>
           <div class="dashboard-card-body">
             <!-- Loader -->
-            <loader v-if="loading" class="pt-5" style=""> </loader>
+            <loader
+              v-if="loading"
+              class="pt-5"
+              style=""
+            > </loader>
             <!-- /.Loader -->
-            <div class="body-content" v-if="!loading">
-              <div class="body-item h-100" v-for="(item, index) in totals" :key="index">
-                <v-icon large class="color-primary" style="justify-content: left">
+            <div
+              class="body-content"
+              v-if="!loading"
+            >
+              <div
+                class="body-item h-100"
+                v-for="(item, index) in totals"
+                :key="index"
+              >
+                <v-icon
+                  large
+                  class="color-primary"
+                  style="justify-content: left"
+                >
                   {{ item.icon }}
                 </v-icon>
                 <span> {{ item.total }} </span>
-                <p class="mb-0" >{{ item.title }}</p>
+                <p class="mb-0">{{ item.title }}</p>
               </div>
             </div>
           </div>
@@ -29,7 +133,13 @@
       <!-- A.P by status -->
 
       <!-- Latest justifications -->
-      <v-col cols="12" md="12" lg="8" sm="12" class="pt-0">
+      <v-col
+        cols="12"
+        md="12"
+        lg="8"
+        sm="12"
+        class="pt-0"
+      >
         <div class="top-justifications-card mb-3">
           <div class="top-justifications-header">
             <div class="header-content">
@@ -38,8 +148,12 @@
                 <p class="pb-0">Últimas 5 acciones de personal generadas.</p>
               </div>
               <div class="header-content-item">
-                <v-btn href="/personnelAction" class="mb-2 btn-normal" style="background-color: #2d52a8 !important;"
-                  rounded>
+                <v-btn
+                  href="/personnelAction"
+                  class="mb-2 btn-normal"
+                  style="background-color: #2d52a8 !important"
+                  rounded
+                >
                   <v-icon left> mdi-plus </v-icon> Crear solicitud
                 </v-btn>
               </div>
@@ -47,10 +161,17 @@
           </div>
           <div class="top-justifications-body">
             <!-- Item 1 -->
-            <div v-for="(item, index) in this.records" :key="index" class="top-justification-item">
+            <div
+              v-for="(item, index) in this.records"
+              :key="index"
+              class="top-justification-item"
+            >
               <div class="top-justification-item-left">
                 <div class="item-left-icon">
-                  <v-icon large class="orange-text">
+                  <v-icon
+                    large
+                    class="orange-text"
+                  >
                     mdi-numeric-{{ index + 1 }}-circle
                   </v-icon>
                 </div>
@@ -67,7 +188,10 @@
             </div>
             <!-- Item  -->
             <!-- No Item -->
-            <div v-if="records.length == 0 && !loading" class="">
+            <div
+              v-if="records.length == 0 && !loading"
+              class=""
+            >
               <h4 class="fw-bold text-center">
                 No se ha registrado ninguna acción de personal.
               </h4>
@@ -75,14 +199,22 @@
             <!-- No Item -->
           </div>
           <!-- Loader -->
-          <loader v-if="loading" class=""> </loader>
+          <loader
+            v-if="loading"
+            class=""
+          > </loader>
           <!-- /.Loader -->
         </div>
       </v-col>
       <!-- Latest justifications -->
 
       <!-- A.P by justifications -->
-      <v-col cols="12" md="12" sm="12" lg="12">
+      <v-col
+        cols="12"
+        md="12"
+        sm="12"
+        lg="12"
+      >
         <div class="top-justifications-card">
           <div class="top-justifications-header">
             <h2>Acciones de personal por tipo de justificación</h2>
@@ -97,14 +229,26 @@
       </v-col>
 
       <!-- Justifications colors -->
-      <v-col cols="12" md="12" sm="12" lg="12">
+      <v-col
+        cols="12"
+        md="12"
+        sm="12"
+        lg="12"
+      >
         <div class="top-justifications-card">
           <div class="top-justifications-header">
             <h2>Tipos de justificación.</h2>
           </div>
-          <div class="justifications-colors" v-for="(item, index) in this.justifications" :key="index">
+          <div
+            class="justifications-colors"
+            v-for="(item, index) in this.justifications"
+            :key="index"
+          >
             <div class="color">
-              <div class="picker" :style="{ backgroundColor: item.color }">
+              <div
+                class="picker"
+                :style="{ backgroundColor: item.color }"
+              >
                 {{ item.letter }}
               </div>
             </div>
@@ -114,7 +258,10 @@
           </div>
           <div class="">
             <!-- Loader -->
-            <loader v-if="loading" class=""> </loader>
+            <loader
+              v-if="loading"
+              class=""
+            > </loader>
             <!-- /.Loader -->
           </div>
         </div>
@@ -140,6 +287,7 @@ export default {
     textAlert: "",
     alertEvent: "success",
     showAlert: false,
+    filterDialog: false,
     time: 5000,
     loading: false,
     records: [],

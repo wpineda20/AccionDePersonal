@@ -310,7 +310,6 @@ class PersonnelActionController extends Controller
         if (!empty($request->data && $request->status == 'Observada')) {
 
             Remark::where('personnel_action_id', $request->id)->delete();
-            // dd($value['status']);
             foreach ($request->data as $value) {
                 if ($value['status'] != 'No Corregida') {
                     Remark::insert([
@@ -362,7 +361,7 @@ class PersonnelActionController extends Controller
         $processed = $this->personnelActionRepository->countByStatus(auth()->user()->id, 5);
         $rejected = $this->personnelActionRepository->countByStatus(auth()->user()->id, 6);
         $finished = $this->personnelActionRepository->countByStatus(auth()->user()->id, 7);
-        $total = PersonnelAction::where('user_id', auth()->user()->id)->count();
+        $total = PersonnelAction::where('user_id', auth()->user()->id)->where('current_year', intval(date("Y")))->count();
 
         return response()->json([
             "message" => "Registros obtenidos correctamente.",
