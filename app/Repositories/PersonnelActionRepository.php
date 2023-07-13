@@ -10,6 +10,8 @@ use App\Http\Controllers\FileController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use App\Controllers\FileController;
+use Str;
 
 use Str;
 

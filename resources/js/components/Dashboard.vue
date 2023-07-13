@@ -11,6 +11,12 @@
       @show-alert="updateAlert($event)"
       class="mb-4"
     />
+
+    <banner-inmediate
+      :showBannerInmediate="showBannerInmediate"
+      @update-dialog="showBannerInmediate = false"
+    />
+
     <!-- Welcome -->
     <v-row>
       <v-col
@@ -85,6 +91,7 @@
       </v-col>
     </v-row>
     <!-- Welcome -->
+
     <v-row>
       <!-- A.P by status -->
       <v-col
@@ -151,7 +158,6 @@
                 <v-btn
                   href="/personnelAction"
                   class="mb-2 btn-normal"
-                  style="background-color: #2d52a8 !important"
                   rounded
                 >
                   <v-icon left> mdi-plus </v-icon> Crear solicitud
@@ -275,8 +281,8 @@
 <script>
 import personnelActionApi from "../apis/personnelActionApi";
 import justificationTypeApi from "../apis/justificationTypeApi";
+import userApi from "../apis/userApi";
 import moment from "moment";
-import axios from "axios";
 
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
@@ -294,7 +300,9 @@ export default {
     justifications: [],
     byJustifications: [],
     totals: {},
+    actualUser: {},
     totalPersonnelActions: 0,
+    showBannerInmediate: false,
   }),
 
   methods: {
@@ -307,6 +315,7 @@ export default {
         personnelActionApi.get(`/total`),
         justificationTypeApi.get(`/colors`),
         personnelActionApi.get(`/byJustifications`),
+        userApi.get(`/actualUser`),
       ];
 
       const responses = await Promise.all(requests).catch((error) => {
@@ -334,6 +343,10 @@ export default {
         this.totals = responses[1].data.data;
         this.justifications = responses[2].data.records;
         this.byJustifications = responses[3].data.data;
+        this.actualUser = responses[4].data.user;
+
+        if (!this.actualUser.inmediate_superior_id) this.showBannerInmediate = true;
+
         this.createGraphic(this.byJustifications);
       }
 

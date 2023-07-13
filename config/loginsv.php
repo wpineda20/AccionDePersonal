@@ -9,7 +9,7 @@ return [
     | The authorize URI to be used for the login.
     |
     */
-    'authorize_url' => 'https://login.cultura.gob.sv/oauth/authorize',
+    'authorize_url' => 'https://dev.login.cultura.gob.sv/oauth/authorize',
 
     /*
     |--------------------------------------------------------------------------
@@ -19,7 +19,7 @@ return [
     | The token URI to be used for the login.
     |
     */
-    'token_url' => 'https://login.cultura.gob.sv/oauth/token',
+    'token_url' => 'https://dev.login.cultura.gob.sv/oauth/token',
 
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ return [
     | The user URI to be used for the login.
     |
     */
-    'user_url' => 'https://login.cultura.gob.sv/api/userInfo',
+    'user_url' => 'https://dev.login.cultura.gob.sv/api/userInfo',
 
 
 ];

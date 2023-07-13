@@ -1,0 +1,51 @@
+version: "3"
+
+networks:
+  nginx:
+    external: true
+
+services:
+  app:
+    image: cyberduck/php-fpm-laravel:8.2
+    container_name: php-AccionDePersonal
+    restart: always
+    expose:
+      - 9000
+    volumes:
+      - ./:/var/www/AccionDePersonal:delegated
+    networks:
+      nginx:
+        aliases:
+          - php-AccionDePersonal
+
+  composer:
+    image: cyberduck/php-fpm-laravel:8.2
+    container_name: composer
+    volumes:
+      - ./:/var/www/AccionDePersonal
+    working_dir: /var/www/AccionDePersonal
+    depends_on:
+      - app
+    entrypoint: ["composer"]
+    networks:
+      nginx:
+
+  npm:
+    image: node:18
+    container_name: npm
+    volumes:
+      - ./:/var/www/AccionDePersonal
+    working_dir: /var/www/AccionDePersonal
+    entrypoint: ["npm"]
+    networks:
+      nginx:
+
+  artisan:
+    image: cyberduck/php-fpm-laravel:8.2
+    container_name: artisan
+    volumes:
+      - ./:/var/www/AccionDePersonal:delegated
+    working_dir: /var/www/AccionDePersonal
+    entrypoint: ["php", "/var/www/AccionDePersonal/artisan"]
+    networks:
+      nginx:

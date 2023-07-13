@@ -10,8 +10,16 @@ use Str;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
+use App\Repositories\UserRepository;
+
 class LoginSvController extends Controller
 {
+    private $userRepostory;
+
+    public function __construct(){
+        $this->userRepository = new UserRepository();
+    }
+
     /**
      * Redirect to ServiceProvider.
      **/
@@ -33,6 +41,10 @@ class LoginSvController extends Controller
         } catch (\Exception $e) {
             return $e;
         }
+
+        // $user = $data->user();
+
+        // dd($data->user()->token);
 
         // check if the user exists
         $existingUser = User::where('email', $user->email)->first();
@@ -65,6 +77,11 @@ class LoginSvController extends Controller
             $existingUser->email =  $user["email"];
             $existingUser->position_signature =  $user["position_signature"];
             $existingUser->dependency_name =  $user["dependency_name"];
+            $existingUser->send_to_rrhh =  $user["send_to_rrhh"];
+
+            $inmediateSuperior = User::where('email', $user["inmediate_superior"])->first();
+            $existingUser->inmediate_superior_id = $inmediateSuperior?->id;
+
             $existingUser->save();
 
             auth()->login($existingUser, true);

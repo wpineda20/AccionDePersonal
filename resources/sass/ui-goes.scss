@@ -714,10 +714,13 @@ select:-webkit-autofill {
     justify-content: space-between;
 }
 
-.v-tabs-slider{
+.v-tabs-slider {
     background-color: #2d52a8 !important;
 }
 
+.text-red {
+    color: red;
+}
 .welcome-card {
     background-color: $white;
     border-radius: 0.625rem;
