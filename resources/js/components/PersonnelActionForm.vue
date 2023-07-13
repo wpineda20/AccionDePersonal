@@ -529,7 +529,7 @@
         <h6 class="mb-0 fw-bold">
           Documentación original para justificación de acción de personal (PDF).
         </h6>
-        <span class="text-muted">(Opcional)</span>
+        <span class="text-muted">(Cuando sea requerido)</span>
         <input-file
           accept="application/pdf"
           v-model="$v.editedItem.justification_file.$model"
@@ -551,7 +551,7 @@
         >
           <v-btn
             color="btn-normal no-uppercase"
-            :disabled="loading"
+            :disabled="loading || !user.inmediate_superior_id"
             rounded
             @click="save()"
           >
@@ -565,6 +565,13 @@
           >
             Limpiar
           </v-btn>
+
+          <p
+            class="text-red mt-3"
+            v-if="!user.inmediate_superior_id"
+          >No podrás registrar tus acciones de personal hasta que tu jefe inmediato
+            inicie sesión dentro de la
+            plataforma.</p>
         </v-col>
       </v-row>
       <!-- buttons -->
@@ -631,7 +638,7 @@ export default {
       execution_effective_date: "",
       execution_from: "",
       execution_to: "",
-      period_by: "",
+      period_by: "hours",
     },
     defaultItem: {
       name: "",
@@ -658,7 +665,7 @@ export default {
       execution_effective_date: "",
       execution_from: "",
       execution_to: "",
-      period_by: "",
+      period_by: "hours",
     },
   }),
 

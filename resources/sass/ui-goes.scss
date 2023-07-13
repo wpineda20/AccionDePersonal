@@ -714,17 +714,22 @@ select:-webkit-autofill {
     justify-content: space-between;
 }
 
-.v-tabs-slider{
+.v-tabs-slider {
     background-color: #2d52a8 !important;
+}
+
+.text-red {
+    color: red;
 }
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
     .header-content {
-            display: flex;
-            flex-direction: column;
-        }
-    .header-content-item > .btn-normal{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header-content-item>.btn-normal {
         width: 100%;
     }
 }
